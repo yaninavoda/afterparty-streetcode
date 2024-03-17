@@ -52,9 +52,24 @@ public static class ServiceCollectionExtensions
 
     public static void AddApplicationServices(this IServiceCollection services, ConfigurationManager configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        string connectionString;
+        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Local";
+        if (environment == "IntegrationTests" || environment == "Local")
+        {
+            var connection = configuration.GetSection(environment).GetConnectionString("DefaultConnection");
+            connectionString = connection ?? throw new InvalidOperationException($"'DefaultConnection' is null or not found for the '{environment}' environment.");
+        }
+        else
+        {
+            var connection = configuration.GetConnectionString("DefaultConnection");
+            connectionString = connection ?? throw new InvalidOperationException("'DefaultConnection' is null or not found");
+        }
+
         var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
-        services.AddSingleton(emailConfig);
+        if (emailConfig is not null)
+        {
+            services.AddSingleton(emailConfig);
+        }
 
         services.AddDbContext<StreetcodeDbContext>(options =>
         {
