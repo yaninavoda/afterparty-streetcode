@@ -1,10 +1,10 @@
 ﻿namespace Streetcode.XUnitTest.MediatRTests
 {
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using AutoMapper;
-    using FluentAssertions;
-    using FluentResults;
+    using Microsoft.EntityFrameworkCore.Query;
     using Moq;
     using Streetcode.BLL.DTO.Streetcode.TextContent.Fact;
     using Streetcode.BLL.Interfaces.Logging;
@@ -30,10 +30,8 @@
         public async Task GetAllFacts_ShouldReturnOk_WhenFactsExist()
         {
             // Arrange
-            List<Fact> mockFacts = GetMockData();
-
-            this._mockRepositoryWrapper.Setup(repo => repo.FactRepository.GetAllAsync(null, null))
-                .ReturnsAsync(mockFacts);
+            this.MockRepositorySetupReturnsData();
+            this.MockMapperSetup();
 
             var handler = new GetAllFactsHandler(
                 this._mockRepositoryWrapper.Object,
@@ -48,13 +46,34 @@
         }
 
         [Fact]
+        public async Task GetAllFacts_ShouldReturnCollectionOfCorrectCount_WhenFactsExist()
+        {
+            // Arrange
+            var mockFacts = GetFactList();
+            var expectedCount = mockFacts.Count;
+
+            this.MockRepositorySetupReturnsData();
+            this.MockMapperSetup();
+
+            var handler = new GetAllFactsHandler(
+                this._mockRepositoryWrapper.Object,
+                this._mockMapper.Object,
+                this._mockLogger.Object);
+
+            // Act
+            var result = await handler.Handle(new GetAllFactsQuery(), CancellationToken.None);
+            var actualCount = result.Value.Count();
+
+            // Assert
+            Assert.Equal(expectedCount, actualCount);
+        }
+
+        [Fact]
         public async Task GetAllFacts_RepositoryShouldCallGetAllAsyncOnlyOnce_WhenFactsExist()
         {
             // Arrange
-            List<Fact> mockFacts = GetMockData();
-
-            this._mockRepositoryWrapper.Setup(repo => repo.FactRepository.GetAllAsync(null, null))
-                .ReturnsAsync(mockFacts);
+            this.MockRepositorySetupReturnsData();
+            this.MockMapperSetup();
 
             var handler = new GetAllFactsHandler(
                 this._mockRepositoryWrapper.Object,
@@ -74,10 +93,8 @@
         public async Task GetAllFacts_MapperShouldMapOnlyOnce_WhenFactsExist()
         {
             // Arrange
-            List<Fact> mockFacts = GetMockData();
-
-            this._mockRepositoryWrapper.Setup(repo => repo.FactRepository.GetAllAsync(null, null))
-                .ReturnsAsync(mockFacts);
+            this.MockRepositorySetupReturnsData();
+            this.MockMapperSetup();
 
             var handler = new GetAllFactsHandler(
                 this._mockRepositoryWrapper.Object,
@@ -96,34 +113,32 @@
         [Fact]
         public async Task GetAllFacts_ShouldReturnCollectionOfFactDto_WhenFactsExist()
         {
-            //Arrange
-
-            List<Fact> mockFacts = GetMockData();
-
-            this._mockRepositoryWrapper.Setup(repo => repo.FactRepository.GetAllAsync(null, null))
-                .ReturnsAsync(mockFacts);
+            // Arrange
+            this.MockRepositorySetupReturnsData();
+            this.MockMapperSetup();
 
             var handler = new GetAllFactsHandler(
                 this._mockRepositoryWrapper.Object,
                 this._mockMapper.Object,
                 this._mockLogger.Object);
 
-            //Act
+            // Act
             var result = await handler.Handle(new GetAllFactsQuery(), CancellationToken.None);
 
-            //Assert
-            Assert.IsType<FactDto[]>(result.ValueOrDefault);
+            // Assert
+            Assert.IsType<List<FactDto>>(result.Value);
         }
 
         [Fact]
         public async Task GetAllFacts_ShouldReturnFail_WhenFactsAreNull()
         {
             // Arrange
-            this._mockRepositoryWrapper
-                .Setup(repo => repo.FactRepository.GetAllAsync(null, null))
-                .ReturnsAsync((IEnumerable<Fact>)null);
+            this.MockRepositorySetupReturnsNull();
 
-            var handler = new GetAllFactsHandler(this._mockRepositoryWrapper.Object, this._mockMapper.Object, _mockLogger.Object);
+            var handler = new GetAllFactsHandler(
+                this._mockRepositoryWrapper.Object,
+                this._mockMapper.Object,
+                this._mockLogger.Object);
 
             // Act
             var result = await handler.Handle(new GetAllFactsQuery(), CancellationToken.None);
@@ -136,11 +151,12 @@
         public async Task GetAllFacts_ShouldLogCorrectErrorMessage_WhenFactsAreNull()
         {
             // Arrange
-            this._mockRepositoryWrapper
-                .Setup(repo => repo.FactRepository.GetAllAsync(null, null))
-                .ReturnsAsync((IEnumerable<Fact>)null);
+            this.MockRepositorySetupReturnsNull();
 
-            var handler = new GetAllFactsHandler(this._mockRepositoryWrapper.Object, this._mockMapper.Object, _mockLogger.Object);
+            var handler = new GetAllFactsHandler(
+                this._mockRepositoryWrapper.Object,
+                this._mockMapper.Object,
+                this._mockLogger.Object);
 
             var expectedError = "Cannot find any fact";
 
@@ -151,7 +167,7 @@
             Assert.Equal(expectedError, result.Errors.First().Message);
         }
 
-        private static List<Fact> GetMockData()
+        private static List<Fact> GetFactList()
         {
             return new List<Fact>
             {
@@ -177,6 +193,62 @@
                     ImageId = 3,
                 },
             };
+        }
+
+        private static List<FactDto> GetFactDtoList()
+        {
+            return new List<FactDto>
+            {
+                new ()
+                {
+                    Id = 1,
+                    Title = "Title1",
+                    FactContent = "Fact content 1",
+                    ImageId = 1,
+                },
+
+                new ()
+                {
+                    Id = 2,
+                    Title = "Title2",
+                    FactContent = "Fact content 2",
+                    ImageId = 2,
+                },
+                new ()
+                {
+                    Id = 3,
+                    Title = "Title3",
+                    FactContent = "Fact content 3",
+                    ImageId = 3,
+                },
+            };
+        }
+
+        private void MockMapperSetup()
+        {
+            this._mockMapper.Setup(x => x
+                .Map<IEnumerable<FactDto>>(It.IsAny<IEnumerable<Fact>>()))
+                .Returns(GetFactDtoList());
+        }
+
+        private void MockRepositorySetupReturnsData()
+        {
+            this._mockRepositoryWrapper.Setup(x => x.FactRepository
+                .GetAllAsync(
+                    It.IsAny<Expression<Func<Fact, bool>>>(),
+                    It.IsAny<Func<IQueryable<Fact>,
+                IIncludableQueryable<Fact, object>>>()))
+                .ReturnsAsync(GetFactList());
+        }
+
+        private void MockRepositorySetupReturnsNull()
+        {
+            this._mockRepositoryWrapper.Setup(x => x.FactRepository
+                .GetAllAsync(
+                    It.IsAny<Expression<Func<Fact, bool>>>(),
+                    It.IsAny<Func<IQueryable<Fact>,
+                IIncludableQueryable<Fact, object>>>()))
+                .ReturnsAsync((IEnumerable<Fact>?)null);
         }
     }
 }
