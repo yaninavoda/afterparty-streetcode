@@ -52,8 +52,6 @@ public interface IRepositoryWrapper
     IHistoricalContextTimelineRepository HistoricalContextTimelineRepository { get; }
     IStreetcodeToponymRepository StreetcodeToponymRepository { get; }
     IStreetcodeImageRepository StreetcodeImageRepository { get; }
-    public int SaveChanges();
-
     public Task<int> SaveChangesAsync();
 
     public TransactionScope BeginTransaction();

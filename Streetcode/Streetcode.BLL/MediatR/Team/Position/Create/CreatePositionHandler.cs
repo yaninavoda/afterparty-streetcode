@@ -23,14 +23,14 @@ namespace Streetcode.BLL.MediatR.Team.Create
 
         public async Task<Result<PositionDTO>> Handle(CreatePositionQuery request, CancellationToken cancellationToken)
         {
-            var newPosition = await _repository.PositionRepository.CreateAsync(new Positions()
+            var newPosition = _repository.PositionRepository.Create(new Positions()
             {
                 Position = request.position.Position
             });
 
             try
             {
-                _repository.SaveChanges();
+                await _repository.SaveChangesAsync();
             }
             catch (Exception ex)
             {

@@ -13,13 +13,11 @@ public interface IRepositoryBase<T>
 
     T Create(T entity);
 
-    Task<T> CreateAsync(T entity);
-
-    Task CreateRangeAsync(IEnumerable<T> items);
+    void CreateRange(IEnumerable<T> items);
 
     EntityEntry<T> Update(T entity);
 
-    public void UpdateRange(IEnumerable<T> items);
+    void UpdateRange(IEnumerable<T> items);
 
     void Delete(T entity);
 
