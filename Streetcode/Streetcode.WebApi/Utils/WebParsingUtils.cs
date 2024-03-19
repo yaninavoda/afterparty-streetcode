@@ -243,7 +243,7 @@ public class WebParsingUtils
             {
                 var (streetName, streetType) = OptimizeStreetname(row[AddressColumn]);
 
-                await _repository.ToponymRepository.CreateAsync(new Toponym
+                _repository.ToponymRepository.Create(new Toponym
                 {
                     Oblast = row[RegionColumn],
                     AdminRegionOld = row[AdministrativeRegionOldColumn],

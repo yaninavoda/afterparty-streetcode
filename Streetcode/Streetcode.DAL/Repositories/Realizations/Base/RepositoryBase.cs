@@ -28,15 +28,9 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return _dbContext.Set<T>().Add(entity).Entity;
     }
 
-    public async Task<T> CreateAsync(T entity)
+    public void CreateRange(IEnumerable<T> items)
     {
-        var tmp = await _dbContext.Set<T>().AddAsync(entity);
-        return tmp.Entity;
-    }
-
-    public Task CreateRangeAsync(IEnumerable<T> items)
-    {
-        return _dbContext.Set<T>().AddRangeAsync(items);
+        _dbContext.Set<T>().AddRange(items);
     }
 
     public EntityEntry<T> Update(T entity)

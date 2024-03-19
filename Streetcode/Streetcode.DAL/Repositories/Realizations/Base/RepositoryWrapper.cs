@@ -555,11 +555,6 @@ public class RepositoryWrapper : IRepositoryWrapper
 		}
 	}
 
-    public int SaveChanges()
-    {
-        return _streetcodeDbContext.SaveChanges();
-    }
-
     public async Task<int> SaveChangesAsync()
     {
         return await _streetcodeDbContext.SaveChangesAsync();

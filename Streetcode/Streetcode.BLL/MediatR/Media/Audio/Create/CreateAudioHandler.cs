@@ -38,7 +38,7 @@ public class CreateAudioHandler : IRequestHandler<CreateAudioCommand, Result<Aud
 
         audio.BlobName = $"{hashBlobStorageName}.{request.Audio.Extension}";
 
-        await _repositoryWrapper.AudioRepository.CreateAsync(audio);
+        _repositoryWrapper.AudioRepository.Create(audio);
 
         var resultIsSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
 
