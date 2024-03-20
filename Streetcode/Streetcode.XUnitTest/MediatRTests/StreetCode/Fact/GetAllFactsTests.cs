@@ -15,8 +15,8 @@ using Xunit;
 
 public class GetAllFactsTests
 {
-    private Mock<IRepositoryWrapper> _mockRepositoryWrapper;
-    private Mock<IMapper> _mockMapper;
+    private readonly Mock<IRepositoryWrapper> _mockRepositoryWrapper;
+    private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<ILoggerService> _mockLogger;
 
     public GetAllFactsTests()
