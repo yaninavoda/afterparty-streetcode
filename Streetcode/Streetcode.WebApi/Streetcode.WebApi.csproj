@@ -6,12 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>c74223ed-c414-48c4-9b8f-3529e95faa61</UserSecretsId>
     <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
-	  <CodeAnalysisRuleSet>../settings.ruleset</CodeAnalysisRuleSet>
-
+    <CodeAnalysisRuleSet>../settings.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-	<ItemGroup>
-     <InternalsVisibleTo Include="Streetcode.XIntegrationTest" />
-</ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Streetcode.XIntegrationTest" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
