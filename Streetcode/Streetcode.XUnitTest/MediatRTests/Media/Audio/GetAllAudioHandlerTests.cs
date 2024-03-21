@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
-using Streetcode.BLL.DTO.Media.Audio;
+using Streetcode.BLL.Dto.Media.Audio;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Media.Audio.GetAll;
@@ -134,7 +134,7 @@ public class GetAllAudioHandlerTests
         // Assert
         _mockMapper.Verify(
             mapper =>
-            mapper.Map<IEnumerable<AudioDTO>>(It.IsAny<IEnumerable<Audio>>()), Times.Once);
+            mapper.Map<IEnumerable<AudioDto>>(It.IsAny<IEnumerable<Audio>>()), Times.Once);
     }
 
     [Fact]
@@ -154,7 +154,7 @@ public class GetAllAudioHandlerTests
         var result = await handler.Handle(new GetAllAudiosQuery(), CancellationToken.None);
 
         // Assert
-        Assert.IsType<List<AudioDTO>>(result.Value);
+        Assert.IsType<List<AudioDto>>(result.Value);
     }
 
     [Fact]
@@ -228,9 +228,9 @@ public class GetAllAudioHandlerTests
         };
     }
 
-    private static List<AudioDTO> GetAudioDtoList()
+    private static List<AudioDto> GetAudioDtoList()
     {
-        return new List<AudioDTO>
+        return new List<AudioDto>
         {
             new ()
             {
@@ -262,7 +262,7 @@ public class GetAllAudioHandlerTests
     private void MockMapperSetup()
     {
         _mockMapper.Setup(x => x
-            .Map<IEnumerable<AudioDTO>>(It.IsAny<IEnumerable<Audio>>()))
+            .Map<IEnumerable<AudioDto>>(It.IsAny<IEnumerable<Audio>>()))
             .Returns(GetAudioDtoList());
     }
 

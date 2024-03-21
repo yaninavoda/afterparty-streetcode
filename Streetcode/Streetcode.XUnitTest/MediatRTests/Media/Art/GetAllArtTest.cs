@@ -4,8 +4,8 @@ using System.Linq.Expressions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
-using Streetcode.BLL.DTO.Media.Art;
-using Streetcode.BLL.DTO.Media.Images;
+using Streetcode.BLL.Dto.Media.Art;
+using Streetcode.BLL.Dto.Media.Images;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Media.Art.GetAll;
 using Streetcode.DAL.Entities.Media.Images;
@@ -128,7 +128,7 @@ public class GetAllArtTest
         // Assert
         _mockMapper.Verify(
             mapper =>
-            mapper.Map<IEnumerable<ArtDTO>>(It.IsAny<IEnumerable<Art>>()), Times.Once);
+            mapper.Map<IEnumerable<ArtDto>>(It.IsAny<IEnumerable<Art>>()), Times.Once);
     }
 
     [Fact]
@@ -147,7 +147,7 @@ public class GetAllArtTest
         var result = await handler.Handle(new GetAllArtsQuery(), CancellationToken.None);
 
         // Assert
-        Assert.IsType<List<ArtDTO>>(result.Value);
+        Assert.IsType<List<ArtDto>>(result.Value);
     }
 
     [Fact]
@@ -219,9 +219,9 @@ public class GetAllArtTest
         };
     }
 
-    private static List<ArtDTO> GetArtDtoList()
+    private static List<ArtDto> GetArtDtoList()
     {
-        return new List<ArtDTO>
+        return new List<ArtDto>
         {
             new ()
             {
@@ -229,7 +229,7 @@ public class GetAllArtTest
                 Title = "Art Title 1",
                 Description = "Art Description 1",
                 ImageId = 1,
-                Image = new ImageDTO(),
+                Image = new ImageDto(),
             },
             new ()
             {
@@ -237,7 +237,7 @@ public class GetAllArtTest
                 Title = "Art Title 2",
                 Description = "Art Description 2",
                 ImageId = 2,
-                Image = new ImageDTO(),
+                Image = new ImageDto(),
             },
             new ()
             {
@@ -245,7 +245,7 @@ public class GetAllArtTest
                 Title = "Art Title 3",
                 Description = "Art Description 3",
                 ImageId = 3,
-                Image = new ImageDTO(),
+                Image = new ImageDto(),
             },
         };
     }
@@ -253,7 +253,7 @@ public class GetAllArtTest
     private void MockMapperSetup()
     {
         _mockMapper.Setup(x => x
-            .Map<IEnumerable<ArtDTO>>(It.IsAny<IEnumerable<Art>>()))
+            .Map<IEnumerable<ArtDto>>(It.IsAny<IEnumerable<Art>>()))
             .Returns(GetArtDtoList());
     }
 

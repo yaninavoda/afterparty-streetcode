@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
-using Streetcode.BLL.DTO.Media.Images;
+using Streetcode.BLL.Dto.Media.Images;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Media.Image.GetAll;
@@ -134,7 +134,7 @@ public class GetAllImageHandlerTests
         // Assert
         _mockMapper.Verify(
             mapper =>
-            mapper.Map<IEnumerable<ImageDTO>>(It.IsAny<IEnumerable<Image>>()), Times.Once);
+            mapper.Map<IEnumerable<ImageDto>>(It.IsAny<IEnumerable<Image>>()), Times.Once);
     }
 
     [Fact]
@@ -154,7 +154,7 @@ public class GetAllImageHandlerTests
         var result = await handler.Handle(new GetAllImagesQuery(), CancellationToken.None);
 
         // Assert
-        Assert.IsType<List<ImageDTO>>(result.Value);
+        Assert.IsType<List<ImageDto>>(result.Value);
     }
 
     [Fact]
@@ -225,9 +225,9 @@ public class GetAllImageHandlerTests
         };
     }
 
-    private static List<ImageDTO> GetImageDtoList()
+    private static List<ImageDto> GetImageDtoList()
     {
-        return new List<ImageDTO>
+        return new List<ImageDto>
         {
             new ()
             {
@@ -256,7 +256,7 @@ public class GetAllImageHandlerTests
     private void MockMapperSetup()
     {
         _mockMapper.Setup(x => x
-            .Map<IEnumerable<ImageDTO>>(It.IsAny<IEnumerable<Image>>()))
+            .Map<IEnumerable<ImageDto>>(It.IsAny<IEnumerable<Image>>()))
             .Returns(GetImageDtoList());
     }
 

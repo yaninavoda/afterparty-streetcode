@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
-using Streetcode.BLL.DTO.News;
+using Streetcode.BLL.Dto.News;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +9,7 @@ using Streetcode.BLL.Interfaces.Logging;
 
 namespace Streetcode.BLL.MediatR.Newss.GetNewsAndLinksByUrl;
 
-public class GetNewsAndLinksByUrlHandler : IRequestHandler<GetNewsAndLinksByUrlQuery, Result<NewsDTOWithURLs>>
+public class GetNewsAndLinksByUrlHandler : IRequestHandler<GetNewsAndLinksByUrlQuery, Result<NewsDtoWithURLs>>
 {
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
@@ -23,28 +23,28 @@ public class GetNewsAndLinksByUrlHandler : IRequestHandler<GetNewsAndLinksByUrlQ
         _logger = logger;
     }
 
-    public async Task<Result<NewsDTOWithURLs>> Handle(GetNewsAndLinksByUrlQuery request, CancellationToken cancellationToken)
+    public async Task<Result<NewsDtoWithURLs>> Handle(GetNewsAndLinksByUrlQuery request, CancellationToken cancellationToken)
     {
         string? url = request.url;
-        var newsDTO = _mapper.Map<NewsDTO>(await _repositoryWrapper.NewsRepository.GetFirstOrDefaultAsync(
+        var newsDto = _mapper.Map<NewsDto>(await _repositoryWrapper.NewsRepository.GetFirstOrDefaultAsync(
             predicate: sc => sc.URL == url,
             include: scl => scl
                 .Include(sc => sc.Image)));
 
-        if (newsDTO is null)
+        if (newsDto is null)
         {
             string? errorMsg = $"No news by entered Url - {url}";
             _logger.LogError(request, errorMsg);
             return Result.Fail(errorMsg);
         }
 
-        if (newsDTO.Image is not null)
+        if (newsDto.Image is not null)
         {
-            newsDTO.Image.Base64 = _blobService.FindFileInStorageAsBase64(newsDTO.Image.BlobName);
+            newsDto.Image.Base64 = _blobService.FindFileInStorageAsBase64(newsDto.Image.BlobName);
         }
 
         var news = (await _repositoryWrapper.NewsRepository.GetAllAsync()).ToList();
-        var newsIndex = news.FindIndex(x => x.Id == newsDTO.Id);
+        var newsIndex = news.FindIndex(x => x.Id == newsDto.Id);
         string? prevNewsLink = null;
         string? nextNewsLink = null;
 
@@ -58,7 +58,7 @@ public class GetNewsAndLinksByUrlHandler : IRequestHandler<GetNewsAndLinksByUrlQ
             nextNewsLink = news[newsIndex + 1].URL;
         }
 
-        var randomNewsTitleAndLink = new RandomNewsDTO();
+        var randomNewsTitleAndLink = new RandomNewsDto();
 
         var arrCount = news.Count;
 
@@ -81,14 +81,14 @@ public class GetNewsAndLinksByUrlHandler : IRequestHandler<GetNewsAndLinksByUrlQ
             randomNewsTitleAndLink.Title = news[newsIndex].Title;
         }
 
-        var newsDTOWithUrls = new NewsDTOWithURLs
+        var newsDtoWithUrls = new NewsDtoWithURLs
         {
             RandomNews = randomNewsTitleAndLink,
-            News = newsDTO,
+            News = newsDto,
             NextNewsUrl = nextNewsLink,
             PrevNewsUrl = prevNewsLink
         };
 
-        return Result.Ok(newsDTOWithUrls);
+        return Result.Ok(newsDtoWithUrls);
     }
 }

@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
-using Streetcode.BLL.DTO.Media.Images;
+using Streetcode.BLL.Dto.Media.Images;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Media.Image.GetById;
@@ -94,7 +94,7 @@ public class GetImageByIdHandlerTests
 
         // Assert
         _mockMapper.Verify(
-            mapper => mapper.Map<ImageDTO>(It.IsAny<Image>()),
+            mapper => mapper.Map<ImageDto>(It.IsAny<Image>()),
             Times.Once);
     }
 
@@ -137,7 +137,7 @@ public class GetImageByIdHandlerTests
         var result = await handler.Handle(new GetImageByIdQuery(id), CancellationToken.None);
 
         // Assert
-        Assert.IsType<ImageDTO>(result.Value);
+        Assert.IsType<ImageDto>(result.Value);
     }
 
     [Theory]
@@ -186,8 +186,8 @@ public class GetImageByIdHandlerTests
     private void MockMapperSetup(int id)
     {
         _mockMapper.Setup(x => x
-            .Map<ImageDTO>(It.IsAny<Image>()))
-            .Returns(new ImageDTO { Id = id });
+            .Map<ImageDto>(It.IsAny<Image>()))
+            .Returns(new ImageDto { Id = id });
     }
 
     private void MockRepositorySetupReturnsImage(int id)
