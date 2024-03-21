@@ -69,9 +69,9 @@ public class GetAudioByIdHandlerTests
         _mockRepositoryWrapper.Verify(
             repo =>
             repo.AudioRepository.GetFirstOrDefaultAsync(
-               It.IsAny<Expression<Func<Streetcode.DAL.Entities.Media.Audio, bool>>>(),
-               It.IsAny<Func<IQueryable<Streetcode.DAL.Entities.Media.Audio>,
-               IIncludableQueryable<Streetcode.DAL.Entities.Media.Audio, object>>>()),
+               It.IsAny<Expression<Func<Audio, bool>>>(),
+               It.IsAny<Func<IQueryable<Audio>,
+               IIncludableQueryable<Audio, object>>>()),
             Times.Once);
     }
 
@@ -186,7 +186,7 @@ public class GetAudioByIdHandlerTests
     private void MockMapperSetup(int id)
     {
         _mockMapper.Setup(x => x
-            .Map<AudioDTO>(It.IsAny<Streetcode.DAL.Entities.Media.Audio>()))
+            .Map<AudioDTO>(It.IsAny<Audio>()))
             .Returns(new AudioDTO { Id = id });
     }
 

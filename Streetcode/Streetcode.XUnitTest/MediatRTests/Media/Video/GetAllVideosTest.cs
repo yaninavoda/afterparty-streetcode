@@ -186,9 +186,9 @@ public class GetAllVideosHandlerTests
         Assert.Equal(expectedError, result.Errors.First().Message);
     }
 
-    private static List<Streetcode.DAL.Entities.Media.Video> GetVideoList()
+    private static List<Video> GetVideoList()
     {
-        return new List<Streetcode.DAL.Entities.Media.Video>
+        return new List<Video>
         {
             new ()
             {
@@ -245,7 +245,7 @@ public class GetAllVideosHandlerTests
     private void MockMapperSetup()
     {
         _mockMapper.Setup(x => x
-            .Map<IEnumerable<VideoDTO>>(It.IsAny<IEnumerable<Streetcode.DAL.Entities.Media.Video>>()))
+            .Map<IEnumerable<VideoDTO>>(It.IsAny<IEnumerable<Video>>()))
             .Returns(GetVideoDtoList());
     }
 
