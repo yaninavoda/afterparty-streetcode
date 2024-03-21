@@ -197,9 +197,9 @@ public class GetAllAudioHandlerTests
         Assert.Equal(expectedError, result.Errors.First().Message);
     }
 
-    private static List<Streetcode.DAL.Entities.Media.Audio> GetAudioList()
+    private static List<Audio> GetAudioList()
     {
-        return new List<Streetcode.DAL.Entities.Media.Audio>
+        return new List<Audio>
         {
             new ()
             {
@@ -262,7 +262,7 @@ public class GetAllAudioHandlerTests
     private void MockMapperSetup()
     {
         _mockMapper.Setup(x => x
-            .Map<IEnumerable<AudioDTO>>(It.IsAny<IEnumerable<Streetcode.DAL.Entities.Media.Audio>>()))
+            .Map<IEnumerable<AudioDTO>>(It.IsAny<IEnumerable<Audio>>()))
             .Returns(GetAudioDtoList());
     }
 
