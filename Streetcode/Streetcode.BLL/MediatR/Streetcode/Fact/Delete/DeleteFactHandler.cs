@@ -25,12 +25,8 @@ public class DeleteFactHandler : IRequestHandler<DeleteFactCommand, Result<Unit>
         {
             string errorMsg = $"No fact found by entered Id - {id}";
             _logger.LogError(request, errorMsg);
-            return Result.Fail(errorMsg);
-        }
 
-        if (fact.Image is not null)
-        {
-            _repositoryWrapper.ImageRepository.Delete(fact.Image);
+            return Result.Fail(errorMsg);
         }
 
         _repositoryWrapper.FactRepository.Delete(fact);
@@ -43,8 +39,9 @@ public class DeleteFactHandler : IRequestHandler<DeleteFactCommand, Result<Unit>
         }
         else
         {
-            string errorMsg = "Failed to delete the fact";
+            string errorMsg = $"Failed to delete the fact with Id - {id}";
             _logger.LogError(request, errorMsg);
+
             return Result.Fail(new Error(errorMsg));
         }
     }
