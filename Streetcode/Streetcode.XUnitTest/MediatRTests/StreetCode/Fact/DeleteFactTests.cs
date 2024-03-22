@@ -9,6 +9,8 @@ using Streetcode.DAL.Repositories.Interfaces.Base;
 using DAL.Entities.Media.Images;
 using System.Linq.Expressions;
 using Xunit;
+using static System.Net.Mime.MediaTypeNames;
+using FluentAssertions;
 
 public class DeleteFactTests
 {
@@ -23,10 +25,10 @@ public class DeleteFactTests
 
     [Theory]
     [InlineData(1)]
-    public async Task Handle_DeletesFactAndReturnsOkResult_WhenFactFound(int id)
+    public async Task Handle_DeletesFactAndReturnsOkResult_IfFactFound(int id)
     {
         // Arrange
-        MockRepositoryWrapperSetup(id);
+        MockRepositoryWrapperSetupWithExistingFactId(id);
 
         var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
 
@@ -35,6 +37,117 @@ public class DeleteFactTests
 
         // Assert
         Assert.True(result.IsSuccess);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    public async Task Handle_RepositoryShouldCallGetFirstOrDefaultAsyncOnlyOnce_IfFactExists(int id)
+    {
+        // Arrange
+        MockRepositoryWrapperSetupWithExistingFactId(id);
+
+        var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
+
+        // Act
+        var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
+
+        // Assert
+        _mockRepositoryWrapper.Verify(
+            repo =>
+            repo.FactRepository.GetFirstOrDefaultAsync(
+               It.IsAny<Expression<Func<Fact, bool>>>(),
+               It.IsAny<Func<IQueryable<Fact>,
+               IIncludableQueryable<Fact, object>>>()),
+            Times.Once);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    public async Task Handle_FactRepositoryShouldCallDeleteOnlyOnce_IfFactExists(int id)
+    {
+        // Arrange
+        MockRepositoryWrapperSetupWithExistingFactId(id);
+
+        var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
+
+        // Act
+        var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
+
+        // Assert
+        _mockRepositoryWrapper.Verify(
+            repo =>
+            repo.FactRepository.Delete(It.IsAny<Fact>()),
+            Times.Once);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    public async Task Handle_ReturnsFailResult_IfFactNotFound(int id)
+    {
+        // Arrange
+        MockRepositoryWrapperSetupWithNotExistingFactId();
+
+        var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
+
+        // Act
+        var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsFailed);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    public async Task Handle_ShouldLogCorrectErrorMessage_IfFactIsNotFound(int id)
+    {
+        // Arrange
+        MockRepositoryWrapperSetupWithNotExistingFactId();
+
+        var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
+        var expectedErrorMessage = $"No fact found by entered Id - {id}";
+
+        // Act
+        var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
+        var actualErrorMessage = result.Errors.First().Message;
+
+        // Assert
+        Assert.Equal(expectedErrorMessage, actualErrorMessage);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    public async Task Handle_ReturnsFailResult_IfSaveChangesAsyncNotSuccessful(int id)
+    {
+        // Arrange
+        MockRepositoryWrapperSetupWithExistingFactId(id);
+        _mockRepositoryWrapper.Setup(x => x.SaveChangesAsync()).ReturnsAsync(0);
+
+        var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
+
+        // Act
+        var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsFailed);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    public async Task Handle_ShouldLogCorrectErrorMessage_IfSaveChangesAsyncNotSuccessful(int id)
+    {
+        // Arrange
+        MockRepositoryWrapperSetupWithExistingFactId(id);
+        _mockRepositoryWrapper.Setup(x => x.SaveChangesAsync()).ReturnsAsync(0);
+
+        var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
+        var expectedErrorMessage = $"Failed to delete the fact with Id - {id}";
+
+        // Act
+        var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
+        var actualErrorMessage = result.Errors.First().Message;
+
+        // Assert
+        Assert.Equal(expectedErrorMessage, actualErrorMessage);
     }
 
     private static Fact GetFact(int id)
@@ -50,7 +163,7 @@ public class DeleteFactTests
         return null;
     }
 
-    private void MockRepositoryWrapperSetup(int id)
+    private void MockRepositoryWrapperSetupWithExistingFactId(int id)
     {
         _mockRepositoryWrapper.Setup(x => x.FactRepository
             .GetFirstOrDefaultAsync(
@@ -63,5 +176,15 @@ public class DeleteFactTests
             .Delete(GetFact(id)));
 
         _mockRepositoryWrapper.Setup(x => x.SaveChangesAsync()).ReturnsAsync(1);
+    }
+
+    private void MockRepositoryWrapperSetupWithNotExistingFactId()
+    {
+        _mockRepositoryWrapper.Setup(x => x.FactRepository
+            .GetFirstOrDefaultAsync(
+                It.IsAny<Expression<Func<Fact, bool>>>(),
+                It.IsAny<Func<IQueryable<Fact>,
+                IIncludableQueryable<Fact, object>>>()))
+            .ReturnsAsync(GetFactWithNotExistingId());
     }
 }
