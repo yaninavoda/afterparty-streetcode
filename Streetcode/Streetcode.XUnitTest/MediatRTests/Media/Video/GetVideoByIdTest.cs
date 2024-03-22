@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
-using Streetcode.BLL.DTO.Media.Video;
+using Streetcode.BLL.Dto.Media.Video;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Media.Video.GetById;
 using Streetcode.DAL.Entities.Media;
@@ -88,7 +88,7 @@ public class GetVideoByIdTest
 
         // Assert
         _mockMapper.Verify(
-            mapper => mapper.Map<VideoDTO>(It.IsAny<Video>()),
+            mapper => mapper.Map<VideoDto>(It.IsAny<Video>()),
             Times.Once);
     }
 
@@ -129,7 +129,7 @@ public class GetVideoByIdTest
         var result = await handler.Handle(new GetVideoByIdQuery(id), CancellationToken.None);
 
         // Assert
-        Assert.IsType<VideoDTO>(result.Value);
+        Assert.IsType<VideoDto>(result.Value);
     }
 
     [Theory]
@@ -176,8 +176,8 @@ public class GetVideoByIdTest
     private void MockMapperSetup(int id)
     {
         _mockMapper.Setup(x => x
-            .Map<VideoDTO>(It.IsAny<Video>()))
-            .Returns(new VideoDTO { Id = id });
+            .Map<VideoDto>(It.IsAny<Video>()))
+            .Returns(new VideoDto { Id = id });
     }
 
     private void MockRepositorySetupReturnsVideo(int id)

@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
-using Streetcode.BLL.DTO.Media.Video;
+using Streetcode.BLL.Dto.Media.Video;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Media.Video.GetAll;
 using Streetcode.DAL.Repositories.Interfaces.Base;
@@ -126,7 +126,7 @@ public class GetAllVideosHandlerTests
         // Assert
         _mockMapper.Verify(
             mapper =>
-            mapper.Map<IEnumerable<VideoDTO>>(It.IsAny<IEnumerable<Video>>()), Times.Once);
+            mapper.Map<IEnumerable<VideoDto>>(It.IsAny<IEnumerable<Video>>()), Times.Once);
     }
 
     [Fact]
@@ -145,7 +145,7 @@ public class GetAllVideosHandlerTests
         var result = await handler.Handle(new GetAllVideosQuery(), CancellationToken.None);
 
         // Assert
-        Assert.IsType<List<VideoDTO>>(result.Value);
+        Assert.IsType<List<VideoDto>>(result.Value);
     }
 
     [Fact]
@@ -217,9 +217,9 @@ public class GetAllVideosHandlerTests
         };
     }
 
-    private static List<VideoDTO> GetVideoDtoList()
+    private static List<VideoDto> GetVideoDtoList()
     {
-        return new List<VideoDTO>
+        return new List<VideoDto>
         {
             new ()
             {
@@ -245,7 +245,7 @@ public class GetAllVideosHandlerTests
     private void MockMapperSetup()
     {
         _mockMapper.Setup(x => x
-            .Map<IEnumerable<VideoDTO>>(It.IsAny<IEnumerable<Video>>()))
+            .Map<IEnumerable<VideoDto>>(It.IsAny<IEnumerable<Video>>()))
             .Returns(GetVideoDtoList());
     }
 
