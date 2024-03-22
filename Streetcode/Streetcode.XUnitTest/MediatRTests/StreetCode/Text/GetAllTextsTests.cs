@@ -1,4 +1,5 @@
 ﻿namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Text;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
