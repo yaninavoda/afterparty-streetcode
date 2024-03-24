@@ -7,6 +7,8 @@ using Streetcode.BLL.Dto.Streetcode.TextContent;
 using Streetcode.BLL.Dto.Streetcode.TextContent.Fact;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.DAL.Repositories.Realizations.Streetcode.TextContent;
+using Streetcode.DAL.Repositories.Interfaces.Streetcode.TextContent;
 
 using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
 
@@ -88,14 +90,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
 
         private async Task<int> GetLatestFactNumber()
         {
-            var latestFact = await _repositoryWrapper.FactRepository
-                .GetAllAsync(
-                    predicate: null,
-                    include: null);
-
-            var sortedFacts = latestFact.OrderByDescending(f => f.Number);
-
-            return sortedFacts.FirstOrDefault()?.Number ?? 0;
+            return await _repositoryWrapper.FactRepository.GetMaxNumber();
         }
 
         private Result<CreateFactDto> FailedToCreateFactError(CreateFactDto request)
