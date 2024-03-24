@@ -4,7 +4,7 @@ using Streetcode.BLL.Dto.Streetcode.TextContent.Fact;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
 {
-    public record CreateFactCommand(CreateFactDto CreateFact) : IRequest<Result<CreateFactDto>>
+    public record CreateFactCommand(CreateFactDto Request) : IRequest<Result<CreateFactDto>>
     {
     }
 }
