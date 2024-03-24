@@ -26,17 +26,12 @@ public class CreateCategoryHandlerTests
     }
 
     [Fact]
-    public async Task ShouldReturnSuccessfully_TypeIsCorrect()
+    public async Task Handle_ShouldReturnOk_IfSuccessfulScenario()
     {
-        // Arrange
+        // Arrangevar
         var category = GetCategory();
-
-        _mockMapper.Setup(x => x.Map<SourceLinkCategory>(It.IsAny<SourceLinkCategoryDto>()))
-            .Returns(category);
-
-        _mockRepositoryWrapper.Setup(x => x.SourceCategoryRepository.Create(category)).Returns(category);
-
-        _mockRepositoryWrapper.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(1));
+        MockMapperSetup(category);
+        MockRepositorySetup(category);
 
         var handler = new CreateCategoryHandler(
             _mockRepositoryWrapper.Object,
@@ -48,6 +43,26 @@ public class CreateCategoryHandlerTests
 
         // Assert
         Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnOkWithCorrectType_IfSuccessfulScenario()
+    {
+        // Arrange
+        var category = GetCategory();
+        MockMapperSetup(category);
+        MockRepositorySetup(category);
+
+        var handler = new CreateCategoryHandler(
+            _mockRepositoryWrapper.Object,
+            _mockMapper.Object,
+            _mockLogger.Object);
+
+        // Act
+        var result = await handler.Handle(new CreateCategoryCommand(GetCategoryDto()), CancellationToken.None);
+
+        // Assert
+        Assert.IsType<SourceLinkCategory>(result.ValueOrDefault);
     }
 
     private static SourceLinkCategory GetCategory()
@@ -68,5 +83,18 @@ public class CreateCategoryHandlerTests
             Title = "Test Title",
             ImageId = 1,
         };
+    }
+
+    private void MockMapperSetup(SourceLinkCategory category)
+    {
+        _mockMapper.Setup(x => x.Map<SourceLinkCategory>(It.IsAny<SourceLinkCategoryDto>()))
+            .Returns(category);
+    }
+
+    private void MockRepositorySetup(SourceLinkCategory category)
+    {
+        _mockRepositoryWrapper.Setup(x => x.SourceCategoryRepository.Create(category)).Returns(category);
+
+        _mockRepositoryWrapper.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(1));
     }
 }
