@@ -199,28 +199,26 @@ public class GetAllFactsTests
     {
         return new List<FactDto>
         {
-            new ()
-            {
-                Id = 1,
-                Title = "Title1",
-                FactContent = "Fact content 1",
-                ImageId = 1,
-            },
+            new (Id: 1,
+                 Number: 1,
+                 Title: "Title 1",
+                 FactContent: "Fact content 1",
+                 ImageId: 1,
+                 StreetcodeId: 1),
 
-            new ()
-            {
-                Id = 2,
-                Title = "Title2",
-                FactContent = "Fact content 2",
-                ImageId = 2,
-            },
-            new ()
-            {
-                Id = 3,
-                Title = "Title3",
-                FactContent = "Fact content 3",
-                ImageId = 3,
-            },
+            new (Id: 2,
+                 Number: 2,
+                 Title: "Title 2",
+                 FactContent: "Fact content 2",
+                 ImageId: 2,
+                 StreetcodeId: 2),
+
+            new (Id: 3,
+                 Number: 3,
+                 Title: "Title 3",
+                 FactContent: "Fact content 3",
+                 ImageId: 3,
+                 StreetcodeId: 3),
         };
     }
 
