@@ -39,8 +39,12 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
                 return StreetcodeNotFoundError(request);
             }
 
-            var fact = _repositoryWrapper.FactRepository
-            .Create(_mapper.Map<CreateFactDto, FactEntity>(request));
+            int latestFactNumber = await GetLatestFactNumber();
+
+            var factToCreate = _mapper.Map<CreateFactDto, FactEntity>(request);
+            factToCreate.Number = latestFactNumber + 1;
+
+            var fact = _repositoryWrapper.FactRepository.Create(factToCreate);
 
             bool resultIsSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
 
@@ -80,6 +84,18 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
             string errorMsg = $"Cannot find an streetcode with corresponding id: {request.StreetcodeId}";
             _logger.LogError(request, errorMsg);
             return Result.Fail(errorMsg);
+        }
+
+        private async Task<int> GetLatestFactNumber()
+        {
+            var latestFact = await _repositoryWrapper.FactRepository
+                .GetAllAsync(
+                    predicate: null,
+                    include: null);
+
+            var sortedFacts = latestFact.OrderByDescending(f => f.Number);
+
+            return sortedFacts.FirstOrDefault()?.Number ?? 0;
         }
 
         private Result<CreateFactDto> FailedToCreateFactError(CreateFactDto request)
