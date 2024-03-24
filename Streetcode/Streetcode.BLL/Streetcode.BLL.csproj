@@ -42,6 +42,7 @@
     <Folder Include="Exceptions\" />
     <Folder Include="Dto\Instagram\" />
     <Folder Include="MediatR\Analytics\" />
+    <Folder Include="MediatR\Streetcode\Fact\Create\" />
   </ItemGroup>
 
 </Project>
