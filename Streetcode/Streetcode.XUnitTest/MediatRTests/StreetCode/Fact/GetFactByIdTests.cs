@@ -177,7 +177,13 @@ public class GetFactByIdTests
     {
         _mockMapper.Setup(x => x
             .Map<FactDto>(It.IsAny<Fact>()))
-            .Returns(new FactDto { Id = id });
+            .Returns(new FactDto(
+                Id: 1,
+                Number: 1,
+                Title: "Title 1",
+                FactContent: "Fact content 1",
+                ImageId: 1,
+                StreetcodeId: 1));
     }
 
     private void MockRepositorySetupReturnsFact(int id)
