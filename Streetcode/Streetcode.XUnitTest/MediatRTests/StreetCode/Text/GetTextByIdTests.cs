@@ -181,10 +181,10 @@ public class GetTextByIdTests
             .Map<TextDto>(It.IsAny<Text>()))
             .Returns(new TextDto
             {
-                Id = 1,
+                Id = id,
                 Title = "Text",
                 TextContent = "TextContent",
-                StreetcodeId = 1,
+                StreetcodeId = id,
                 AdditionalText = "AdditionalText",
             });
     }
