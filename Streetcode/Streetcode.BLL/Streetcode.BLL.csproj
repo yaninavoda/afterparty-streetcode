@@ -44,4 +44,19 @@
     <Folder Include="MediatR\Analytics\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Resources\Errors\ValidationErrors\Fact\CreateFactErrors.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CreateFactErrors.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Errors\ValidationErrors\Fact\CreateFactErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateFactErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

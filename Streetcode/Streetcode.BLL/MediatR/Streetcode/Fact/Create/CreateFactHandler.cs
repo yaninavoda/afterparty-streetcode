@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using Org.BouncyCastle.Asn1.Ocsp;
-using Streetcode.BLL.Dto.Streetcode.TextContent;
 using Streetcode.BLL.Dto.Streetcode.TextContent.Fact;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.DAL.Repositories.Interfaces.Base;
-using Streetcode.DAL.Repositories.Realizations.Streetcode.TextContent;
-using Streetcode.DAL.Repositories.Interfaces.Streetcode.TextContent;
 
 using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
 
@@ -43,7 +38,8 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
 
             int latestFactNumber = await GetLatestFactNumberAsync();
 
-            var factToCreate = _mapper.Map<CreateFactDto, FactEntity>(request);
+            var factToCreate = _mapper.Map<FactEntity>(request);
+
             factToCreate.Number = latestFactNumber + 1;
 
             var fact = _repositoryWrapper.FactRepository.Create(factToCreate);
@@ -68,7 +64,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
 
         private Result<CreateFactDto> ImageNotFoundError(CreateFactDto request)
         {
-            string errorMsg = $"Cannot find an image with corresponding id: {request.ImageId}";
+            var errorMsg = string.Format(Resources.Errors.ValidationErrors.Fact.CreateFactErrors.CannotFindImageById, request.ImageId);
             _logger.LogError(request, errorMsg);
             return Result.Fail(errorMsg);
         }
@@ -83,7 +79,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
 
         private Result<CreateFactDto> StreetcodeNotFoundError(CreateFactDto request)
         {
-            string errorMsg = $"Cannot find an streetcode with corresponding id: {request.StreetcodeId}";
+            var errorMsg = string.Format(Resources.Errors.ValidationErrors.Fact.CreateFactErrors.CannotFindStreetcodeById, request.StreetcodeId);
             _logger.LogError(request, errorMsg);
             return Result.Fail(errorMsg);
         }
@@ -95,7 +91,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
 
         private Result<CreateFactDto> FailedToCreateFactError(CreateFactDto request)
         {
-            const string errorMsg = "Cannot create fact";
+            var errorMsg = string.Format(Resources.Errors.ValidationErrors.Fact.CreateFactErrors.CannotCreateFact);
             _logger.LogError(request, errorMsg);
             return Result.Fail(errorMsg);
         }
