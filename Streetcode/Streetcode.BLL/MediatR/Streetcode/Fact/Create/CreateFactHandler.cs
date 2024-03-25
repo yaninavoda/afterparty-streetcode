@@ -88,9 +88,9 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
             return Result.Fail(errorMsg);
         }
 
-        private async Task<int> GetLatestFactNumberAsync()
+        private Task<int> GetLatestFactNumberAsync()
         {
-            return await _repositoryWrapper.FactRepository.GetMaxNumberAsync();
+            return _repositoryWrapper.FactRepository.GetMaxNumberAsync();
         }
 
         private Result<CreateFactDto> FailedToCreateFactError(CreateFactDto request)
