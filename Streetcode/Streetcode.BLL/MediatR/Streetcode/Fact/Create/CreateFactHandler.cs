@@ -36,7 +36,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
                 return StreetcodeNotFoundError(request);
             }
 
-            int latestFactNumber = await GetLatestFactNumberAsync();
+            int latestFactNumber = await GetLatestFactNumberAsync(request.StreetcodeId);
 
             var factToCreate = _mapper.Map<FactEntity>(request);
 
@@ -84,9 +84,9 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
             return Result.Fail(errorMsg);
         }
 
-        private Task<int> GetLatestFactNumberAsync()
+        private Task<int> GetLatestFactNumberAsync(int streetcodeId)
         {
-            return _repositoryWrapper.FactRepository.GetMaxNumberAsync();
+            return _repositoryWrapper.FactRepository.GetMaxNumberAsync(streetcodeId);
         }
 
         private Result<CreateFactDto> FailedToCreateFactError(CreateFactDto request)

@@ -15,8 +15,10 @@ public class FactRepository : RepositoryBase<Fact>, IFactRepository
         _context = streetcodeDbContext;
     }
 
-    public Task<int> GetMaxNumberAsync()
+    public Task<int> GetMaxNumberAsync(int streetcodeId)
     {
-        return _context.Facts.MaxAsync(f => f.Number);
+        return _context.Facts
+            .Where(f => f.StreetcodeId == streetcodeId)
+            .MaxAsync(f => f.Number);
     }
 }
