@@ -5,5 +5,5 @@ namespace Streetcode.DAL.Repositories.Interfaces.Streetcode.TextContent;
 
 public interface IFactRepository : IRepositoryBase<Fact>
 {
-    Task<int> GetMaxNumber();
+    Task<int> GetMaxNumberAsync();
 }

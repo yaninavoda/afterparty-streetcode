@@ -15,8 +15,8 @@ public class FactRepository : RepositoryBase<Fact>, IFactRepository
         _context = streetcodeDbContext;
     }
 
-    public async Task<int> GetMaxNumber()
+    public Task<int> GetMaxNumberAsync()
     {
-        return await _context.Facts.MaxAsync(f => f.Number);
+        return _context.Facts.MaxAsync(f => f.Number);
     }
 }

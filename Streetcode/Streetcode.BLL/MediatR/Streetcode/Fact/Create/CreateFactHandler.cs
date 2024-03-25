@@ -31,17 +31,17 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
         {
             var request = command.Request;
 
-            if (!await IsImageExist(request.ImageId))
+            if (!await IsImageExistAsync(request.ImageId))
             {
                 return ImageNotFoundError(request);
             }
 
-            if (!await IsStreetcodeExist(request.StreetcodeId))
+            if (!await IsStreetcodeExistAsync(request.StreetcodeId))
             {
                 return StreetcodeNotFoundError(request);
             }
 
-            int latestFactNumber = await GetLatestFactNumber();
+            int latestFactNumber = await GetLatestFactNumberAsync();
 
             var factToCreate = _mapper.Map<CreateFactDto, FactEntity>(request);
             factToCreate.Number = latestFactNumber + 1;
@@ -58,7 +58,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
             return Result.Ok(_mapper.Map<FactEntity, CreateFactDto>(fact));
         }
 
-        private async Task<bool> IsImageExist(int imageId)
+        private async Task<bool> IsImageExistAsync(int imageId)
         {
             var image = await _repositoryWrapper.ImageRepository
                 .GetFirstOrDefaultAsync(i => i.Id == imageId);
@@ -73,7 +73,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
             return Result.Fail(errorMsg);
         }
 
-        private async Task<bool> IsStreetcodeExist(int streetcodeId)
+        private async Task<bool> IsStreetcodeExistAsync(int streetcodeId)
         {
             var streetcode = await _repositoryWrapper.StreetcodeRepository
                 .GetFirstOrDefaultAsync(s => s.Id == streetcodeId);
@@ -88,9 +88,9 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
             return Result.Fail(errorMsg);
         }
 
-        private async Task<int> GetLatestFactNumber()
+        private async Task<int> GetLatestFactNumberAsync()
         {
-            return await _repositoryWrapper.FactRepository.GetMaxNumber();
+            return await _repositoryWrapper.FactRepository.GetMaxNumberAsync();
         }
 
         private Result<CreateFactDto> FailedToCreateFactError(CreateFactDto request)
