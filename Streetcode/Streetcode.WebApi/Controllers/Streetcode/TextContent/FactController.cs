@@ -33,7 +33,7 @@ public class FactController : BaseApiController
     {
         return HandleResult(await Mediator.Send(new CreateFactCommand(createRequest)));
     }
-    
+
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
