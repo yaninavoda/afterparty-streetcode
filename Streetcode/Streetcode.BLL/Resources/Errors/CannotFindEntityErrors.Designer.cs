@@ -36,7 +36,7 @@ namespace Streetcode.BLL.Resources.Errors {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Streetcode.BLL.Resources.Errors.CannotFindEntityErrors", typeof(CannotFindEntityErrors).Assembly);
@@ -51,7 +51,7 @@ namespace Streetcode.BLL.Resources.Errors {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -59,7 +59,16 @@ namespace Streetcode.BLL.Resources.Errors {
                 resourceCulture = value;
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot find facts with corresponding StreetcodeId: {0}.
+        /// </summary>
+        public static string CannotFindFactByStreetcodeId {
+            get {
+                return ResourceManager.GetString("CannotFindFactByStreetcodeId", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Cannot find an image with corresponding id: {0}.
         /// </summary>
@@ -68,7 +77,7 @@ namespace Streetcode.BLL.Resources.Errors {
                 return ResourceManager.GetString("CannotFindImageById", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Cannot find a streetcode with corresponding id: {0}.
         /// </summary>

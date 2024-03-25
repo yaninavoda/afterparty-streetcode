@@ -34,7 +34,7 @@ public class FactController : BaseApiController
     {
         return HandleResult(await Mediator.Send(new ReorderFactCommand(reorderFactRequestDto)));
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateFactDto createRequest)
     {

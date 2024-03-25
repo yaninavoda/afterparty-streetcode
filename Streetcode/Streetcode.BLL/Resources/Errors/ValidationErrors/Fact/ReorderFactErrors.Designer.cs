@@ -22,7 +22,7 @@ namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ReorderFactErrors {
+    public class ReorderFactErrors {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Streetcode.BLL.Resources.Errors.ValidationErrors.Fact.ReorderFactErrors", typeof(ReorderFactErrors).Assembly);
@@ -51,7 +51,7 @@ namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
         /// <summary>
         ///   Looks up a localized string similar to The incoming array with Ids is null or contain no strings.
         /// </summary>
-        internal static string IncomingFactIdArrIsNullOrEmpty {
+        public static string IncomingFactIdArrIsNullOrEmpty {
             get {
                 return ResourceManager.GetString("IncomingFactIdArrIsNullOrEmpty", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
         /// <summary>
         ///   Looks up a localized string similar to Fact with Id={0} does not exist or has StreetcodeId different from {1}.
         /// </summary>
-        internal static string IncorrectFactIdTransferredInArray {
+        public static string IncorrectFactIdTransferredInArray {
             get {
                 return ResourceManager.GetString("IncorrectFactIdTransferredInArray", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
         /// <summary>
         ///   Looks up a localized string similar to The number of IDs transferred in the array ({0}) does not correspond to the number of facts ({1}) for the StreetcodeId = {2}.
         /// </summary>
-        internal static string IncorrectIdsNumberInArray {
+        public static string IncorrectIdsNumberInArray {
             get {
                 return ResourceManager.GetString("IncorrectIdsNumberInArray", resourceCulture);
             }
