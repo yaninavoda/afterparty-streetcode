@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
+namespace Streetcode.BLL.Resources.Errors {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class CreateFactErrors {
+    public class CannotFindEntityErrors {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal CreateFactErrors() {
+        internal CannotFindEntityErrors() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Streetcode.BLL.Resources.Errors.ValidationErrors.Fact.CreateFactErrors", typeof(CreateFactErrors).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Streetcode.BLL.Resources.Errors.CannotFindEntityErrors", typeof(CannotFindEntityErrors).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,20 @@ namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Cannot create a fact.
+        ///   Looks up a localized string similar to Cannot find an image with corresponding id: {0}.
         /// </summary>
-        public static string CannotCreateFact {
+        public static string CannotFindImageById {
             get {
-                return ResourceManager.GetString("CannotCreateFact", resourceCulture);
+                return ResourceManager.GetString("CannotFindImageById", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot find a streetcode with corresponding id: {0}.
+        /// </summary>
+        public static string CannotFindStreetcodeById {
+            get {
+                return ResourceManager.GetString("CannotFindStreetcodeById", resourceCulture);
             }
         }
     }

@@ -64,7 +64,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
 
         private Result<CreateFactDto> ImageNotFoundError(CreateFactDto request)
         {
-            var errorMsg = string.Format(Resources.Errors.ValidationErrors.Fact.CreateFactErrors.CannotFindImageById, request.ImageId);
+            var errorMsg = string.Format(Resources.Errors.CannotFindEntityErrors.CannotFindImageById, request.ImageId);
             _logger.LogError(request, errorMsg);
             return Result.Fail(errorMsg);
         }
@@ -79,7 +79,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
 
         private Result<CreateFactDto> StreetcodeNotFoundError(CreateFactDto request)
         {
-            var errorMsg = string.Format(Resources.Errors.ValidationErrors.Fact.CreateFactErrors.CannotFindStreetcodeById, request.StreetcodeId);
+            var errorMsg = string.Format(Resources.Errors.CannotFindEntityErrors.CannotFindStreetcodeById, request.StreetcodeId);
             _logger.LogError(request, errorMsg);
             return Result.Fail(errorMsg);
         }

@@ -45,6 +45,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Resources\Errors\CannotFindEntityErrors.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CannotFindEntityErrors.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Errors\ValidationErrors\Fact\CreateFactErrors.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -53,6 +58,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\Errors\CannotFindEntityErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CannotFindEntityErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Errors\ValidationErrors\Fact\CreateFactErrors.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>CreateFactErrors.Designer.cs</LastGenOutput>
