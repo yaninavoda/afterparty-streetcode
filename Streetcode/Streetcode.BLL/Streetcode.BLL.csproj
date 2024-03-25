@@ -44,4 +44,37 @@
     <Folder Include="MediatR\Analytics\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Resources\Errors\CannotFindEntityErrors.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CannotFindEntityErrors.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Errors\CannotUpdateEntityErrors.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CannotUpdateEntityErrors.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Errors\ValidationErrors\Fact\ReorderFactErrors.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReorderFactErrors.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Errors\CannotFindEntityErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CannotFindEntityErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Errors\CannotUpdateEntityErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CannotUpdateEntityErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Errors\ValidationErrors\Fact\ReorderFactErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ReorderFactErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>
