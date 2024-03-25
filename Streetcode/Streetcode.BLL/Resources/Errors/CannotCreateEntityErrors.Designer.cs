@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
+namespace Streetcode.BLL.Resources.Errors {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class CreateFactErrors {
+    internal class CannotCreateEntityErrors {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal CreateFactErrors() {
+        internal CannotCreateEntityErrors() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Streetcode.BLL.Resources.Errors.ValidationErrors.Fact.CreateFactErrors", typeof(CreateFactErrors).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Streetcode.BLL.Resources.Errors.CannotCreateEntityErrors", typeof(CannotCreateEntityErrors).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,15 @@ namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot create a fact.
+        /// </summary>
+        internal static string CannotCreateFact {
+            get {
+                return ResourceManager.GetString("CannotCreateFact", resourceCulture);
             }
         }
     }

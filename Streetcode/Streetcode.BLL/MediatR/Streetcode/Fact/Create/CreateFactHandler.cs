@@ -91,7 +91,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
 
         private Result<CreateFactDto> FailedToCreateFactError(CreateFactDto request)
         {
-            var errorMsg = string.Format(Resources.Errors.ValidationErrors.Fact.CreateFactErrors.CannotCreateFact);
+            var errorMsg = string.Format(Resources.Errors.CannotCreateEntityErrors.CannotCreateFact);
             _logger.LogError(request, errorMsg);
             return Result.Fail(errorMsg);
         }
