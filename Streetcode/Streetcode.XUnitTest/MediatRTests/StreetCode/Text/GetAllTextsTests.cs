@@ -75,7 +75,7 @@ public class GetAllTextsTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetAllTextsQuery(), CancellationToken.None);
+        await handler.Handle(new GetAllTextsQuery(), CancellationToken.None);
 
         // Assert
         _mockRepositoryWrapper.Verify(
@@ -96,7 +96,7 @@ public class GetAllTextsTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetAllTextsQuery(), CancellationToken.None);
+        await handler.Handle(new GetAllTextsQuery(), CancellationToken.None);
 
         // Assert
         _mockMapper.Verify(

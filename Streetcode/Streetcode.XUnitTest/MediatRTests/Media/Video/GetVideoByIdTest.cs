@@ -58,7 +58,7 @@ public class GetVideoByIdTest
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetVideoByIdQuery(id), CancellationToken.None);
+        await handler.Handle(new GetVideoByIdQuery(id), CancellationToken.None);
 
         // Assert
         _mockRepositoryWrapper.Verify(
@@ -84,7 +84,7 @@ public class GetVideoByIdTest
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetVideoByIdQuery(id), CancellationToken.None);
+        await handler.Handle(new GetVideoByIdQuery(id), CancellationToken.None);
 
         // Assert
         _mockMapper.Verify(

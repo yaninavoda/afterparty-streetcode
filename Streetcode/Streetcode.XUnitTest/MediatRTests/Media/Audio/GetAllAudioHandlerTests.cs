@@ -81,7 +81,7 @@ public class GetAllAudioHandlerTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetAllAudiosQuery(), CancellationToken.None);
+        await handler.Handle(new GetAllAudiosQuery(), CancellationToken.None);
 
         // Assert
         _mockLogger.Verify(
@@ -129,7 +129,7 @@ public class GetAllAudioHandlerTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetAllAudiosQuery(), CancellationToken.None);
+        await handler.Handle(new GetAllAudiosQuery(), CancellationToken.None);
 
         // Assert
         _mockMapper.Verify(

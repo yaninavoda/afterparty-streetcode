@@ -75,7 +75,7 @@ public class GetAllVideosHandlerTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetAllVideosQuery(), CancellationToken.None);
+        await handler.Handle(new GetAllVideosQuery(), CancellationToken.None);
 
         // Assert
         _mockLogger.Verify(
@@ -121,7 +121,7 @@ public class GetAllVideosHandlerTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetAllVideosQuery(), CancellationToken.None);
+        await handler.Handle(new GetAllVideosQuery(), CancellationToken.None);
 
         // Assert
         _mockMapper.Verify(

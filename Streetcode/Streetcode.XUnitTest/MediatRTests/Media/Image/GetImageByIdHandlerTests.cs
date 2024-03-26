@@ -63,7 +63,7 @@ public class GetImageByIdHandlerTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetImageByIdQuery(id), CancellationToken.None);
+        await handler.Handle(new GetImageByIdQuery(id), CancellationToken.None);
 
         // Assert
         _mockRepositoryWrapper.Verify(
@@ -90,7 +90,7 @@ public class GetImageByIdHandlerTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetImageByIdQuery(id), CancellationToken.None);
+        await handler.Handle(new GetImageByIdQuery(id), CancellationToken.None);
 
         // Assert
         _mockMapper.Verify(

@@ -81,7 +81,7 @@ public class GetAllFactsTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetAllFactsQuery(), CancellationToken.None);
+        await handler.Handle(new GetAllFactsQuery(), CancellationToken.None);
 
         // Assert
         _mockRepositoryWrapper.Verify(
@@ -102,7 +102,7 @@ public class GetAllFactsTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetAllFactsQuery(), CancellationToken.None);
+        await handler.Handle(new GetAllFactsQuery(), CancellationToken.None);
 
         // Assert
         _mockMapper.Verify(

@@ -77,7 +77,7 @@ public class GetAllArtTest
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetAllArtsQuery(), CancellationToken.None);
+        await handler.Handle(new GetAllArtsQuery(), CancellationToken.None);
 
         // Assert
         _mockLogger.Verify(
@@ -123,7 +123,7 @@ public class GetAllArtTest
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetAllArtsQuery(), CancellationToken.None);
+        await handler.Handle(new GetAllArtsQuery(), CancellationToken.None);
 
         // Assert
         _mockMapper.Verify(

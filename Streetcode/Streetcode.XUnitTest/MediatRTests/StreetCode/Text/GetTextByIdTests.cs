@@ -60,7 +60,7 @@ public class GetTextByIdTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetTextByIdQuery(id), CancellationToken.None);
+        await handler.Handle(new GetTextByIdQuery(id), CancellationToken.None);
 
         // Assert
         _mockRepositoryWrapper.Verify(
@@ -86,7 +86,7 @@ public class GetTextByIdTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetTextByIdQuery(id), CancellationToken.None);
+        await handler.Handle(new GetTextByIdQuery(id), CancellationToken.None);
 
         // Assert
         _mockMapper.Verify(

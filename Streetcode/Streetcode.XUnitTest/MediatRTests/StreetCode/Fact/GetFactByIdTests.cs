@@ -58,7 +58,7 @@ public class GetFactByIdTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetFactByIdQuery(id), CancellationToken.None);
+        await handler.Handle(new GetFactByIdQuery(id), CancellationToken.None);
 
         // Assert
         _mockRepositoryWrapper.Verify(
@@ -84,7 +84,7 @@ public class GetFactByIdTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetFactByIdQuery(id), CancellationToken.None);
+        await handler.Handle(new GetFactByIdQuery(id), CancellationToken.None);
 
         // Assert
         _mockMapper.Verify(

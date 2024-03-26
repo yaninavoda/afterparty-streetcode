@@ -82,7 +82,7 @@ public class GetFactByStreetcodeIdHandlerTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetFactByStreetcodeIdQuery(streetcodeId), CancellationToken.None);
+        await handler.Handle(new GetFactByStreetcodeIdQuery(streetcodeId), CancellationToken.None);
 
         // Assert
         _mockMapper.Verify(
@@ -104,7 +104,7 @@ public class GetFactByStreetcodeIdHandlerTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetFactByStreetcodeIdQuery(streetcodeId), CancellationToken.None);
+        await handler.Handle(new GetFactByStreetcodeIdQuery(streetcodeId), CancellationToken.None);
 
         // Assert
         _mockRepositoryWrapper.Verify(
