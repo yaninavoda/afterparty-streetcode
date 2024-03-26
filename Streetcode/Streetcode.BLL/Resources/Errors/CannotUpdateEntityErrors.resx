@@ -117,16 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CannotFindFactByStreetcodeId" xml:space="preserve">
-    <value>Cannot find facts with corresponding StreetcodeId: {0}</value>
-    <comment>format argument 0 - streetcode id</comment>
-  </data>
-  <data name="CannotFindImageById" xml:space="preserve">
-    <value>Cannot find an image with corresponding id: {0}</value>
-    <comment>format argument 0 - image id</comment>
-  </data>
-  <data name="CannotFindStreetcodeById" xml:space="preserve">
-    <value>Cannot find a streetcode with corresponding id: {0}</value>
+  <data name="CannotUpdateFact" xml:space="preserve">
+    <value>Cannot update fact with corresponding id: {0}</value>
     <comment>format argument 0 - fact id</comment>
+  </data>
+  <data name="CannotUpdateNumberInFact" xml:space="preserve">
+    <value>Cannot update property Number in fact</value>
   </data>
 </root>

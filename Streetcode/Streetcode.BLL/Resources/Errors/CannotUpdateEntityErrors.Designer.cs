@@ -22,14 +22,14 @@ namespace Streetcode.BLL.Resources.Errors {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class CannotFindEntityErrors {
+    public class CannotUpdateEntityErrors {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal CannotFindEntityErrors() {
+        internal CannotUpdateEntityErrors() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Streetcode.BLL.Resources.Errors {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Streetcode.BLL.Resources.Errors.CannotFindEntityErrors", typeof(CannotFindEntityErrors).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Streetcode.BLL.Resources.Errors.CannotUpdateEntityErrors", typeof(CannotUpdateEntityErrors).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,29 +61,20 @@ namespace Streetcode.BLL.Resources.Errors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot find facts with corresponding StreetcodeId: {0}.
+        ///   Looks up a localized string similar to Cannot update fact with corresponding id: {0}.
         /// </summary>
-        public static string CannotFindFactByStreetcodeId {
+        public static string CannotUpdateFact {
             get {
-                return ResourceManager.GetString("CannotFindFactByStreetcodeId", resourceCulture);
+                return ResourceManager.GetString("CannotUpdateFact", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot find an image with corresponding id: {0}.
+        ///   Looks up a localized string similar to Cannot update property Number in fact.
         /// </summary>
-        public static string CannotFindImageById {
+        public static string CannotUpdateNumberInFact {
             get {
-                return ResourceManager.GetString("CannotFindImageById", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot find a streetcode with corresponding id: {0}.
-        /// </summary>
-        public static string CannotFindStreetcodeById {
-            get {
-                return ResourceManager.GetString("CannotFindStreetcodeById", resourceCulture);
+                return ResourceManager.GetString("CannotUpdateNumberInFact", resourceCulture);
             }
         }
     }

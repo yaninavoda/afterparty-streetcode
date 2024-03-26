@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Streetcode.BLL.Resources.Errors {
+namespace Streetcode.BLL.Resources.Errors.ValidationErrors.Fact {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Streetcode.BLL.Resources.Errors {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class CannotFindEntityErrors {
+    public class ReorderFactErrors {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal CannotFindEntityErrors() {
+        internal ReorderFactErrors() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Streetcode.BLL.Resources.Errors {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Streetcode.BLL.Resources.Errors.CannotFindEntityErrors", typeof(CannotFindEntityErrors).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Streetcode.BLL.Resources.Errors.ValidationErrors.Fact.ReorderFactErrors", typeof(ReorderFactErrors).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,29 +61,29 @@ namespace Streetcode.BLL.Resources.Errors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot find facts with corresponding StreetcodeId: {0}.
+        ///   Looks up a localized string similar to The incoming array with Ids is null or contain no strings.
         /// </summary>
-        public static string CannotFindFactByStreetcodeId {
+        public static string IncomingFactIdArrIsNullOrEmpty {
             get {
-                return ResourceManager.GetString("CannotFindFactByStreetcodeId", resourceCulture);
+                return ResourceManager.GetString("IncomingFactIdArrIsNullOrEmpty", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot find an image with corresponding id: {0}.
+        ///   Looks up a localized string similar to Fact with Id={0} does not exist or has StreetcodeId different from {1}.
         /// </summary>
-        public static string CannotFindImageById {
+        public static string IncorrectFactIdTransferredInArray {
             get {
-                return ResourceManager.GetString("CannotFindImageById", resourceCulture);
+                return ResourceManager.GetString("IncorrectFactIdTransferredInArray", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot find a streetcode with corresponding id: {0}.
+        ///   Looks up a localized string similar to The number of IDs transferred in the array ({0}) does not correspond to the number of facts ({1}) for the StreetcodeId = {2}.
         /// </summary>
-        public static string CannotFindStreetcodeById {
+        public static string IncorrectIdsNumberInArray {
             get {
-                return ResourceManager.GetString("CannotFindStreetcodeById", resourceCulture);
+                return ResourceManager.GetString("IncorrectIdsNumberInArray", resourceCulture);
             }
         }
     }
