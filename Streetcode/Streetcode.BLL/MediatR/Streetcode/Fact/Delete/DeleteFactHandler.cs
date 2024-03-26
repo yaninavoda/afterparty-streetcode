@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using MediatR;
 using Streetcode.BLL.Interfaces.Logging;
+using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Fact.Delete;
@@ -23,7 +24,11 @@ public class DeleteFactHandler : IRequestHandler<DeleteFactCommand, Result<Unit>
 
         if (fact is null)
         {
-            string errorMsg = $"No fact found by entered Id - {id}";
+            string errorMsg = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                nameof(Fact),
+                request.Id);
+
             _logger.LogError(request, errorMsg);
 
             return Result.Fail(errorMsg);
@@ -39,7 +44,11 @@ public class DeleteFactHandler : IRequestHandler<DeleteFactCommand, Result<Unit>
         }
         else
         {
-            string errorMsg = $"Failed to delete the fact with Id - {id}";
+            string errorMsg = string.Format(
+                ErrorMessages.DeleteFailed,
+                nameof(Fact),
+                request.Id);
+
             _logger.LogError(request, errorMsg);
 
             return Result.Fail(new Error(errorMsg));
