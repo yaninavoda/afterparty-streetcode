@@ -85,7 +85,7 @@ public class GetAllPartnersTest
         var result = await handler.Handle(new GetAllPartnersQuery(), CancellationToken.None);
 
         // Assert
-        Assert.Equal(expectedError, result.Errors.First().Message);
+        Assert.Equal(expectedError, result.Errors[0].Message);
     }
 
     [Fact]

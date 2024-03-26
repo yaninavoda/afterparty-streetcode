@@ -177,7 +177,7 @@ public class GetAudioByIdHandlerTests
 
         // Act
         var result = await handler.Handle(new GetAudioByIdQuery(id), CancellationToken.None);
-        var actualMessage = result.Errors.First().Message;
+        var actualMessage = result.Errors[0].Message;
 
         // Assert
         Assert.Equal(expectedMessage, actualMessage);

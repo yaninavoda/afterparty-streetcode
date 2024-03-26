@@ -169,7 +169,7 @@ public class GetTextByIdTests
 
         // Act
         var result = await handler.Handle(new GetTextByIdQuery(id), CancellationToken.None);
-        var actual = result.Errors.First().Message;
+        var actual = result.Errors[0].Message;
 
         // Assert
         Assert.Equal(expected, actual);

@@ -6,11 +6,8 @@ using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Streetcode.Fact.Delete;
 using Streetcode.DAL.Entities.Streetcode.TextContent;
 using Streetcode.DAL.Repositories.Interfaces.Base;
-using DAL.Entities.Media.Images;
 using System.Linq.Expressions;
 using Xunit;
-using static System.Net.Mime.MediaTypeNames;
-using FluentAssertions;
 
 public class DeleteFactTests
 {
@@ -49,7 +46,7 @@ public class DeleteFactTests
         var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
+        await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
 
         // Assert
         _mockRepositoryWrapper.Verify(
@@ -71,7 +68,7 @@ public class DeleteFactTests
         var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
+        await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
 
         // Assert
         _mockRepositoryWrapper.Verify(
@@ -108,7 +105,7 @@ public class DeleteFactTests
 
         // Act
         var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
-        var actualErrorMessage = result.Errors.First().Message;
+        var actualErrorMessage = result.Errors[0].Message;
 
         // Assert
         Assert.Equal(expectedErrorMessage, actualErrorMessage);
@@ -144,7 +141,7 @@ public class DeleteFactTests
 
         // Act
         var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
-        var actualErrorMessage = result.Errors.First().Message;
+        var actualErrorMessage = result.Errors[0].Message;
 
         // Assert
         Assert.Equal(expectedErrorMessage, actualErrorMessage);

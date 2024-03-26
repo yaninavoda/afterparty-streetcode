@@ -194,7 +194,7 @@ public class GetAllAudioHandlerTests
         var result = await handler.Handle(new GetAllAudiosQuery(), CancellationToken.None);
 
         // Assert
-        Assert.Equal(expectedError, result.Errors.First().Message);
+        Assert.Equal(expectedError, result.Errors[0].Message);
     }
 
     private static List<Audio> GetAudioList()

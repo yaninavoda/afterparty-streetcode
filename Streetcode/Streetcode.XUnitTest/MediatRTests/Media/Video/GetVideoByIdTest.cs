@@ -167,7 +167,7 @@ public class GetVideoByIdTest
 
         // Act
         var result = await handler.Handle(new GetVideoByIdQuery(id), CancellationToken.None);
-        var actualMessage = result.Errors.First().Message;
+        var actualMessage = result.Errors[0].Message;
 
         // Assert
         Assert.Equal(expectedMessage, actualMessage);

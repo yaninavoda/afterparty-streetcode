@@ -185,7 +185,7 @@ public class GetAllArtTest
         var result = await handler.Handle(new GetAllArtsQuery(), CancellationToken.None);
 
         // Assert
-        Assert.Equal(expectedError, result.Errors.First().Message);
+        Assert.Equal(expectedError, result.Errors[0].Message);
     }
 
     private static List<Art> GetArtList()

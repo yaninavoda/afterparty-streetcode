@@ -158,7 +158,7 @@ public class GetAllTextsTests
         var result = await handler.Handle(new GetAllTextsQuery(), CancellationToken.None);
 
         // Assert
-        Assert.Equal(expectedError, result.Errors.First().Message);
+        Assert.Equal(expectedError, result.Errors[0].Message);
     }
 
     private static List<Text> GetTextList()

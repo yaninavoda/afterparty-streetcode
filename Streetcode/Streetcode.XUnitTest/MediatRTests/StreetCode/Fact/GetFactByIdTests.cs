@@ -167,7 +167,7 @@ public class GetFactByIdTests
 
         // Act
         var result = await handler.Handle(new GetFactByIdQuery(id), CancellationToken.None);
-        var actualMessage = result.Errors.First().Message;
+        var actualMessage = result.Errors[0].Message;
 
         // Assert
         Assert.Equal(expectedMessage, actualMessage);
@@ -178,7 +178,7 @@ public class GetFactByIdTests
         _mockMapper.Setup(x => x
             .Map<FactDto>(It.IsAny<Fact>()))
             .Returns(new FactDto(
-                Id: 1,
+                Id: id,
                 Number: 1,
                 Title: "Title 1",
                 FactContent: "Fact content 1",
