@@ -121,7 +121,4 @@
     <value>Cannot update fact with corresponding id: {0}</value>
     <comment>format argument 0 - fact id</comment>
   </data>
-  <data name="CannotUpdateNumberInFact" xml:space="preserve">
-    <value>Cannot update property Number in fact</value>
-  </data>
 </root>

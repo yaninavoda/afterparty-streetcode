@@ -61,15 +61,6 @@ namespace Streetcode.BLL.Resources.Errors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot find facts with corresponding StreetcodeId: {0}.
-        /// </summary>
-        public static string CannotFindFactByStreetcodeId {
-            get {
-                return ResourceManager.GetString("CannotFindFactByStreetcodeId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot find an image with corresponding id: {0}.
         /// </summary>
         public static string CannotFindImageById {

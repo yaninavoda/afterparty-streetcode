@@ -33,7 +33,7 @@ public sealed class ReorderFactHandler : IRequestHandler<ReorderFactCommand, Res
 
         if (factsCount == 0)
         {
-            return CannotFindFactByStreetcodeId(request);
+            return CannotFindFactsWithStreetcodeId(request);
         }
 
         if (request.ReorderedIdArr.Length != factsCount)
@@ -72,9 +72,11 @@ public sealed class ReorderFactHandler : IRequestHandler<ReorderFactCommand, Res
         return Result.Fail(errorMsg);
     }
 
-    private Result<ReorderFactResponseDto> CannotFindFactByStreetcodeId(ReorderFactRequestDto request)
+    private Result<ReorderFactResponseDto> CannotFindFactsWithStreetcodeId(ReorderFactRequestDto request)
     {
-        var errorMsg = string.Format(Resources.Errors.CannotFindEntityErrors.CannotFindFactByStreetcodeId, request.StreetcodeId);
+        var errorMsg = string.Format(
+            Resources.Errors.ValidationErrors.Fact.ReorderFactErrors.ThereAreNoFactsWithCorrespondingStreetcodeId,
+            request.StreetcodeId);
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);
     }
@@ -92,14 +94,17 @@ public sealed class ReorderFactHandler : IRequestHandler<ReorderFactCommand, Res
 
     private Result<ReorderFactResponseDto> IncorrectFactIdTransferredInArray(ReorderFactRequestDto request, int id)
     {
-        var errorMsg = string.Format(Resources.Errors.ValidationErrors.Fact.ReorderFactErrors.IncorrectFactIdTransferredInArray, id, request.StreetcodeId);
+        var errorMsg = string.Format(
+            Resources.Errors.ValidationErrors.Fact.ReorderFactErrors.IncorrectFactIdTransferredInArray,
+            id,
+            request.StreetcodeId);
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);
     }
 
     private Result<ReorderFactResponseDto> CannotUpdateFactsAfterReordering(ReorderFactRequestDto request)
     {
-        var errorMsg = string.Format(Resources.Errors.CannotUpdateEntityErrors.CannotUpdateNumberInFact);
+        var errorMsg = string.Format(Resources.Errors.ValidationErrors.Fact.ReorderFactErrors.CannotUpdateNumberInFact);
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);
     }
