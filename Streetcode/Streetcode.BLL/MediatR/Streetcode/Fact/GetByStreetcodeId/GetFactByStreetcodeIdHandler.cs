@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
-using Streetcode.BLL.Dto.AdditionalContent.Subtitles;
 using Streetcode.BLL.Dto.Streetcode.TextContent.Fact;
 using Streetcode.BLL.Interfaces.Logging;
+using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Fact.GetByStreetcodeId;
@@ -24,12 +24,18 @@ public class GetFactByStreetcodeIdHandler : IRequestHandler<GetFactByStreetcodeI
     public async Task<Result<IEnumerable<FactDto>>> Handle(GetFactByStreetcodeIdQuery request, CancellationToken cancellationToken)
     {
         var fact = (await _repositoryWrapper.FactRepository
-            .GetAllAsync(f => f.StreetcodeId == request.StreetcodeId)).OrderBy(f => f.Number);
+            .GetAllAsync(f => f.StreetcodeId == request.StreetcodeId))
+            .OrderBy(f => f.Number);
 
         if (fact is null)
         {
-            string errorMsg = $"Cannot find any fact by the streetcode id: {request.StreetcodeId}";
+            string errorMsg = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                nameof(Fact),
+                request.StreetcodeId);
+
             _logger.LogError(request, errorMsg);
+
             return Result.Fail(new Error(errorMsg));
         }
 

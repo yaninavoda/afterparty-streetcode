@@ -60,6 +60,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>CannotUpdateEntityErrors.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Errors\ErrorMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ErrorMessages.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Errors\ValidationErrors\Fact\CreateFactErrors.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -84,6 +89,10 @@
     <EmbeddedResource Update="Resources\Errors\CannotUpdateEntityErrors.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CannotUpdateEntityErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Errors\ErrorMessages.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Errors\ValidationErrors\Fact\CreateFactErrors.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
