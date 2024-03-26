@@ -29,7 +29,7 @@ public class FactController : BaseApiController
         return HandleResult(await Mediator.Send(new GetFactByStreetcodeIdQuery(streetcodeId)));
     }
 
-    [HttpPut("/Reorder")]
+    [HttpPut]
     public async Task<IActionResult> ReorderFacts([FromBody] ReorderFactRequestDto reorderFactRequestDto)
     {
         return HandleResult(await Mediator.Send(new ReorderFactCommand(reorderFactRequestDto)));
