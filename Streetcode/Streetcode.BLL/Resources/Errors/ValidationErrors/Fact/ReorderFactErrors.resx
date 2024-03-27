@@ -117,8 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CannotUpdateNumberInFact" xml:space="preserve">
+    <value>Cannot update property Number in fact</value>
+  </data>
   <data name="IncomingFactIdArrIsNullOrEmpty" xml:space="preserve">
-    <value>The incoming array with Ids is null or contain no strings</value>
+    <value>The incoming array of Ids is null or has no elements.</value>
   </data>
   <data name="IncorrectFactIdTransferredInArray" xml:space="preserve">
     <value>Fact with Id={0} does not exist or has StreetcodeId different from {1}</value>
@@ -132,5 +135,9 @@ argument 1 - streetcode id</comment>
 argument 0 - number of IDs transferred in the array
 argument 1 - number of facts for the StreetcodeContent with a certain StreetcodeId
 argument 2 - StreetcodeId</comment>
+  </data>
+  <data name="ThereAreNoFactsWithCorrespondingStreetcodeId" xml:space="preserve">
+    <value>There are no facts with corresponding StreetcodeId = {0}</value>
+    <comment>format argument 0 - streetcode id</comment>
   </data>
 </root>

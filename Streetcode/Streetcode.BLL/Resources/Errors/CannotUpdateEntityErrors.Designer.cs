@@ -68,14 +68,5 @@ namespace Streetcode.BLL.Resources.Errors {
                 return ResourceManager.GetString("CannotUpdateFact", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot update property Number in fact.
-        /// </summary>
-        public static string CannotUpdateNumberInFact {
-            get {
-                return ResourceManager.GetString("CannotUpdateNumberInFact", resourceCulture);
-            }
-        }
     }
 }
