@@ -10,6 +10,7 @@ using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.DAL.Entities.Streetcode.TextContent;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 using Streetcode.BLL.MediatR.Streetcode.Fact.GetByStreetcodeId;
+using Streetcode.BLL.Resources.Errors;
 
 public class GetFactByStreetcodeIdHandlerTests
 {
@@ -163,7 +164,10 @@ public class GetFactByStreetcodeIdHandlerTests
             _mockMapper.Object,
             _mockLogger.Object);
 
-        var expectedMessage = $"Cannot find any fact by the streetcode id: {streetcodeId}";
+        var expectedMessage = string.Format(
+            ErrorMessages.EntityByIdNotFound,
+            nameof(Fact),
+            streetcodeId);
 
         // Act
         var result = await handler.Handle(new GetFactByStreetcodeIdQuery(streetcodeId), CancellationToken.None);

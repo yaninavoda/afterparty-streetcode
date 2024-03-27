@@ -23,9 +23,8 @@ public class GetFactByStreetcodeIdHandler : IRequestHandler<GetFactByStreetcodeI
 
     public async Task<Result<IEnumerable<FactDto>>> Handle(GetFactByStreetcodeIdQuery request, CancellationToken cancellationToken)
     {
-        var fact = (await _repositoryWrapper.FactRepository
-            .GetAllAsync(f => f.StreetcodeId == request.StreetcodeId))
-            .OrderBy(f => f.Number);
+        var fact = await _repositoryWrapper.FactRepository
+            .GetAllAsync(f => f.StreetcodeId == request.StreetcodeId);
 
         if (fact is null)
         {
@@ -39,6 +38,6 @@ public class GetFactByStreetcodeIdHandler : IRequestHandler<GetFactByStreetcodeI
             return Result.Fail(new Error(errorMsg));
         }
 
-        return Result.Ok(_mapper.Map<IEnumerable<FactDto>>(fact));
+        return Result.Ok(_mapper.Map<IEnumerable<FactDto>>(fact.OrderBy(f => f.Number).ToList()));
     }
 }

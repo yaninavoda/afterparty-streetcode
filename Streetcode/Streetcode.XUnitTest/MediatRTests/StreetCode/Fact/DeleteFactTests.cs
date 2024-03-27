@@ -103,9 +103,9 @@ public class DeleteFactTests
 
         var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
         var expectedErrorMessage = string.Format(
-                ErrorMessages.EntityByIdNotFound,
-                nameof(Fact),
-                id);
+            ErrorMessages.EntityByIdNotFound,
+            nameof(Fact),
+            id);
 
         // Act
         var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
@@ -142,9 +142,9 @@ public class DeleteFactTests
 
         var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
         var expectedErrorMessage = string.Format(
-                ErrorMessages.DeleteFailed,
-                nameof(Fact),
-                id);
+            ErrorMessages.DeleteFailed,
+            nameof(Fact),
+            id);
 
         // Act
         var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
