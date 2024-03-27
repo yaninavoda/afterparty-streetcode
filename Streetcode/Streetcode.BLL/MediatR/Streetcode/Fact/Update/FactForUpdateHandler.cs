@@ -6,7 +6,7 @@ using Streetcode.DAL.Repositories.Interfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
 {
-    public class FactForUpdateHandler : IRequestHandler<FactForUpdateQuery, Result<FactForUpdateDto>>
+    public class FactForUpdateHandler : IRequestHandler<FactForUpdateCommand, Result<FactForUpdateDto>>
     {
         private readonly IRepositoryWrapper _repositoryWrapper;
         private readonly ILoggerService _logger;
@@ -16,7 +16,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
             _logger = logger;
         }
 
-        public async Task<Result<FactForUpdateDto>> Handle(FactForUpdateQuery query, CancellationToken cancellationToken)
+        public async Task<Result<FactForUpdateDto>> Handle(FactForUpdateCommand query, CancellationToken cancellationToken)
         {
             var request = query.UpdateRequest;
 
