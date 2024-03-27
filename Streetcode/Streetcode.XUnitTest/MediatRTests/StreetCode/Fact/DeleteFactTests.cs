@@ -8,6 +8,7 @@ using Streetcode.DAL.Entities.Streetcode.TextContent;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 using System.Linq.Expressions;
 using Xunit;
+using Streetcode.BLL.Resources.Errors;
 
 public class DeleteFactTests
 {
@@ -101,7 +102,10 @@ public class DeleteFactTests
         MockRepositoryWrapperSetupWithNotExistingFactId();
 
         var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
-        var expectedErrorMessage = $"No fact found by entered Id - {id}";
+        var expectedErrorMessage = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                nameof(Fact),
+                id);
 
         // Act
         var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
@@ -137,7 +141,10 @@ public class DeleteFactTests
         _mockRepositoryWrapper.Setup(x => x.SaveChangesAsync()).ReturnsAsync(0);
 
         var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
-        var expectedErrorMessage = $"Failed to delete the fact with Id - {id}";
+        var expectedErrorMessage = string.Format(
+                ErrorMessages.DeleteFailed,
+                nameof(Fact),
+                id);
 
         // Act
         var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
