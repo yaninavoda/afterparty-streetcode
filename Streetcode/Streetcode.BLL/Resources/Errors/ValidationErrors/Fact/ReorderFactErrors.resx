@@ -123,7 +123,7 @@
   <data name="IncomingFactIdArrIsNullOrEmpty" xml:space="preserve">
     <value>The incoming array of Ids is null or has no elements.</value>
   </data>
-  <data name="IncorrectFactIdTransferredInArray" xml:space="preserve">
+  <data name="IncorrectFactIdInArray" xml:space="preserve">
     <value>Fact with Id={0} does not exist or has StreetcodeId different from {1}</value>
     <comment>format:
 argument 0 - fact id
