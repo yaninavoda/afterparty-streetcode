@@ -28,12 +28,12 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
             {
                 string error = "Failed to find fact";
                 _logger.LogError(query, error);
-                Result.Fail(error);
+                return Result.Fail(error);
             }
 
             if (image is not null)
             {
-                fact.ImageId = request.Id;
+                fact.ImageId = request.ImageId;
             }
             else
             {
