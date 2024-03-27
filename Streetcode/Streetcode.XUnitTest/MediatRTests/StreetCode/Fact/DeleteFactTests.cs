@@ -47,7 +47,7 @@ public class DeleteFactTests
         var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
+        await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
 
         // Assert
         _mockRepositoryWrapper.Verify(
@@ -69,7 +69,7 @@ public class DeleteFactTests
         var handler = new DeleteFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
+        await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
 
         // Assert
         _mockRepositoryWrapper.Verify(
@@ -109,7 +109,7 @@ public class DeleteFactTests
 
         // Act
         var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
-        var actualErrorMessage = result.Errors.First().Message;
+        var actualErrorMessage = result.Errors[0].Message;
 
         // Assert
         Assert.Equal(expectedErrorMessage, actualErrorMessage);
@@ -148,7 +148,7 @@ public class DeleteFactTests
 
         // Act
         var result = await handler.Handle(new DeleteFactCommand(id), CancellationToken.None);
-        var actualErrorMessage = result.Errors.First().Message;
+        var actualErrorMessage = result.Errors[0].Message;
 
         // Assert
         Assert.Equal(expectedErrorMessage, actualErrorMessage);

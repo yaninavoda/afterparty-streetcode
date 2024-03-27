@@ -81,7 +81,7 @@ public class GetAllImageHandlerTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetAllImagesQuery(), CancellationToken.None);
+        await handler.Handle(new GetAllImagesQuery(), CancellationToken.None);
 
         // Assert
         _mockLogger.Verify(
@@ -129,7 +129,7 @@ public class GetAllImageHandlerTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetAllImagesQuery(), CancellationToken.None);
+        await handler.Handle(new GetAllImagesQuery(), CancellationToken.None);
 
         // Assert
         _mockMapper.Verify(
@@ -194,7 +194,7 @@ public class GetAllImageHandlerTests
         var result = await handler.Handle(new GetAllImagesQuery(), CancellationToken.None);
 
         // Assert
-        Assert.Equal(expectedError, result.Errors.First().Message);
+        Assert.Equal(expectedError, result.Errors[0].Message);
     }
 
     private static List<Image> GetImageList()

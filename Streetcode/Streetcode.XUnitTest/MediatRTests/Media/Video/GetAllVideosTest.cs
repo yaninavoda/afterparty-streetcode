@@ -75,7 +75,7 @@ public class GetAllVideosHandlerTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetAllVideosQuery(), CancellationToken.None);
+        await handler.Handle(new GetAllVideosQuery(), CancellationToken.None);
 
         // Assert
         _mockLogger.Verify(
@@ -121,7 +121,7 @@ public class GetAllVideosHandlerTests
             _mockLogger.Object);
 
         // Act
-        var result = await handler.Handle(new GetAllVideosQuery(), CancellationToken.None);
+        await handler.Handle(new GetAllVideosQuery(), CancellationToken.None);
 
         // Assert
         _mockMapper.Verify(
@@ -183,7 +183,7 @@ public class GetAllVideosHandlerTests
         var result = await handler.Handle(new GetAllVideosQuery(), CancellationToken.None);
 
         // Assert
-        Assert.Equal(expectedError, result.Errors.First().Message);
+        Assert.Equal(expectedError, result.Errors[0].Message);
     }
 
     private static List<Video> GetVideoList()
