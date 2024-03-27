@@ -9,6 +9,7 @@ using Moq;
 using Streetcode.BLL.Dto.Streetcode.TextContent.Fact;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Streetcode.Fact.GetAll;
+using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Entities.Streetcode.TextContent;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 using Xunit;
@@ -158,7 +159,7 @@ public class GetAllFactsTests
             _mockMapper.Object,
             _mockLogger.Object);
 
-        var expectedError = "Cannot find any fact";
+        var expectedError = string.Format(ErrorMessages.EntitiesNotFound, nameof(Fact));
 
         // Act
         var result = await handler.Handle(new GetAllFactsQuery(), CancellationToken.None);
