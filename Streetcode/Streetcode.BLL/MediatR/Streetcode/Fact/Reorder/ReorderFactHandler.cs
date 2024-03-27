@@ -29,7 +29,8 @@ public sealed class ReorderFactHandler : IRequestHandler<ReorderFactCommand, Res
             return FactIdArrIsNullOrEmpty(request);
         }
 
-        var factsCount = (await _repositoryWrapper.FactRepository.GetAllAsync(f => f.StreetcodeId == request.StreetcodeId)).Count();
+        var factsWithStreetcodeId = await _repositoryWrapper.FactRepository.GetAllAsync(f => f.StreetcodeId == request.StreetcodeId);
+        var factsCount = factsWithStreetcodeId is null ? 0 : factsWithStreetcodeId.Count();
 
         if (factsCount == 0)
         {
@@ -38,7 +39,7 @@ public sealed class ReorderFactHandler : IRequestHandler<ReorderFactCommand, Res
 
         if (request.ReorderedIdArr.Length != factsCount)
         {
-            return IncorrectIdsNumberTransferredInArray(request, arr.Length, factsCount);
+            return IncorrectIdsNumberInArray(request, arr.Length, factsCount);
         }
 
         for (int i = 0; i < arr.Length; i++)
@@ -46,7 +47,7 @@ public sealed class ReorderFactHandler : IRequestHandler<ReorderFactCommand, Res
             var tmpFact = await _repositoryWrapper.FactRepository.GetFirstOrDefaultAsync(f => f.Id == arr[i] && f.StreetcodeId == request.StreetcodeId);
             if (tmpFact is null)
             {
-                return IncorrectFactIdTransferredInArray(request, arr[i]);
+                return IncorrectFactIdInArray(request, arr[i]);
             }
             else
             {
@@ -81,7 +82,7 @@ public sealed class ReorderFactHandler : IRequestHandler<ReorderFactCommand, Res
         return Result.Fail(errorMsg);
     }
 
-    private Result<ReorderFactResponseDto> IncorrectIdsNumberTransferredInArray(ReorderFactRequestDto request, int idArrLength, int factsCount)
+    private Result<ReorderFactResponseDto> IncorrectIdsNumberInArray(ReorderFactRequestDto request, int idArrLength, int factsCount)
     {
         var errorMsg = string.Format(
             Resources.Errors.ValidationErrors.Fact.ReorderFactErrors.IncorrectIdsNumberInArray,
@@ -92,10 +93,10 @@ public sealed class ReorderFactHandler : IRequestHandler<ReorderFactCommand, Res
         return Result.Fail(errorMsg);
     }
 
-    private Result<ReorderFactResponseDto> IncorrectFactIdTransferredInArray(ReorderFactRequestDto request, int id)
+    private Result<ReorderFactResponseDto> IncorrectFactIdInArray(ReorderFactRequestDto request, int id)
     {
         var errorMsg = string.Format(
-            Resources.Errors.ValidationErrors.Fact.ReorderFactErrors.IncorrectFactIdTransferredInArray,
+            Resources.Errors.ValidationErrors.Fact.ReorderFactErrors.IncorrectFactIdInArray,
             id,
             request.StreetcodeId);
         _logger.LogError(request, errorMsg);
