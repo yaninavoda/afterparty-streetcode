@@ -67,9 +67,9 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
             if (!isSuccess)
             {
                 string errorMsg = string.Format(
-               ErrorMessages.UpdateFailed,
-               nameof(Fact),
-               request.ImageId);
+                ErrorMessages.UpdateFailed,
+                nameof(Fact),
+                request.ImageId);
 
                 _logger.LogError(query, errorMsg);
                 return Result.Fail(new Error(errorMsg));
