@@ -11,9 +11,9 @@ using FluentAssertions;
 using FluentResults;
 using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Entities.Streetcode;
+using Streetcode.DAL.Entities.Media.Images;
 
 using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
-using Image = Streetcode.DAL.Entities.Media.Images.Image;
 using StrecodeEntity = Streetcode.DAL.Entities.Streetcode.StreetcodeContent;
 
 namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
