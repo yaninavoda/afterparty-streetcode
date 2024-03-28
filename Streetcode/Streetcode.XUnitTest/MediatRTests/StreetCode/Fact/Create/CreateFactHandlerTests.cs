@@ -9,9 +9,11 @@ using Xunit;
 using Microsoft.EntityFrameworkCore.Query;
 using FluentAssertions;
 using FluentResults;
+using Streetcode.BLL.Resources.Errors;
+using Streetcode.DAL.Entities.Streetcode;
 
 using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
-using ImageEntity = Streetcode.DAL.Entities.Media.Images.Image;
+using Image = Streetcode.DAL.Entities.Media.Images.Image;
 using StrecodeEntity = Streetcode.DAL.Entities.Streetcode.StreetcodeContent;
 
 namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
@@ -51,7 +53,10 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
         {
             // Arrange
             var request = GetImageNotExistCreateFactRequest();
-            var expectedErrorMsg = string.Format(Streetcode.BLL.Resources.Errors.CannotFindEntityErrors.CannotFindImageById, -1);
+            var expectedErrorMessage = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                nameof(Image),
+                -1);
             SetupMock(request);
             var handler = CreateHandler();
             var command = new CreateFactCommand(request);
@@ -61,7 +66,7 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
             var result = await handler.Handle(command, cancellationToken);
 
             // Assert
-            result.Errors.Should().ContainSingle(e => e.Message == expectedErrorMsg);
+            result.Errors.Should().ContainSingle(e => e.Message == expectedErrorMessage);
         }
 
         [Fact]
@@ -69,7 +74,10 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
         {
             // Arrange
             var request = GetStreetcodeNotExistCreateFactRequest();
-            var expectedErrorMsg = string.Format(Streetcode.BLL.Resources.Errors.CannotFindEntityErrors.CannotFindStreetcodeById, -1);
+            string expectedErrorMessage = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                nameof(StreetcodeContent),
+                request.StreetcodeId);
             SetupMock(request);
             var handler = CreateHandler();
             var command = new CreateFactCommand(request);
@@ -79,7 +87,7 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
             var result = await handler.Handle(command, cancellationToken);
 
             // Assert
-            result.Errors.Should().ContainSingle(e => e.Message == expectedErrorMsg);
+            result.Errors.Should().ContainSingle(e => e.Message == expectedErrorMessage);
         }
 
         [Fact]
@@ -112,7 +120,7 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
         {
             var image = request.ImageId switch
             {
-                1 => new ImageEntity { Id = request.ImageId },
+                1 => new Image { Id = request.ImageId },
                 _ => null,
             };
 
@@ -129,8 +137,8 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
 
             _mockRepositoryWrapper
                 .Setup(r => r.ImageRepository.GetFirstOrDefaultAsync(
-                    AnyEntityPredicate<ImageEntity>(),
-                    AnyEntityInclude<ImageEntity>()))
+                    AnyEntityPredicate<Image>(),
+                    AnyEntityInclude<Image>()))
                 .ReturnsAsync(image);
 
             _mockRepositoryWrapper
