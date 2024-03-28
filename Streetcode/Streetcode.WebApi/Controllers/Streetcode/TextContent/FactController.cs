@@ -43,9 +43,9 @@ public class FactController : BaseApiController
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update([FromBody] FactForUpdateDto updateRequest)
+    public async Task<IActionResult> Update([FromBody] UpdateFactDto updateRequest)
     {
-        return HandleResult(await Mediator.Send(new FactForUpdateCommand(updateRequest)));
+        return HandleResult(await Mediator.Send(new UpdateFactCommand(updateRequest)));
     }
 
     [HttpDelete("{id:int}")]
