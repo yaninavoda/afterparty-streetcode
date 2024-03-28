@@ -14,7 +14,6 @@ using Streetcode.DAL.Entities.Streetcode;
 using Streetcode.DAL.Entities.Media.Images;
 
 using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
-using StrecodeEntity = Streetcode.DAL.Entities.Streetcode.StreetcodeContent;
 
 namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
 {
@@ -126,7 +125,7 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
 
             var streetcode = request.StreetcodeId switch
             {
-                1 => new StrecodeEntity { Id = request.StreetcodeId },
+                1 => new StreetcodeContent { Id = request.StreetcodeId },
                 _ => null,
             };
 
@@ -143,8 +142,8 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
 
             _mockRepositoryWrapper
                 .Setup(r => r.StreetcodeRepository.GetFirstOrDefaultAsync(
-                    AnyEntityPredicate<StrecodeEntity>(),
-                    AnyEntityInclude<StrecodeEntity>()))
+                    AnyEntityPredicate<StreetcodeContent>(),
+                    AnyEntityInclude<StreetcodeContent>()))
                 .ReturnsAsync(streetcode);
 
             _mockRepositoryWrapper
