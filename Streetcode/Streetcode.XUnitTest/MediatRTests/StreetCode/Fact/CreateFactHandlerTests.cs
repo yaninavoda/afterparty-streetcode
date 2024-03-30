@@ -14,7 +14,7 @@ using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
 using ImageEntity = Streetcode.DAL.Entities.Media.Images.Image;
 using StrecodeEntity = Streetcode.DAL.Entities.Streetcode.StreetcodeContent;
 
-namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
+namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
 {
     public class CreateFactHandlerTests
     {
@@ -51,7 +51,7 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
         {
             // Arrange
             var request = GetImageNotExistCreateFactRequest();
-            var expectedErrorMsg = string.Format(Streetcode.BLL.Resources.Errors.CannotFindEntityErrors.CannotFindImageById, -1);
+            var expectedErrorMsg = string.Format(BLL.Resources.Errors.CannotFindEntityErrors.CannotFindImageById, -1);
             SetupMock(request);
             var handler = CreateHandler();
             var command = new CreateFactCommand(request);
@@ -69,7 +69,7 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
         {
             // Arrange
             var request = GetStreetcodeNotExistCreateFactRequest();
-            var expectedErrorMsg = string.Format(Streetcode.BLL.Resources.Errors.CannotFindEntityErrors.CannotFindStreetcodeById, -1);
+            var expectedErrorMsg = string.Format(BLL.Resources.Errors.CannotFindEntityErrors.CannotFindStreetcodeById, -1);
             SetupMock(request);
             var handler = CreateHandler();
             var command = new CreateFactCommand(request);
