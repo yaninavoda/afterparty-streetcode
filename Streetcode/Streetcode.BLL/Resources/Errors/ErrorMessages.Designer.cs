@@ -61,7 +61,7 @@ namespace Streetcode.BLL.Resources.Errors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to create the {0} with id: {1}.
+        ///   Looks up a localized string similar to Failed to create a {0}.
         /// </summary>
         public static string CreateFailed {
             get {

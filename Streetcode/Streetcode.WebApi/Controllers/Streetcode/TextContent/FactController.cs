@@ -30,12 +30,6 @@ public class FactController : BaseApiController
         return HandleResult(await Mediator.Send(new GetFactByStreetcodeIdQuery(streetcodeId)));
     }
 
-    [HttpPut]
-    public async Task<IActionResult> ReorderFacts([FromBody] ReorderFactRequestDto reorderFactRequestDto)
-    {
-        return HandleResult(await Mediator.Send(new ReorderFactCommand(reorderFactRequestDto)));
-    }
-
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateFactDto createRequest)
     {
@@ -43,9 +37,15 @@ public class FactController : BaseApiController
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update([FromBody] FactForUpdateDto updateRequest)
+    public async Task<IActionResult> Update([FromBody] UpdateFactDto updateRequest)
     {
-        return HandleResult(await Mediator.Send(new FactForUpdateCommand(updateRequest)));
+        return HandleResult(await Mediator.Send(new UpdateFactCommand(updateRequest)));
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> ReorderFacts([FromBody] ReorderFactRequestDto reorderFactRequestDto)
+    {
+        return HandleResult(await Mediator.Send(new ReorderFactCommand(reorderFactRequestDto)));
     }
 
     [HttpDelete("{id:int}")]
