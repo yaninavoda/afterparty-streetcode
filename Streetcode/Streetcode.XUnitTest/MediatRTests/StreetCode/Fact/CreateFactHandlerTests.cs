@@ -15,7 +15,7 @@ using Streetcode.DAL.Entities.Media.Images;
 
 using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
 
-namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact.Create
+namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
 {
     public class CreateFactHandlerTests
     {
