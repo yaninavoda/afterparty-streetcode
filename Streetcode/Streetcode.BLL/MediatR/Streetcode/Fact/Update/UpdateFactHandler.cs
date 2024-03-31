@@ -5,17 +5,21 @@ using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 using Streetcode.DAL.Entities.Media.Images;
+using AutoMapper;
 
+using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
 namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
 {
     public class UpdateFactHandler : IRequestHandler<UpdateFactCommand, Result<UpdateFactDto>>
     {
         private readonly IRepositoryWrapper _repositoryWrapper;
         private readonly ILoggerService _logger;
-        public UpdateFactHandler(IRepositoryWrapper repositoryWrapper, ILoggerService logger)
+        private readonly IMapper _mapper;
+        public UpdateFactHandler(IRepositoryWrapper repositoryWrapper, ILoggerService logger, IMapper mapper)
         {
             _repositoryWrapper = repositoryWrapper;
             _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<Result<UpdateFactDto>> Handle(UpdateFactCommand query, CancellationToken cancellationToken)
@@ -28,37 +32,19 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
 
             if (fact is null)
             {
-                string errorMsg = string.Format(
-                ErrorMessages.EntityByIdNotFound,
-                nameof(Fact),
-                request.Id);
-                _logger.LogError(query, errorMsg);
-                return Result.Fail(errorMsg);
+                FactNotFoundError(request);
             }
 
-            if (image is not null)
+            if (image is null)
             {
-                fact.ImageId = request.ImageId;
-            }
-            else
-            {
-                string errorMsg = string.Format(
-                ErrorMessages.EntityByIdNotFound,
-                nameof(Image),
-                request.ImageId);
-                _logger.LogError(query, errorMsg);
-                return Result.Fail(errorMsg);
+                ImageNotFoundError(request);
             }
 
-            if (request.Title is not null)
-            {
-                fact.Title = request.Title;
-            }
+            fact.ImageId = request.ImageId;
 
-            if (request.FactContent is not null)
-            {
-                fact.FactContent = request.FactContent;
-            }
+            fact.Title = request.Title;
+
+            fact.FactContent = request.FactContent;
 
             _repositoryWrapper.FactRepository.Update(fact);
 
@@ -66,16 +52,40 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
 
             if (!isSuccess)
             {
-                string errorMsg = string.Format(
+                UpdateFailed(request);
+            }
+
+            return Result.Ok(_mapper.Map<UpdateFactDto>(fact));
+        }
+
+        private Result<UpdateFactDto> FactNotFoundError(UpdateFactDto request)
+        {
+            string errorMsg = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                nameof(Fact),
+                request.Id);
+            _logger.LogError(request, errorMsg);
+            return Result.Fail(errorMsg);
+        }
+
+        private Result<UpdateFactDto> ImageNotFoundError(UpdateFactDto request)
+        {
+            string errorMsg = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                nameof(Image),
+                request.ImageId);
+            _logger.LogError(request, errorMsg);
+            return Result.Fail(errorMsg);
+        }
+
+        private Result<UpdateFactDto> UpdateFailed(UpdateFactDto request)
+        {
+            string errorMsg = string.Format(
                 ErrorMessages.UpdateFailed,
                 nameof(Fact),
                 request.ImageId);
-
-                _logger.LogError(query, errorMsg);
-                return Result.Fail(new Error(errorMsg));
-            }
-
-            return Result.Ok(request);
+            _logger.LogError(request, errorMsg);
+            return Result.Fail(new Error(errorMsg));
         }
     }
 }
