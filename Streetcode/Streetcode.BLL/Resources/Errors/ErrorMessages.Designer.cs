@@ -61,7 +61,7 @@ namespace Streetcode.BLL.Resources.Errors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to create the {0} with id: {1}.
+        ///   Looks up a localized string similar to Failed to create a {0}.
         /// </summary>
         public static string CreateFailed {
             get {
@@ -88,11 +88,29 @@ namespace Streetcode.BLL.Resources.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot find {0} with categoryId: {1}.
+        /// </summary>
+        public static string EntityByCategoryIdNotFound {
+            get {
+                return ResourceManager.GetString("EntityByCategoryIdNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot find {0} with id: {1}.
         /// </summary>
         public static string EntityByIdNotFound {
             get {
                 return ResourceManager.GetString("EntityByIdNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot find {0} with streetcode id: {1}.
+        /// </summary>
+        public static string EntityByStreetCodeIdNotFound {
+            get {
+                return ResourceManager.GetString("EntityByStreetCodeIdNotFound", resourceCulture);
             }
         }
         

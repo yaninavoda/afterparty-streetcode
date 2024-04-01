@@ -24,6 +24,10 @@ using Streetcode.BLL.Services.Instagram;
 using Streetcode.BLL.Interfaces.Text;
 using Streetcode.BLL.Services.Text;
 using Serilog.Events;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using Streetcode.BLL.ActionFilters;
+using Streetcode.BLL.MediatR.Streetcode.Fact.Create;
 
 namespace Streetcode.WebApi.Extensions;
 
@@ -105,8 +109,11 @@ public static class ServiceCollectionExtensions
             opt.MaxAge = TimeSpan.FromDays(30);
         });
 
+        services.AddScoped<ModelStateFilter>();
         services.AddLogging();
-        services.AddControllers();
+        services.AddControllers(x => x.Filters.Add<ModelStateFilter>());
+        services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+        services.AddValidatorsFromAssemblyContaining<CreateFactDtoValidator>();
     }
 
     public static void AddSwaggerServices(this IServiceCollection services)
