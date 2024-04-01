@@ -1,57 +1,50 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using FluentResults;
+using MediatR;
+using Streetcode.BLL.Dto.Sources;
+using Streetcode.BLL.Interfaces.Logging;
+using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.DAL.Entities.Sources;
 
 namespace Streetcode.BLL.MediatR.Sources.SourceLinkCategory.Create;
 
-using DAL.Entities.Sources;
-using FluentResults;
-using DAL.Repositories.Interfaces.Base;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
-using BLL.Interfaces.Logging;
-using BLL.Dto.Sources;
-
-public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, Result<SourceLinkCategory>>
+public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, Result<SourceLinkCategoryDto>>
 {
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IMapper _mapper;
     private readonly ILoggerService _logger;
-    public CreateCategoryHandler(
-        IRepositoryWrapper repositoryWrapper,
-        IMapper mapper,
-        ILoggerService logger)
+
+    public CreateCategoryHandler(IMapper mapper, IRepositoryWrapper repositoryWrapper, ILoggerService logger)
     {
         _repositoryWrapper = repositoryWrapper;
         _mapper = mapper;
         _logger = logger;
     }
 
-    public async Task<Result<SourceLinkCategory>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<Result<SourceLinkCategoryDto>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var newCategory = _mapper.Map<SourceLinkCategory>(request.Category);
+        var newCategory = _mapper.Map<DAL.Entities.Sources.SourceLinkCategory>(request.Category);
 
-        if (newCategory is null)
+        _repositoryWrapper.SourceCategoryRepository.Create(newCategory);
+
+        await _repositoryWrapper.SaveChangesAsync();
+
+        var streetcodeCategoryContent = new StreetcodeCategoryContent()
         {
-            string errorMsg = "Cannot convert null to category";
-            _logger.LogError(request, errorMsg);
+            StreetcodeId = request.Category.StreetcodeId,
+            SourceLinkCategoryId = newCategory.Id,
+            Text = request.Category.Text
+        };
 
-            return Result.Fail(new Error(errorMsg));
-        }
+        newCategory.StreetcodeCategoryContents.Add(streetcodeCategoryContent);
 
-        if (newCategory.ImageId == 0)
+        var isSuccessful = await _repositoryWrapper.SaveChangesAsync() > 0;
+
+        if (isSuccessful)
         {
-            string errorMsg = "Cannot create category without image";
-            _logger.LogError(request, errorMsg);
+            var categoryDto = _mapper.Map<SourceLinkCategoryDto>(newCategory);
 
-            return Result.Fail(new Error(errorMsg));
-        }
-
-        var entity = _repositoryWrapper.SourceCategoryRepository.Create(newCategory);
-        var resultIsSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
-
-        if (resultIsSuccess)
-        {
-            return Result.Ok(entity);
+            return Result.Ok(categoryDto);
         }
         else
         {

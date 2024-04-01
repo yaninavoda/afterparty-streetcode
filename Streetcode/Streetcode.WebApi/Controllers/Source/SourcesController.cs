@@ -3,8 +3,8 @@ using Streetcode.BLL.MediatR.Sources.SourceLink.GetCategoryById;
 using Streetcode.BLL.MediatR.Sources.SourceLink.GetCategoriesByStreetcodeId;
 using Streetcode.BLL.MediatR.Sources.SourceLinkCategory.GetAll;
 using Streetcode.BLL.MediatR.Sources.SourceLinkCategory.GetCategoryContentByStreetcodeId;
-using Streetcode.BLL.Dto.Sources;
 using Streetcode.BLL.MediatR.Sources.SourceLinkCategory.Create;
+using Streetcode.BLL.Dto.Sources;
 
 namespace Streetcode.WebApi.Controllers.Source;
 
@@ -41,7 +41,7 @@ public class SourcesController : BaseApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] SourceLinkCategoryDto category)
+    public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequestDto category)
     {
         return HandleResult(await Mediator.Send(new CreateCategoryCommand(category)));
     }
