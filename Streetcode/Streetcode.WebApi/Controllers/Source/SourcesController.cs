@@ -5,6 +5,8 @@ using Streetcode.BLL.MediatR.Sources.SourceLinkCategory.GetAll;
 using Streetcode.BLL.MediatR.Sources.SourceLinkCategory.GetCategoryContentByStreetcodeId;
 using Streetcode.BLL.MediatR.Sources.SourceLinkCategory.Create;
 using Streetcode.BLL.Dto.Sources;
+using Streetcode.BLL.MediatR.Sources.SourceLinkCategory.Delete;
+
 
 namespace Streetcode.WebApi.Controllers.Source;
 
@@ -44,5 +46,10 @@ public class SourcesController : BaseApiController
     public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequestDto category)
     {
         return HandleResult(await Mediator.Send(new CreateCategoryCommand(category)));
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        return HandleResult(await Mediator.Send(new DeleteCategoryCommand(id)));
     }
 }
