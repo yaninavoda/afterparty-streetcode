@@ -4,10 +4,10 @@ using Streetcode.BLL.Dto.Streetcode.TextContent.Fact;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Repositories.Interfaces.Base;
-using Streetcode.DAL.Entities.Media.Images;
 using AutoMapper;
 
 using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
+
 namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
 {
     public class UpdateFactHandler : IRequestHandler<UpdateFactCommand, Result<UpdateFactDto>>
@@ -22,70 +22,27 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
             _mapper = mapper;
         }
 
-        public async Task<Result<UpdateFactDto>> Handle(UpdateFactCommand query, CancellationToken cancellationToken)
+        public async Task<Result<UpdateFactDto>> Handle(UpdateFactCommand command, CancellationToken cancellationToken)
         {
-            var request = query.UpdateRequest;
+            UpdateFactDto request = command.UpdateRequest;
 
-            var fact = await _repositoryWrapper.FactRepository.GetFirstOrDefaultAsync(x => x.Id == request.Id);
+            FactEntity factEntity = _mapper.Map<FactEntity>(request);
 
-            var image = await _repositoryWrapper.ImageRepository.GetFirstOrDefaultAsync(i => i.Id == request.ImageId);
+            _repositoryWrapper.FactRepository.Update(factEntity);
 
-            if (fact is null)
-            {
-                FactNotFoundError(request);
-            }
-
-            if (image is null)
-            {
-                ImageNotFoundError(request);
-            }
-
-            fact.ImageId = request.ImageId;
-
-            fact.Title = request.Title;
-
-            fact.FactContent = request.FactContent;
-
-            _repositoryWrapper.FactRepository.Update(fact);
-
-            var isSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
+            bool isSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
 
             if (!isSuccess)
             {
-                UpdateFailed(request);
+                string errorMsg = string.Format(
+                ErrorMessages.UpdateFailed,
+                nameof(FactEntity),
+                request.Id);
+                _logger.LogError(request, errorMsg);
+                return Result.Fail(errorMsg);
             }
 
-            return Result.Ok(_mapper.Map<UpdateFactDto>(fact));
-        }
-
-        private Result<UpdateFactDto> FactNotFoundError(UpdateFactDto request)
-        {
-            string errorMsg = string.Format(
-                ErrorMessages.EntityByIdNotFound,
-                nameof(Fact),
-                request.Id);
-            _logger.LogError(request, errorMsg);
-            return Result.Fail(errorMsg);
-        }
-
-        private Result<UpdateFactDto> ImageNotFoundError(UpdateFactDto request)
-        {
-            string errorMsg = string.Format(
-                ErrorMessages.EntityByIdNotFound,
-                nameof(Image),
-                request.ImageId);
-            _logger.LogError(request, errorMsg);
-            return Result.Fail(errorMsg);
-        }
-
-        private Result<UpdateFactDto> UpdateFailed(UpdateFactDto request)
-        {
-            string errorMsg = string.Format(
-                ErrorMessages.UpdateFailed,
-                nameof(Fact),
-                request.ImageId);
-            _logger.LogError(request, errorMsg);
-            return Result.Fail(new Error(errorMsg));
+            return Result.Ok(_mapper.Map<FactEntity, UpdateFactDto>(factEntity));
         }
     }
 }
