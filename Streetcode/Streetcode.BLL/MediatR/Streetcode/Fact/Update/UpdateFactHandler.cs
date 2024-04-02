@@ -5,6 +5,8 @@ using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 using AutoMapper;
+using Streetcode.DAL.Entities.Streetcode;
+using Streetcode.DAL.Entities.Media.Images;
 
 using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
 
@@ -26,6 +28,21 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
         {
             UpdateFactDto request = command.UpdateRequest;
 
+            if (!await IsFactExistAsync(request.Id))
+            {
+                return FactNotFoundError(request);
+            }
+
+            if (!await IsImageExistAsync(request.ImageId))
+            {
+                return ImageNotFoundError(request);
+            }
+
+            if (!await IsStreetcodeExistAsync(request.StreetcodeId))
+            {
+                return StreetcodeNotFoundError(request);
+            }
+
             FactEntity factEntity = _mapper.Map<FactEntity>(request);
 
             _repositoryWrapper.FactRepository.Update(factEntity);
@@ -34,22 +51,79 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
 
             if (!isSuccess)
             {
-                string errorMessage = UpdateFailedErrorMessage(request);
-
-                _logger.LogError(request, errorMessage);
-
-                return Result.Fail(errorMessage);
+                return UpdateFailedError(request);
             }
 
             return Result.Ok(_mapper.Map<FactEntity, UpdateFactDto>(factEntity));
         }
 
-        private string UpdateFailedErrorMessage(UpdateFactDto request)
+        private async Task<bool> IsFactExistAsync(int factId)
         {
-            return string.Format(
+            var fact = await _repositoryWrapper.FactRepository.GetFirstOrDefaultAsync(x => x.Id == factId);
+
+            return fact is not null;
+        }
+
+        private Result<UpdateFactDto> FactNotFoundError(UpdateFactDto request)
+        {
+            string errorMessage = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                nameof(FactEntity),
+                request.Id);
+
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
+        private async Task<bool> IsImageExistAsync(int imageId)
+        {
+            var image = await _repositoryWrapper.ImageRepository.GetFirstOrDefaultAsync(i => i.Id == imageId);
+
+            return image is not null;
+        }
+
+        private Result<UpdateFactDto> ImageNotFoundError(UpdateFactDto request)
+        {
+            string errorMessage = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                nameof(Image),
+                request.ImageId);
+
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
+        private async Task<bool> IsStreetcodeExistAsync(int streetcodeId)
+        {
+            var streetcode = await _repositoryWrapper.StreetcodeRepository.GetFirstOrDefaultAsync(s => s.Id == streetcodeId);
+
+            return streetcode is not null;
+        }
+
+        private Result<UpdateFactDto> StreetcodeNotFoundError(UpdateFactDto request)
+        {
+            string errorMessage = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                nameof(StreetcodeContent),
+                request.StreetcodeId);
+
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
+        private Result<UpdateFactDto> UpdateFailedError(UpdateFactDto request)
+        {
+            string errorMessage = string.Format(
                 ErrorMessages.UpdateFailed,
                 nameof(FactEntity),
                 request.Id);
+
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
         }
     }
 }
