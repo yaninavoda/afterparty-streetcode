@@ -7,9 +7,12 @@ using Streetcode.BLL.MediatR.Streetcode.Fact.GetAll;
 using Streetcode.BLL.MediatR.Streetcode.Fact.GetById;
 using Streetcode.BLL.MediatR.Streetcode.Fact.GetByStreetcodeId;
 using Streetcode.BLL.MediatR.Streetcode.Fact.Reorder;
+using Streetcode.DAL.Entities.Streetcode.TextContent;
+using Streetcode.BLL.ActionFilters;
 
 namespace Streetcode.WebApi.Controllers.Streetcode.TextContent;
 
+[ServiceFilter(typeof(AsyncValidateEntityExistsFilter<Fact>))]
 public class FactController : BaseApiController
 {
     [HttpGet]
