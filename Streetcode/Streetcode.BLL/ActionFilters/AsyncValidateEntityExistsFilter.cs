@@ -45,10 +45,6 @@ public class AsyncValidateEntityExistsFilter<T> : IAsyncActionFilter
             {
                 string errorMessageType = GetErrorMessage(context.HttpContext.Request.Method);
                 var errorMsg = string.Format(errorMessageType, typeof(T).Name, id);
-                var expectedMessage = string.Format(
-                ErrorMessages.EntityByIdNotFound,
-                nameof(Fact),
-                id);
                 _logger.LogError(context, errorMsg);
                 context.Result = new NotFoundObjectResult(errorMsg);
                 return;
@@ -62,7 +58,7 @@ public class AsyncValidateEntityExistsFilter<T> : IAsyncActionFilter
         var result = await next();
     }
 
-    private string GetErrorMessage(string requestType) => requestType switch
+    private static string GetErrorMessage(string requestType) => requestType switch
     {
         "GET" => ErrorMessages.EntityByIdNotFound,
         "PUT" => ErrorMessages.UpdateFailed,
