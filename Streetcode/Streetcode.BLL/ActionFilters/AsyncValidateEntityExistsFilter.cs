@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
@@ -14,12 +13,10 @@ public class AsyncValidateEntityExistsFilter<T> : IAsyncActionFilter
 {
     private readonly IEntityRepositoryBase<T> _repositoryBase;
     private readonly ILoggerService _logger;
-    private readonly IMapper _mapper;
-    public AsyncValidateEntityExistsFilter(IEntityRepositoryBase<T> repositoryBase, ILoggerService logger, IMapper mapper)
+    public AsyncValidateEntityExistsFilter(IEntityRepositoryBase<T> repositoryBase, ILoggerService logger)
     {
         _repositoryBase = repositoryBase;
         _logger = logger;
-        _mapper = mapper;
     }
 
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -34,44 +31,32 @@ public class AsyncValidateEntityExistsFilter<T> : IAsyncActionFilter
         else
         {
             var args = context.ActionArguments.FirstOrDefault().Value;
-            var iEntity = _mapper.Map<T>(args);
-
-            // if (args is not null && iEntity is not null)
-            if (iEntity is IEntity)
+            if (args is IEntity e)
             {
-                id = iEntity.Id;
+                id = e.Id;
+            }
+        }
+
+        if (id != INEXISTEDID)
+        {
+            var entity = await _repositoryBase.GetFirstOrDefaultAsync(e => e.Id.Equals(id));
+
+            if (entity == null)
+            {
+                string errorMessageType = GetErrorMessage(context.HttpContext.Request.Method);
+                var errorMsg = string.Format(errorMessageType, typeof(T).Name, id);
+                var expectedMessage = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                nameof(Fact),
+                id);
+                _logger.LogError(context, errorMsg);
+                context.Result = new NotFoundObjectResult(errorMsg);
+                return;
             }
             else
             {
-                return;
+                context.HttpContext.Items.Add("entity", entity);
             }
-        }
-
-        if (id == INEXISTEDID)
-        {
-            // var errorMsg = string.Format(ErrorMessages.RequestDoesNotContainIdParameter, typeof(T).Name);
-            // _logger.LogError(context, errorMsg);
-            // context.Result = new BadRequestObjectResult(errorMsg);
-            return;
-        }
-
-        var entity = await _repositoryBase.GetFirstOrDefaultAsync(x => x.Id.Equals(id));
-
-        if (entity == null)
-        {
-            string errorMessageType = GetErrorMessage(context.HttpContext.Request.Method);
-            var errorMsg = string.Format(errorMessageType, typeof(T).Name, id);
-            var expectedMessage = string.Format(
-            ErrorMessages.EntityByIdNotFound,
-            nameof(Fact),
-            id);
-            _logger.LogError(context, errorMsg);
-            context.Result = new NotFoundObjectResult(errorMsg);
-            return;
-        }
-        else
-        {
-            context.HttpContext.Items.Add("entity", entity);
         }
 
         var result = await next();
@@ -82,6 +67,6 @@ public class AsyncValidateEntityExistsFilter<T> : IAsyncActionFilter
         "GET" => ErrorMessages.EntityByIdNotFound,
         "PUT" => ErrorMessages.UpdateFailed,
         "DELETE" => ErrorMessages.DeleteFailed,
-        _ => "Not appropriate Request type",
+        _ => "Not appropriate Request type for {0} with id={1}"
     };
 }
