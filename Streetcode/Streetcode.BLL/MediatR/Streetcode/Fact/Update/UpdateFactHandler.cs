@@ -54,7 +54,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
                 return UpdateFailedError(request);
             }
 
-            return Result.Ok(_mapper.Map<FactEntity, UpdateFactDto>(factEntity));
+            return Result.Ok(_mapper.Map<UpdateFactDto>(factEntity));
         }
 
         private async Task<bool> IsFactExistAsync(int factId)
