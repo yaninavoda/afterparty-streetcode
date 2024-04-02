@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System.Linq.Expressions;
+using Moq;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 using Streetcode.BLL.Interfaces.Logging;
 using Xunit;
@@ -7,6 +8,9 @@ using Streetcode.BLL.Dto.Streetcode.TextContent.Fact;
 using Streetcode.BLL.MediatR.Streetcode.Fact.Update;
 using FluentAssertions;
 using Streetcode.BLL.Resources.Errors;
+using Streetcode.DAL.Entities.Media.Images;
+using Microsoft.EntityFrameworkCore.Query;
+using Streetcode.DAL.Entities.Streetcode;
 
 using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
 
@@ -32,7 +36,8 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
             var fact = GetFact();
 
             MockMapperSetup(request, fact);
-            MockRepositoryWrapperWorkedSuccessfullySetup();
+            MockRepositoryWrapperSetup(request);
+            SaveChangesAsyncWorkedSuccessfullySetup();
 
             var command = new UpdateFactCommand(request);
             var handler = new UpdateFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object, _mockMapper.Object);
@@ -52,7 +57,8 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
             var fact = GetFact();
 
             MockMapperSetup(request, fact);
-            MockRepositoryWrapperWorkedFailSetup();
+            MockRepositoryWrapperSetup(request);
+            SaveChangesAsyncWorkedFailSetup();
 
             var command = new UpdateFactCommand(request);
             var handler = new UpdateFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object, _mockMapper.Object);
@@ -72,7 +78,8 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
             var fact = GetFact();
 
             MockMapperSetup(request, fact);
-            MockRepositoryWrapperWorkedFailSetup();
+            MockRepositoryWrapperSetup(request);
+            SaveChangesAsyncWorkedFailSetup();
 
             var command = new UpdateFactCommand(request);
             var handler = new UpdateFactHandler(_mockRepositoryWrapper.Object, _mockLogger.Object, _mockMapper.Object);
@@ -94,16 +101,49 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
             .Returns(request);
         }
 
-        private void MockRepositoryWrapperWorkedSuccessfullySetup()
+        private void SaveChangesAsyncWorkedSuccessfullySetup()
         {
-            _mockRepositoryWrapper.Setup(repository => repository.FactRepository.Update(It.IsAny<FactEntity>()));
-            _mockRepositoryWrapper.Setup(repository => repository.SaveChangesAsync()).ReturnsAsync(1);
+            _mockRepositoryWrapper.Setup(repository => repository.SaveChangesAsync())
+                .ReturnsAsync(1);
         }
 
-        private void MockRepositoryWrapperWorkedFailSetup()
+        private void MockRepositoryWrapperSetup(UpdateFactDto request)
         {
+            var image = request.ImageId switch
+            {
+                1 => new Image { Id = request.ImageId },
+                _ => null,
+            };
+
+            var streetcode = request.StreetcodeId switch
+            {
+                1 => new StreetcodeContent { Id = request.StreetcodeId },
+                _ => null,
+            };
+            _mockRepositoryWrapper.Setup(repository => repository
+            .FactRepository
+            .GetFirstOrDefaultAsync(
+                It.IsAny<Expression<Func<FactEntity, bool>>>(),
+                It.IsAny<Func<IQueryable<FactEntity>, IIncludableQueryable<FactEntity, object>>>()))
+                .ReturnsAsync(GetFact());
+
+            _mockRepositoryWrapper.Setup(repository => repository.ImageRepository.GetFirstOrDefaultAsync(
+                It.IsAny<Expression<Func<Image, bool>>>(),
+                It.IsAny<Func<IQueryable<Image>, IIncludableQueryable<Image, object>>>()))
+                .ReturnsAsync(image);
+
+            _mockRepositoryWrapper.Setup(repository => repository.StreetcodeRepository.GetFirstOrDefaultAsync(
+                It.IsAny<Expression<Func<StreetcodeContent, bool>>>(),
+                It.IsAny<Func<IQueryable<StreetcodeContent>, IIncludableQueryable<StreetcodeContent, object>>>()))
+                .ReturnsAsync(streetcode);
+
             _mockRepositoryWrapper.Setup(repository => repository.FactRepository.Update(It.IsAny<FactEntity>()));
-            _mockRepositoryWrapper.Setup(repository => repository.SaveChangesAsync()).ReturnsAsync(-1);
+        }
+
+        private void SaveChangesAsyncWorkedFailSetup()
+        {
+            _mockRepositoryWrapper.Setup(repository => repository.SaveChangesAsync())
+                .ReturnsAsync(-1);
         }
 
         private UpdateFactDto GetRequest()
