@@ -34,15 +34,22 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
 
             if (!isSuccess)
             {
-                string errorMsg = string.Format(
-                ErrorMessages.UpdateFailed,
-                nameof(FactEntity),
-                request.Id);
-                _logger.LogError(request, errorMsg);
-                return Result.Fail(errorMsg);
+                string errorMessage = UpdateFailedErrorMessage(request);
+
+                _logger.LogError(request, errorMessage);
+
+                return Result.Fail(errorMessage);
             }
 
             return Result.Ok(_mapper.Map<FactEntity, UpdateFactDto>(factEntity));
+        }
+
+        private string UpdateFailedErrorMessage(UpdateFactDto request)
+        {
+            return string.Format(
+                ErrorMessages.UpdateFailed,
+                nameof(FactEntity),
+                request.Id);
         }
     }
 }
