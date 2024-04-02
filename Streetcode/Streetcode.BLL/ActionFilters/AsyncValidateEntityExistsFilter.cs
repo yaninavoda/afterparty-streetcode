@@ -6,7 +6,6 @@ using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Contracts;
 using Streetcode.DAL.Entities.Streetcode.TextContent;
 using Streetcode.DAL.Repositories.Interfaces.Base;
-using System.Security.Principal;
 
 namespace Streetcode.BLL.ActionFilters;
 
@@ -30,23 +29,29 @@ public class AsyncValidateEntityExistsFilter<T> : IAsyncActionFilter
 
         if (context.ActionArguments.ContainsKey("id"))
         {
-            id = (int)context.ActionArguments["id"]!;
+            id = (int)context.ActionArguments["id"] !;
         }
         else
         {
             var args = context.ActionArguments.FirstOrDefault().Value;
             var iEntity = _mapper.Map<T>(args);
-            if (args is not null && iEntity is not null)
+
+            // if (args is not null && iEntity is not null)
+            if (iEntity is IEntity)
             {
                 id = iEntity.Id;
+            }
+            else
+            {
+                return;
             }
         }
 
         if (id == INEXISTEDID)
         {
-            var errorMsg = string.Format(ErrorMessages.RequestDoesNotContainIdParameter, typeof(T).Name);
-            _logger.LogError(context, errorMsg);
-            context.Result = new BadRequestObjectResult(errorMsg);
+            // var errorMsg = string.Format(ErrorMessages.RequestDoesNotContainIdParameter, typeof(T).Name);
+            // _logger.LogError(context, errorMsg);
+            // context.Result = new BadRequestObjectResult(errorMsg);
             return;
         }
 
