@@ -9,7 +9,6 @@ using Streetcode.DAL.Entities.Streetcode;
 using Streetcode.DAL.Entities.Media.Images;
 
 using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
-using Streetcode.DAL.Entities.Streetcode.TextContent;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
 {
