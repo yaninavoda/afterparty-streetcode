@@ -28,6 +28,7 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using Streetcode.BLL.ActionFilters;
 using Streetcode.BLL.MediatR.Streetcode.Fact.Create;
+using Streetcode.DAL.Entities.Streetcode.TextContent;
 
 namespace Streetcode.WebApi.Extensions;
 
@@ -36,6 +37,7 @@ public static class ServiceCollectionExtensions
     public static void AddRepositoryServices(this IServiceCollection services)
     {
         services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+        services.AddScoped<IEntityRepositoryBase<Fact>, EntityRepositoryBase<Fact>>();
     }
 
     public static void AddCustomServices(this IServiceCollection services)
@@ -110,8 +112,12 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddScoped<ModelStateFilter>();
+        services.AddScoped<AsyncValidateEntityExistsFilter<Fact>>();
         services.AddLogging();
-        services.AddControllers(x => x.Filters.Add<ModelStateFilter>());
+        services.AddControllers(options =>
+        {
+            options.Filters.Add<ModelStateFilter>();
+        });
         services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
         services.AddValidatorsFromAssemblyContaining<CreateFactDtoValidator>();
     }
