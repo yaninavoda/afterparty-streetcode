@@ -11,6 +11,6 @@ public class ImageProfile : Profile
     {
         CreateMap<Image, ImageDto>().ReverseMap();
 
-        CreateMap<ImageFileBaseCreateDto, Image>();
+        CreateMap<ImageFileBaseCreateDto, Image>().ForMember(d => d.ImageDetails, opt => opt.MapFrom(s => s));
 	}
 }
