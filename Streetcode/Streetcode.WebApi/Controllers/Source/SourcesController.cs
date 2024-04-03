@@ -49,6 +49,7 @@ public class SourcesController : BaseApiController
         return HandleResult(await Mediator.Send(new CreateCategoryCommand(category)));
     }
 
+    [HttpPut]
     public async Task<IActionResult> Update([FromBody] CategoryContentUpdateDto categoryContentUpdateDto)
     {
         return HandleResult(await Mediator.Send(new UpdateCategoryContentCommand(categoryContentUpdateDto)));
