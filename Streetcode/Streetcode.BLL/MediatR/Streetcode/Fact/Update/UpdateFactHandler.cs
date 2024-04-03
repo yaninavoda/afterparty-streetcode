@@ -9,6 +9,7 @@ using Streetcode.DAL.Entities.Streetcode;
 using Streetcode.DAL.Entities.Media.Images;
 
 using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
+using Streetcode.DAL.Entities.Streetcode.TextContent;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
 {
@@ -28,7 +29,9 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
         {
             UpdateFactDto request = command.UpdateRequest;
 
-            if (!await IsFactExistAsync(request.Id))
+            var fact = await _repositoryWrapper.FactRepository.GetFirstOrDefaultAsync(x => x.Id == request.Id);
+
+            if (fact is null)
             {
                 return FactNotFoundError(request);
             }
@@ -45,6 +48,8 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
 
             FactEntity factEntity = _mapper.Map<FactEntity>(request);
 
+            factEntity.Number = fact.Number;
+
             _repositoryWrapper.FactRepository.Update(factEntity);
 
             bool isSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
@@ -55,13 +60,6 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
             }
 
             return Result.Ok(_mapper.Map<FactDto>(factEntity));
-        }
-
-        private async Task<bool> IsFactExistAsync(int factId)
-        {
-            var fact = await _repositoryWrapper.FactRepository.GetFirstOrDefaultAsync(x => x.Id == factId);
-
-            return fact is not null;
         }
 
         private Result<FactDto> FactNotFoundError(UpdateFactDto request)
