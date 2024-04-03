@@ -8,5 +8,4 @@ public class SourceLinkCategoryDto
     public string Title { get; set; }
     public int ImageId { get; set; }
     public ImageDto? Image { get; set; }
-    public StreetcodeCategoryContentDto? StreetcodeCategoryContents { get; set; }
 }
