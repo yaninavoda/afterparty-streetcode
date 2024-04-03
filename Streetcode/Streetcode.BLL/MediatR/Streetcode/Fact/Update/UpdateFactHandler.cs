@@ -12,7 +12,7 @@ using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
 {
-    public class UpdateFactHandler : IRequestHandler<UpdateFactCommand, Result<UpdateFactDto>>
+    public class UpdateFactHandler : IRequestHandler<UpdateFactCommand, Result<FactDto>>
     {
         private readonly IRepositoryWrapper _repositoryWrapper;
         private readonly ILoggerService _logger;
@@ -24,7 +24,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
             _mapper = mapper;
         }
 
-        public async Task<Result<UpdateFactDto>> Handle(UpdateFactCommand command, CancellationToken cancellationToken)
+        public async Task<Result<FactDto>> Handle(UpdateFactCommand command, CancellationToken cancellationToken)
         {
             UpdateFactDto request = command.UpdateRequest;
 
@@ -54,7 +54,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
                 return UpdateFailedError(request);
             }
 
-            return Result.Ok(_mapper.Map<UpdateFactDto>(factEntity));
+            return Result.Ok(_mapper.Map<FactDto>(factEntity));
         }
 
         private async Task<bool> IsFactExistAsync(int factId)
@@ -64,7 +64,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
             return fact is not null;
         }
 
-        private Result<UpdateFactDto> FactNotFoundError(UpdateFactDto request)
+        private Result<FactDto> FactNotFoundError(UpdateFactDto request)
         {
             string errorMessage = string.Format(
                 ErrorMessages.EntityByIdNotFound,
@@ -83,7 +83,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
             return image is not null;
         }
 
-        private Result<UpdateFactDto> ImageNotFoundError(UpdateFactDto request)
+        private Result<FactDto> ImageNotFoundError(UpdateFactDto request)
         {
             string errorMessage = string.Format(
                 ErrorMessages.EntityByIdNotFound,
@@ -102,7 +102,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
             return streetcode is not null;
         }
 
-        private Result<UpdateFactDto> StreetcodeNotFoundError(UpdateFactDto request)
+        private Result<FactDto> StreetcodeNotFoundError(UpdateFactDto request)
         {
             string errorMessage = string.Format(
                 ErrorMessages.EntityByIdNotFound,
@@ -114,7 +114,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
             return Result.Fail(errorMessage);
         }
 
-        private Result<UpdateFactDto> UpdateFailedError(UpdateFactDto request)
+        private Result<FactDto> UpdateFailedError(UpdateFactDto request)
         {
             string errorMessage = string.Format(
                 ErrorMessages.UpdateFailed,

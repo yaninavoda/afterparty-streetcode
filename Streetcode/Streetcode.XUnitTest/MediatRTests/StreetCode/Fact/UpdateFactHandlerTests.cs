@@ -97,8 +97,8 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
             .Map<FactEntity>(It.IsAny<UpdateFactDto>()))
             .Returns(fact);
             _mockMapper.Setup(mapper => mapper
-            .Map<UpdateFactDto>(It.IsAny<FactEntity>()))
-            .Returns(request);
+            .Map<FactDto>(It.IsAny<FactEntity>()))
+            .Returns(GetFactDto());
         }
 
         private void SaveChangesAsyncWorkedSuccessfullySetup()
@@ -161,6 +161,11 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
                 ImageId = 1,
                 StreetcodeId = 1,
             };
+        }
+
+        private FactDto GetFactDto()
+        {
+            return new FactDto(1, 1, "Title", "Content", 1, 1);
         }
 
         private string ExpectedErrorMessage(UpdateFactDto request)
