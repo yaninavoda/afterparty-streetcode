@@ -7,7 +7,7 @@ namespace Streetcode.BLL.Mapping.Sources
 {
     public class StreetcodeCategoryContentProfile : Profile
     {
-        internal StreetcodeCategoryContentProfile()
+        public StreetcodeCategoryContentProfile()
         {
             CreateMap<StreetcodeCategoryContent, StreetcodeCategoryContentDto>()
                 .ReverseMap();
