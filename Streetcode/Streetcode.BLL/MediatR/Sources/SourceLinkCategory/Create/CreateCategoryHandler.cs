@@ -17,7 +17,7 @@ public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, Resu
     private readonly IMapper _mapper;
     private readonly ILoggerService _logger;
 
-    public CreateCategoryHandler(IMapper mapper, IRepositoryWrapper repositoryWrapper, ILoggerService logger)
+    public CreateCategoryHandler(IRepositoryWrapper repositoryWrapper, IMapper mapper, ILoggerService logger)
     {
         _repositoryWrapper = repositoryWrapper;
         _mapper = mapper;
