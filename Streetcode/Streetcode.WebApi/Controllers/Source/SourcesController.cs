@@ -41,15 +41,15 @@ public class SourcesController : BaseApiController
         return HandleResult(await Mediator.Send(new GetCategoriesByStreetcodeIdQuery(streetcodeId)));
     }
 
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete([FromRoute] int id)
-    {
-        return HandleResult(await Mediator.Send(new DeleteCategoryCommand(id)));
-    }
-
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] CategoryContentUpdateDto categoryContentUpdateDto)
     {
         return HandleResult(await Mediator.Send(new UpdateCategoryContentCommand(categoryContentUpdateDto)));
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        return HandleResult(await Mediator.Send(new DeleteCategoryCommand(id)));
     }
 }
