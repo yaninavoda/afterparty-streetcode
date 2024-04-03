@@ -7,6 +7,7 @@ using Streetcode.DAL.Entities.Sources;
 using Streetcode.BLL.Resources.Errors;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Dto.Sources;
+using Streetcode.DAL.Entities.Streetcode;
 
 namespace Streetcode.BLL.MediatR.Sources.SourceLinkCategory.Update;
 
@@ -26,6 +27,11 @@ public class UpdateCategoryContentHandler : IRequestHandler<UpdateCategoryConten
     {
         CategoryContentUpdateDto request = command.CategoryContentUpdateDto;
 
+        if (!await IsStreetcodeExistAsync(request.StreetcodeId))
+        {
+            return StreetcodeNotFoundError(request);
+        }
+
         StreetcodeCategoryContent content = _mapper.Map<StreetcodeCategoryContent>(request);
 
         _repositoryWrapper.StreetcodeCategoryContentRepository.Update(content);
@@ -34,21 +40,40 @@ public class UpdateCategoryContentHandler : IRequestHandler<UpdateCategoryConten
 
         if (!isSuccess)
         {
-            string errorMessage = UpdateFailedErrorMessage(request);
-
-            _logger.LogError(command, errorMessage);
-
-            return Result.Fail(errorMessage);
+            return UpdateFailedError(request);
         }
 
         return Result.Ok(_mapper.Map<StreetcodeCategoryContentDto>(content));
     }
 
-    private string UpdateFailedErrorMessage(CategoryContentUpdateDto request)
+    private async Task<bool> IsStreetcodeExistAsync(int streetcodeId)
     {
-        return string.Format(
+        var streetcode = await _repositoryWrapper.StreetcodeRepository.GetFirstOrDefaultAsync(x => x.Id == streetcodeId);
+
+        return streetcode is not null;
+    }
+
+    private Result<StreetcodeCategoryContentDto> StreetcodeNotFoundError(CategoryContentUpdateDto request)
+    {
+        string errorMessage = string.Format(
+            ErrorMessages.EntityByCategoryIdNotFound,
+            nameof(StreetcodeContent),
+            request.SourceLinkCategoryId);
+
+        _logger.LogError(request, errorMessage);
+
+        return Result.Fail(errorMessage);
+    }
+
+    private Result<StreetcodeCategoryContentDto> UpdateFailedError(CategoryContentUpdateDto request)
+    {
+        string errorMessage = string.Format(
             ErrorMessages.UpdateFailed,
             nameof(StreetcodeCategoryContent),
-            request.StreetcodeId);
+            request.SourceLinkCategoryId);
+
+        _logger.LogError(request, errorMessage);
+
+        return Result.Fail(errorMessage);
     }
 }
