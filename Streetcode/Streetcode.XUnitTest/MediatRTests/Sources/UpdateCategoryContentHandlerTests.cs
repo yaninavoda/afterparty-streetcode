@@ -21,6 +21,9 @@ public class UpdateCategoryContentHandlerTests
     private const int SUCCESSFULRESULT = 1;
     private const int FAILURERESULT = -1;
 
+    private const int EXISTSSTREETCODEID = 1;
+    private const int NOTEXISTSSTREETCODEID = -1;
+
     private readonly Mock<IRepositoryWrapper> _mockRepositoryWrapper;
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<ILoggerService> _mockLogger;
@@ -32,7 +35,7 @@ public class UpdateCategoryContentHandlerTests
     }
 
     [Fact]
-    public async void Handle_Should_ReturnSuccess_WhenSaveChangesAsyncWorkedCorrect()
+    public async Task Handle_Should_ReturnSuccess_WhenSaveChangesAsyncWorkedCorrect()
     {
         // Arrange
         var request = new CategoryContentUpdateDto("Text", 1, 1);
@@ -49,7 +52,7 @@ public class UpdateCategoryContentHandlerTests
     }
 
     [Fact]
-    public async void Handle_Should_ReturnFail_WhenSaveChangesAsyncWorkedIncorrect()
+    public async Task Handle_Should_ReturnFail_WhenSaveChangesAsyncWorkedIncorrect()
     {
         // Arrange
         var request = new CategoryContentUpdateDto("Text", 1, 1);
@@ -66,10 +69,10 @@ public class UpdateCategoryContentHandlerTests
     }
 
     [Fact]
-    public async void Handle_Should_ReturnFail_WhenStreetcodeNotFound()
+    public async Task Handle_Should_ReturnFail_WhenStreetcodeNotFound()
     {
         // Arrange
-        var request = new CategoryContentUpdateDto("Text", 1, -10);
+        var request = new CategoryContentUpdateDto("Text", 1, NOTEXISTSSTREETCODEID);
         SetupMockRepository(request, SUCCESSFULRESULT);
         SetupMockMapper();
         var command = new UpdateCategoryContentCommand(request);
@@ -83,7 +86,7 @@ public class UpdateCategoryContentHandlerTests
     }
 
     [Fact]
-    public async void Handle_Should_ReturnResultOfExpectedType_WithCorrectConditions()
+    public async Task Handle_Should_ReturnResultOfExpectedType_WithCorrectConditions()
     {
         // Arrange
         var request = new CategoryContentUpdateDto("Text", 1, 1);
@@ -100,10 +103,10 @@ public class UpdateCategoryContentHandlerTests
     }
 
     [Fact]
-    public async void Handle_Should_ReturnExpectedErrorMessage_WhenStreetcodeContentDoesNotExist()
+    public async Task Handle_Should_ReturnExpectedErrorMessage_WhenStreetcodeContentDoesNotExist()
     {
         // Arrange
-        var request = new CategoryContentUpdateDto("Text", 1, -10);
+        var request = new CategoryContentUpdateDto("Text", 1, NOTEXISTSSTREETCODEID);
         SetupMockRepository(request, SUCCESSFULRESULT);
         SetupMockMapper();
         var command = new UpdateCategoryContentCommand(request);
@@ -117,7 +120,7 @@ public class UpdateCategoryContentHandlerTests
     }
 
     [Fact]
-    public async void Handle_Should_ReturnExpectedErrorMessage_WhenUpdateFailed()
+    public async Task Handle_Should_ReturnExpectedErrorMessage_WhenUpdateFailed()
     {
         // Arrange
         var request = new CategoryContentUpdateDto("Text", 1, 1);
@@ -137,7 +140,7 @@ public class UpdateCategoryContentHandlerTests
     {
         var streetcode = request.StreetcodeId switch
         {
-            1 => new StreetcodeContent { Id = request.StreetcodeId },
+            EXISTSSTREETCODEID => new StreetcodeContent { Id = request.StreetcodeId },
             _ => null,
         };
 
