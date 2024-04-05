@@ -31,9 +31,9 @@ public class ArtDeleteHandler : IRequestHandler<ArtDeleteCommand, Result<Unit>>
 
         _repositoryWrapper.ArtRepository.Delete(art);
 
-        bool isSeccess = await _repositoryWrapper.SaveChangesAsync() > 0;
+        bool isSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
 
-        if (!isSeccess)
+        if (!isSuccess)
         {
             return DeleteFailed(id);
         }
