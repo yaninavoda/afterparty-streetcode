@@ -33,5 +33,4 @@ public class TimelineItemController : BaseApiController
     {
         return HandleResult(await Mediator.Send(new DeleteTimelineItemCommand(id)));
     }
-
 }
