@@ -40,6 +40,11 @@ public class CreateStreetcodeToponymHandler :
             return ToponymNotFoundError(request);
         }
 
+        if (!await IsPrimarKeyUnique(request.StreetcodeId, request.ToponymId))
+        {
+            return PrimaryKeyIsNotUniqueError(request);
+        }
+
         var streetcodeToponymToCreate = _mapper.Map<StreetcodeToponymEntity>(request);
 
         var streetcodeToponym = _repositoryWrapper.StreetcodeToponymRepository.Create(streetcodeToponymToCreate);
@@ -59,9 +64,26 @@ public class CreateStreetcodeToponymHandler :
         return Result.Ok(responseDto);
     }
 
+    private async Task<bool> IsPrimarKeyUnique(int streetcodeId, int toponymId)
+    {
+        var streetcodeToponym = await _repositoryWrapper.StreetcodeToponymRepository
+            .GetFirstOrDefaultAsync(st => st.StreetcodeId == streetcodeId && st.ToponymId == toponymId);
+
+        return streetcodeToponym is null;
+    }
+
+    private Result<CreateStreetcodeToponymResponseDto> PrimaryKeyIsNotUniqueError(CreateStreetcodeToponymRequestDto request)
+    {
+        string errorMsg = string.Format(
+            ErrorMessages.PrimaryKeyIsNotUnique,
+            nameof(StreetcodeToponymEntity)).Replace("Entity", string.Empty);
+        _logger.LogError(request, errorMsg);
+        return Result.Fail(errorMsg);
+    }
+
     private async Task<bool> IsToponymExistAsync(int toponymId)
     {
-        var toponym = await _repositoryWrapper.ImageRepository
+        var toponym = await _repositoryWrapper.ToponymRepository
             .GetFirstOrDefaultAsync(i => i.Id == toponymId);
 
         return toponym is not null;

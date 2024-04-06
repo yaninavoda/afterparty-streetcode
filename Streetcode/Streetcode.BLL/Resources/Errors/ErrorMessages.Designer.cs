@@ -115,6 +115,15 @@ namespace Streetcode.BLL.Resources.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Primary Key of the {0} is not unique.
+        /// </summary>
+        public static string PrimaryKeyIsNotUnique {
+            get {
+                return ResourceManager.GetString("PrimaryKeyIsNotUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to update the {0} with id: {1}.
         /// </summary>
         public static string UpdateFailed {
