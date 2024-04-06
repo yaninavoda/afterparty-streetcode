@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Streetcode.BLL.Dto.Timeline;
-using Streetcode.BLL.MediatR.Sources.SourceLinkCategory.Delete;
 using Streetcode.BLL.MediatR.Timeline.TimelineItem.Delete;
 using Streetcode.BLL.MediatR.Timeline.TimelineItem.GetAll;
 using Streetcode.BLL.MediatR.Timeline.TimelineItem.GetById;
