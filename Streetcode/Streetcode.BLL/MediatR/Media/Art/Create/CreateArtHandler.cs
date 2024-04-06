@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
-using Org.BouncyCastle.Asn1.Ocsp;
 using Streetcode.BLL.Dto.Media.Art;
-using Streetcode.BLL.DTO.StreetcodeToponym;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Contracts;
 using Streetcode.DAL.Entities.Streetcode;
 using Streetcode.DAL.Repositories.Interfaces.Base;
+using ArtEntity = Streetcode.DAL.Entities.Media.Images.Art;
+using ImageEntity = Streetcode.DAL.Entities.Media.Images.Image;
+using StreetcodeArtEntity = Streetcode.DAL.Entities.Streetcode.StreetcodeArt;
 
 namespace Streetcode.BLL.MediatR.Media.Art.Create;
 
@@ -39,7 +39,7 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
             return StreetcodeNotFoundError(request);
         }
 
-        var newArt = _mapper.Map<DAL.Entities.Media.Images.Art>(request);
+        var newArt = _mapper.Map<ArtEntity>(request);
 
         _repositoryWrapper.ArtRepository.Create(newArt);
 
@@ -50,7 +50,7 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
             return FailedToCreateArtError(request);
         }
 
-        var streetcodeArt = new DAL.Entities.Streetcode.StreetcodeArt()
+        var streetcodeArt = new StreetcodeArtEntity()
         {
             StreetcodeId = request.StreetcodeId,
             ArtId = newArt.Id,
@@ -115,7 +115,7 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
     {
         string errorMsg = string.Format(
             ErrorMessages.PrimaryKeyIsNotUnique,
-            nameof(DAL.Entities.Streetcode.StreetcodeArt));
+            typeof(StreetcodeArtEntity).Name);
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);
     }
@@ -124,7 +124,7 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
     {
         string errorMsg = string.Format(
             ErrorMessages.EntityByIdNotFound,
-            nameof(DAL.Entities.Media.Images.Image),
+            typeof(ImageEntity).Name,
             request.ImageId);
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);
@@ -134,7 +134,7 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
     {
         string errorMsg = string.Format(
             ErrorMessages.EntityByIdNotFound,
-            nameof(StreetcodeContent),
+            typeof(StreetcodeContent).Name,
             request.StreetcodeId);
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);
@@ -144,7 +144,7 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
     {
         string errorMsg = string.Format(
                 ErrorMessages.CreateFailed,
-                nameof(DAL.Entities.Media.Images.Art));
+                typeof(ArtEntity).Name);
         _logger.LogError(request, errorMsg);
 
         return Result.Fail(errorMsg);
@@ -154,7 +154,7 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
     {
         string errorMsg = string.Format(
                 ErrorMessages.CreateFailed,
-                nameof(DAL.Entities.Streetcode.StreetcodeArt));
+                typeof(StreetcodeArtEntity).Name);
         _logger.LogError(request, errorMsg);
 
         return Result.Fail(errorMsg);
