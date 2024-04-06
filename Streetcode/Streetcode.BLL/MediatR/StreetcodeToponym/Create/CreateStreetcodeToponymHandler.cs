@@ -15,6 +15,7 @@ namespace Streetcode.BLL.MediatR.StreetcodeToponym.Create;
 public class CreateStreetcodeToponymHandler :
     IRequestHandler<CreateStreetcodeToponymCommand, Result<CreateStreetcodeToponymResponseDto>>
 {
+    private const string ENTITY = "entity";
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IMapper _mapper;
     private readonly ILoggerService _logger;
@@ -76,7 +77,7 @@ public class CreateStreetcodeToponymHandler :
     {
         string errorMsg = string.Format(
             ErrorMessages.PrimaryKeyIsNotUnique,
-            nameof(StreetcodeToponymEntity)).Replace("Entity", string.Empty);
+            nameof(StreetcodeToponymEntity)).Replace(ENTITY, string.Empty);
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);
     }
