@@ -8,17 +8,17 @@ using ArtEntity = Streetcode.DAL.Entities.Media.Images.Art;
 
 namespace Streetcode.BLL.MediatR.Media.Art.Delete;
 
-public class ArtDeleteHandler : IRequestHandler<ArtDeleteCommand, Result<Unit>>
+public class DeleteArtHandler : IRequestHandler<DeleteArtCommand, Result<Unit>>
 {
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
-    public ArtDeleteHandler(IRepositoryWrapper repository, ILoggerService logger)
+    public DeleteArtHandler(IRepositoryWrapper repository, ILoggerService logger)
     {
         _repositoryWrapper = repository;
         _logger = logger;
     }
 
-    public async Task<Result<Unit>> Handle(ArtDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Unit>> Handle(DeleteArtCommand request, CancellationToken cancellationToken)
     {
         int id = request.Id;
 

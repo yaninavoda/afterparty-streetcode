@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Streetcode.BLL.MediatR.Media.Art.Delete;
 
-public record ArtDeleteCommand(int Id) : IRequest<Result<Unit>>;
+public record DeleteArtCommand(int Id) : IRequest<Result<Unit>>;
