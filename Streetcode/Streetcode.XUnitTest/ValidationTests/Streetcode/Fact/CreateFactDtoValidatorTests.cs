@@ -106,7 +106,7 @@ namespace Streetcode.XUnitTest.ValidationTests.Streetcode.Fact
                         Title: "Title",
                         ImageId: id,
                         StreetcodeId: MINSTREETCODEID,
-                        FactContent: "text");
+                        FactContent: "FactContent");
 
             // Act
             var validationResult = _validator.TestValidate(dto);
