@@ -1,4 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact;
+
+using System.Linq.Expressions;
 using AutoMapper;
 using Moq;
 using Streetcode.BLL.Dto.Streetcode.TextContent.Fact;
@@ -12,12 +14,9 @@ using FluentResults;
 using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Entities.Streetcode;
 using Streetcode.DAL.Entities.Media.Images;
+using Streetcode.DAL.Entities.Streetcode.TextContent;
 
-using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
-
-namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
-{
-    public class CreateFactHandlerTests
+public class CreateFactHandlerTests
     {
         private readonly Mock<IRepositoryWrapper> _mockRepositoryWrapper;
         private readonly Mock<IMapper> _mockMapper;
@@ -129,7 +128,7 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
                 _ => null,
             };
 
-            var factEntity = new FactEntity
+            var factEntity = new Fact
             {
                 Id = 1,
             };
@@ -147,7 +146,7 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
                 .ReturnsAsync(streetcode);
 
             _mockRepositoryWrapper
-                .Setup(r => r.FactRepository.Create(It.IsAny<FactEntity>()))
+                .Setup(r => r.FactRepository.Create(It.IsAny<Fact>()))
                 .Returns(factEntity);
 
             _mockRepositoryWrapper
@@ -155,7 +154,7 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
                 .ReturnsAsync(1);
 
             _mockMapper
-                .Setup(m => m.Map<FactEntity>(It.Is<object>(obj => obj is CreateFactDto)))
+                .Setup(m => m.Map<Fact>(It.Is<object>(obj => obj is CreateFactDto)))
                 .Returns(factEntity);
         }
 
@@ -196,4 +195,3 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
             return It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>();
         }
     }
-}

@@ -102,7 +102,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create
         {
             string errorMsg = string.Format(
                 ErrorMessages.CreateFailed,
-                nameof(FactEntity));
+                nameof(FactEntity).Replace("Entity", string.Empty));
             _logger.LogError(request, errorMsg);
             return Result.Fail(errorMsg);
         }
