@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
-using Streetcode.BLL.Dto.AdditionalContent.Subtitles;
 using Streetcode.BLL.Dto.Streetcode.TextContent;
 using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.DAL.Entities.AdditionalContent.Coordinates;
+using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Repositories.Interfaces.Base;
+
+using TermEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Term;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Term.GetAll
 {
@@ -28,7 +29,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Term.GetAll
 
             if (terms is null)
             {
-                const string errorMsg = $"Cannot find any term";
+                string errorMsg = string.Format(ErrorMessages.EntitiesNotFound, typeof(TermEntity).Name);
                 _logger.LogError(request, errorMsg);
                 return Result.Fail(new Error(errorMsg));
             }

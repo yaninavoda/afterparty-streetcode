@@ -3,7 +3,10 @@ using FluentResults;
 using MediatR;
 using Streetcode.BLL.Dto.Streetcode.TextContent;
 using Streetcode.BLL.Interfaces.Logging;
+using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Repositories.Interfaces.Base;
+
+using TermEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Term;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Term.GetById;
 
@@ -26,7 +29,11 @@ public class GetTermByIdHandler : IRequestHandler<GetTermByIdQuery, Result<TermD
 
         if (term is null)
         {
-            string errorMsg = $"Cannot find any term with corresponding id: {request.Id}";
+            string errorMsg = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                typeof(TermEntity).Name,
+                request.Id);
+
             _logger.LogError(request, errorMsg);
             return Result.Fail(new Error(errorMsg));
         }
