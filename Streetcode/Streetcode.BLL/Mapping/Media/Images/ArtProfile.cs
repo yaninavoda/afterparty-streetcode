@@ -9,7 +9,7 @@ public class ArtProfile : Profile
     public ArtProfile()
     {
         CreateMap<Art, ArtDto>().ReverseMap();
-        CreateMap<Art, CreateArtResponseDto>().ReverseMap();
-        CreateMap<Art, CreateArtRequestDto>().ReverseMap();
+        CreateMap<CreateArtRequestDto, Art>();
+        CreateMap<Art, CreateArtResponseDto>();
     }
 }

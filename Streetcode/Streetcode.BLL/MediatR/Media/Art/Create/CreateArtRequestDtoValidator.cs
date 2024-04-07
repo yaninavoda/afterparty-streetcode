@@ -5,19 +5,16 @@ namespace Streetcode.BLL.MediatR.Media.Art.Create;
 
 public class CreateArtRequestDtoValidator : AbstractValidator<CreateArtRequestDto>
 {
-    private readonly int _maxTitleLength;
-    private readonly int _maxDescriptionLength;
+    private const int MAXTITLELENGTH = 150;
+    private const int MAXDESCRPTIONLENGTH = 400;
 
     public CreateArtRequestDtoValidator()
     {
-        _maxTitleLength = 150;
-        _maxDescriptionLength = 400;
-
         RuleFor(dto => dto.Title)
-            .MaximumLength(_maxTitleLength);
+            .MaximumLength(MAXTITLELENGTH);
 
         RuleFor(dto => dto.Description)
-            .MaximumLength(_maxDescriptionLength);
+            .MaximumLength(MAXDESCRPTIONLENGTH);
 
         RuleFor(dto => dto.ImageId)
             .GreaterThan(0);

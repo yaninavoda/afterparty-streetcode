@@ -27,11 +27,18 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
 
     public async Task<Result<CreateArtResponseDto>> Handle(CreateArtCommand command, CancellationToken cancellationToken)
     {
+        using var transaction = _repositoryWrapper.BeginTransaction();
+
         var request = command.CreateArtRequestDto;
 
         if (!await ImageExistsAsync(request.ImageId))
         {
             return ImageNotFoundError(request);
+        }
+
+        if (await ArtWithThisImageAlreadyExists(request.ImageId))
+        {
+            return ArtExistsError(request);
         }
 
         if (!await StreetcodeExistsAsync(request.StreetcodeId))
@@ -43,9 +50,7 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
 
         _repositoryWrapper.ArtRepository.Create(newArt);
 
-        var isArtSaveSuccessful = await _repositoryWrapper.SaveChangesAsync() > 0;
-
-        if (!isArtSaveSuccessful)
+        if (!(await _repositoryWrapper.SaveChangesAsync() > 0))
         {
             return FailedToCreateArtError(request);
         }
@@ -64,17 +69,25 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
 
         _repositoryWrapper.StreetcodeArtRepository.Create(streetcodeArt);
 
-        var isStreetcodeArtSaveSuccessful = await _repositoryWrapper.SaveChangesAsync() > 0;
-
-        if (!isStreetcodeArtSaveSuccessful)
+        if (!(await _repositoryWrapper.SaveChangesAsync() > 0))
         {
             return FailedToCreateStreetcodeArtError(request);
         }
+
+        transaction.Complete();
 
         var artResponseDto = _mapper.Map<CreateArtResponseDto>(newArt);
         artResponseDto.StreetcodeId = request.StreetcodeId;
 
         return Result.Ok(artResponseDto);
+    }
+
+    private async Task<bool> ArtWithThisImageAlreadyExists(int imageId)
+    {
+        var art = await _repositoryWrapper.ArtRepository
+            .GetFirstOrDefaultAsync(a => a.ImageId == imageId);
+
+        return art != null;
     }
 
     private async Task<int> CalculateIndexAsync(int streetcodeId)
@@ -117,6 +130,7 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
             ErrorMessages.PrimaryKeyIsNotUnique,
             typeof(StreetcodeArtEntity).Name);
         _logger.LogError(request, errorMsg);
+
         return Result.Fail(errorMsg);
     }
 
@@ -127,6 +141,7 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
             typeof(ImageEntity).Name,
             request.ImageId);
         _logger.LogError(request, errorMsg);
+
         return Result.Fail(errorMsg);
     }
 
@@ -137,6 +152,7 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
             typeof(StreetcodeContent).Name,
             request.StreetcodeId);
         _logger.LogError(request, errorMsg);
+
         return Result.Fail(errorMsg);
     }
 
@@ -155,6 +171,14 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
         string errorMsg = string.Format(
                 ErrorMessages.CreateFailed,
                 typeof(StreetcodeArtEntity).Name);
+        _logger.LogError(request, errorMsg);
+
+        return Result.Fail(errorMsg);
+    }
+
+    private Result<CreateArtResponseDto> ArtExistsError(CreateArtRequestDto request)
+    {
+        string errorMsg = $"Art with image (Id: {request.ImageId}) already exists.";
         _logger.LogError(request, errorMsg);
 
         return Result.Fail(errorMsg);
