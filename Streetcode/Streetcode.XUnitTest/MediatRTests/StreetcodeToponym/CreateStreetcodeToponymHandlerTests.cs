@@ -60,7 +60,7 @@ public class CreateStreetcodeToponymHandlerTests
 
         var expectedErrorMessage = string.Format(
             ErrorMessages.EntityByIdNotFound,
-            nameof(Toponym),
+            typeof(Toponym).Name,
             int.MaxValue);
 
         SetupMock(request, SUCCESSFULSAVE);
@@ -85,7 +85,7 @@ public class CreateStreetcodeToponymHandlerTests
 
         var expectedErrorMessage = string.Format(
             ErrorMessages.EntityByIdNotFound,
-            nameof(StreetcodeContent),
+            typeof(StreetcodeContent).Name,
             int.MaxValue);
 
         SetupMock(request, SUCCESSFULSAVE);
