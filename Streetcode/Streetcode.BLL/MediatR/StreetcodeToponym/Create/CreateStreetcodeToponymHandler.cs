@@ -3,7 +3,6 @@ using FluentResults;
 using MediatR;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Entities.Streetcode.TextContent;
 using Streetcode.DAL.Entities.Streetcode;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 using Streetcode.BLL.DTO.StreetcodeToponym;
@@ -15,7 +14,6 @@ namespace Streetcode.BLL.MediatR.StreetcodeToponym.Create;
 public class CreateStreetcodeToponymHandler :
     IRequestHandler<CreateStreetcodeToponymCommand, Result<CreateStreetcodeToponymResponseDto>>
 {
-    private const string ENTITY = "entity";
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IMapper _mapper;
     private readonly ILoggerService _logger;
@@ -77,7 +75,7 @@ public class CreateStreetcodeToponymHandler :
     {
         string errorMsg = string.Format(
             ErrorMessages.PrimaryKeyIsNotUnique,
-            nameof(StreetcodeToponymEntity)).Replace(ENTITY, string.Empty);
+            typeof(StreetcodeToponymEntity).Name);
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);
     }
@@ -94,7 +92,7 @@ public class CreateStreetcodeToponymHandler :
     {
         string errorMsg = string.Format(
             ErrorMessages.EntityByIdNotFound,
-            nameof(Toponym),
+            typeof(Toponym).Name,
             request.ToponymId);
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);
@@ -112,7 +110,7 @@ public class CreateStreetcodeToponymHandler :
     {
         string errorMsg = string.Format(
             ErrorMessages.EntityByIdNotFound,
-            nameof(StreetcodeContent),
+            typeof(StreetcodeContent).Name,
             request.StreetcodeId);
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);
@@ -122,7 +120,7 @@ public class CreateStreetcodeToponymHandler :
     {
         string errorMsg = string.Format(
             ErrorMessages.CreateFailed,
-            nameof(Fact));
+            typeof(StreetcodeToponymEntity).Name);
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);
     }

@@ -106,6 +106,15 @@ namespace Streetcode.BLL.Resources.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot find {0} with the requested PrimaryKey.
+        /// </summary>
+        public static string EntityByPrimaryKeyNotFound {
+            get {
+                return ResourceManager.GetString("EntityByPrimaryKeyNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot find {0} with streetcode id: {1}.
         /// </summary>
         public static string EntityByStreetCodeIdNotFound {
