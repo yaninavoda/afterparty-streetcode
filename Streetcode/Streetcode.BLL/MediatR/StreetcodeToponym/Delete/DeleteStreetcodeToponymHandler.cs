@@ -11,7 +11,6 @@ namespace Streetcode.BLL.MediatR.StreetcodeToponym.Delete;
 public class DeleteStreetcodeToponymHandler :
     IRequestHandler<DeleteStreetcodeToponymCommand, Result<DeleteStreetcodeToponymResponseDto>>
 {
-    private const string ENTITY = "Entity";
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
 
@@ -32,7 +31,7 @@ public class DeleteStreetcodeToponymHandler :
         {
             string errorMsg = string.Format(
             ErrorMessages.EntityByPrimaryKeyNotFound,
-            nameof(StreetcodeToponymEntity).Replace(ENTITY, string.Empty));
+            typeof(StreetcodeToponymEntity).Name);
             _logger.LogError(request, errorMsg);
             return Result.Fail(errorMsg);
         }
@@ -54,7 +53,7 @@ public class DeleteStreetcodeToponymHandler :
     {
         string errorMsg = string.Format(
             ErrorMessages.DeleteFailed,
-            nameof(StreetcodeToponymEntity).Replace(ENTITY, string.Empty),
+            typeof(StreetcodeToponymEntity).Name,
             GetPhysicalStreetCode(request.StreetcodeId, request.ToponymId));
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);

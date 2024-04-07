@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using AutoMapper;
 using FluentAssertions;
 using FluentResults;
 using Microsoft.EntityFrameworkCore.Query;
@@ -20,7 +19,6 @@ public class DeleteStreetcodeToponymHandlerTests
 {
     private const int SUCCESSFULSAVE = 1;
     private const int FAILEDSAVE = -1;
-    private const string ENTITY = "Entity";
 
     private readonly Mock<IRepositoryWrapper> _mockRepositoryWrapper;
     private readonly Mock<ILoggerService> _mockLogger;
@@ -93,7 +91,7 @@ public class DeleteStreetcodeToponymHandlerTests
 
         var expectedErrorMessage = string.Format(
         ErrorMessages.DeleteFailed,
-        nameof(StreetcodeToponymEntity).Replace(ENTITY, string.Empty),
+        typeof(StreetcodeToponymEntity).Name,
         GetPhysicalStreetCode(request.StreetcodeId, request.ToponymId));
 
         // Act
