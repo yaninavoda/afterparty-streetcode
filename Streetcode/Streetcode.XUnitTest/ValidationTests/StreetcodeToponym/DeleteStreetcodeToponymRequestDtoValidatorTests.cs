@@ -1,6 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using Streetcode.BLL.DTO.StreetcodeToponym;
-using Streetcode.BLL.MediatR.StreetcodeToponym;
+using Streetcode.BLL.MediatR.StreetcodeToponym.Delete;
 using Xunit;
 
 namespace Streetcode.XUnitTest.ValidationTests.StreetcodeToponym;

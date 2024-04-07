@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.DTO.StreetcodeToponym;
-using Streetcode.BLL.MediatR.StreetcodeToponym;
+using Streetcode.BLL.MediatR.StreetcodeToponym.Delete;
 
 namespace Streetcode.WebApi.Controllers.Toponyms;
 

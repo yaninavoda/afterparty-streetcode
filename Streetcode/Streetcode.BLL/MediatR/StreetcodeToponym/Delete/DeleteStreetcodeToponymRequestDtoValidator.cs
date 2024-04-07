@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.DTO.StreetcodeToponym;
 
-namespace Streetcode.BLL.MediatR.StreetcodeToponym;
+namespace Streetcode.BLL.MediatR.StreetcodeToponym.Delete;
 
 public class DeleteStreetcodeToponymRequestDtoValidator : AbstractValidator<DeleteStreetcodeToponymRequestDto>
 {

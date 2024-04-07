@@ -6,7 +6,7 @@ using Streetcode.DAL.Repositories.Interfaces.Base;
 using Streetcode.BLL.DTO.StreetcodeToponym;
 using StreetcodeToponymEntity = Streetcode.DAL.Entities.Toponyms.StreetcodeToponym;
 
-namespace Streetcode.BLL.MediatR.StreetcodeToponym;
+namespace Streetcode.BLL.MediatR.StreetcodeToponym.Delete;
 
 public class DeleteStreetcodeToponymHandler :
     IRequestHandler<DeleteStreetcodeToponymCommand, Result<DeleteStreetcodeToponymResponseDto>>

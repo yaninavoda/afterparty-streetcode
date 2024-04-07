@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using Moq;
 using Streetcode.BLL.DTO.StreetcodeToponym;
 using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.BLL.MediatR.StreetcodeToponym;
+using Streetcode.BLL.MediatR.StreetcodeToponym.Delete;
 using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Entities.Streetcode;
 using Streetcode.DAL.Entities.Toponyms;
