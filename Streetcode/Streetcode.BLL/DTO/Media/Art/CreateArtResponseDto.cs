@@ -1,10 +1,3 @@
 ﻿namespace Streetcode.BLL.Dto.Media.Art;
 
-public record CreateArtResponseDto
-{
-    public int Id { get; set; }
-    public string? Description { get; set; }
-    public string? Title { get; set; }
-    public int ImageId { get; set; }
-    public int StreetcodeId { get; set; }
-}
+public record CreateArtResponseDto(int Id, string? Description, string? Title, int ImageId, int StreetcodeId);

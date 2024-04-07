@@ -76,8 +76,12 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
 
         transaction.Complete();
 
-        var artResponseDto = _mapper.Map<CreateArtResponseDto>(newArt);
-        artResponseDto.StreetcodeId = request.StreetcodeId;
+        var artResponseDto = new CreateArtResponseDto(
+            Id: newArt.Id,
+            Description: request.Description,
+            Title: request.Title,
+            ImageId: request.ImageId,
+            StreetcodeId: request.StreetcodeId);
 
         return Result.Ok(artResponseDto);
     }
