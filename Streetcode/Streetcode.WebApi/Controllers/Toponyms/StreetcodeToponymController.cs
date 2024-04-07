@@ -12,7 +12,7 @@ public class StreetcodeToponymController : BaseApiController
     {
         return HandleResult(await Mediator.Send(new DeleteStreetcodeToponymCommand(deleteRequest)));
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateStreetcodeToponymRequestDto createRequest)
     {
