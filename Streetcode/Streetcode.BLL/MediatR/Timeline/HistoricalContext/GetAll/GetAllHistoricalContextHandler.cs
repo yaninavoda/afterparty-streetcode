@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
-using Streetcode.BLL.Dto.AdditionalContent.Subtitles;
 using Streetcode.BLL.Dto.Timeline;
 using Streetcode.BLL.Interfaces.Logging;
+using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Repositories.Interfaces.Base;
+using HistoricalContextEntity = Streetcode.DAL.Entities.Timeline.HistoricalContext;
 
 namespace Streetcode.BLL.MediatR.Timeline.HistoricalContext.GetAll
 {
@@ -29,8 +30,11 @@ namespace Streetcode.BLL.MediatR.Timeline.HistoricalContext.GetAll
 
             if (historicalContextItems is null)
             {
-                const string errorMsg = $"Cannot find any historical contexts";
+                string errorMsg = string.Format(
+                ErrorMessages.EntitiesNotFound,
+                typeof(HistoricalContextEntity).Name);
                 _logger.LogError(request, errorMsg);
+
                 return Result.Fail(new Error(errorMsg));
             }
 
