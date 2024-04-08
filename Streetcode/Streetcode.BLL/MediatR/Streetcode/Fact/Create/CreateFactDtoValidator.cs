@@ -1,27 +1,23 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.Dto.Streetcode.TextContent.Fact;
-using Streetcode.BLL.Resources.Errors.ValidationErrors;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Fact.Create;
 
 public class CreateFactDtoValidator : AbstractValidator<CreateFactDto>
 {
-    private readonly int _maxTitleLength;
-    private readonly int _maxFactContentLength;
+    private const int MAXTITLELENGTH = 68;
+    private const int MAXFACTCONTENTLENGTH = 600;
 
     public CreateFactDtoValidator()
     {
-        _maxTitleLength = 68;
-        _maxFactContentLength = 600;
-
         RuleFor(dto => dto.Title)
             .NotEmpty()
             .MinimumLength(1)
-            .MaximumLength(_maxTitleLength);
+            .MaximumLength(MAXTITLELENGTH);
 
         RuleFor(dto => dto.FactContent)
             .NotEmpty()
-            .MaximumLength(_maxFactContentLength);
+            .MaximumLength(MAXFACTCONTENTLENGTH);
 
         RuleFor(dto => dto.ImageId)
             .GreaterThan(0);
