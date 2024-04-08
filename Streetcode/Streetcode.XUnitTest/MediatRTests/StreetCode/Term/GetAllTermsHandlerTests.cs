@@ -177,6 +177,6 @@ public class GetAllTermsHandlerTests
            It.IsAny<Expression<Func<Term, bool>>>(),
            It.IsAny<Func<IQueryable<Term>,
        IIncludableQueryable<Term, object>>>()))
-            .ReturnsAsync((List<Term>)null);
+            .ReturnsAsync((IEnumerable<Term>?)null);
     }
 }
