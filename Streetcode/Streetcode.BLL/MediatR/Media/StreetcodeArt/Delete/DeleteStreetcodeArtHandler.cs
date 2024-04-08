@@ -28,7 +28,7 @@ public class DeleteStreetcodeArtHandler : IRequestHandler<DeleteStreetcodeArtCom
 
         if (streetcodeArt is null)
         {
-            return StreetcodeArtNotFoundError(request.StreetcodeId);
+            return StreetcodeArtNotFoundError(request);
         }
 
         _repositoryWrapper.StreetcodeArtRepository.Delete(streetcodeArt);
@@ -37,7 +37,7 @@ public class DeleteStreetcodeArtHandler : IRequestHandler<DeleteStreetcodeArtCom
 
         if (!isSuccess)
         {
-            return DeleteFailed(request.StreetcodeId);
+            return DeleteFailed(request);
         }
 
         var response = new DeleteStreetcodeArtResponeDto(true);
@@ -45,26 +45,24 @@ public class DeleteStreetcodeArtHandler : IRequestHandler<DeleteStreetcodeArtCom
         return Result.Ok(response);
     }
 
-    private Result<DeleteStreetcodeArtResponeDto> StreetcodeArtNotFoundError(int id)
+    private Result<DeleteStreetcodeArtResponeDto> StreetcodeArtNotFoundError(DeleteStreetcodeArtRequestDto request)
     {
         string errorMessage = string.Format(
-            ErrorMessages.EntityByIdNotFound,
-            nameof(StreetcodeArtEntity),
-            id);
+            ErrorMessages.EntityByPrimaryKeyNotFound,
+            typeof(StreetcodeArtEntity).Name);
 
-        _logger.LogError(id, errorMessage);
+        _logger.LogError(request, errorMessage);
 
         return Result.Fail(errorMessage);
     }
 
-    private Result<DeleteStreetcodeArtResponeDto> DeleteFailed(int id)
+    private Result<DeleteStreetcodeArtResponeDto> DeleteFailed(DeleteStreetcodeArtRequestDto request)
     {
         string errorMessage = string.Format(
-            ErrorMessages.DeleteFailed,
-            nameof(StreetcodeArtEntity),
-            id);
+            ErrorMessages.FailedToDeleteByPrimaryKey,
+            typeof(StreetcodeArtEntity).Name);
 
-        _logger.LogError(id, errorMessage);
+        _logger.LogError(request, errorMessage);
 
         return Result.Fail(errorMessage);
     }

@@ -137,9 +137,21 @@
     <value>Cannot find {0} with id: {1}</value>
     <comment>format: 0 - nameof(EntityClass), 1 - request id</comment>
   </data>
+  <data name="EntityByPrimaryKeyNotFound" xml:space="preserve">
+    <value>Cannot find {0} with the requested PrimaryKey</value>
+    <comment>format: 0 - nameof(EntityClass)</comment>
+  </data>
   <data name="EntityByStreetCodeIdNotFound" xml:space="preserve">
     <value>Cannot find {0} with streetcode id: {1}</value>
     <comment>format: 0 - nameof(EntityClass), 1 - request id</comment>
+  </data>
+  <data name="FailedToDeleteByPrimaryKey" xml:space="preserve">
+    <value>Failed to delete {0}</value>
+    <comment>format: 0 - typeof(EntityClass).Name</comment>
+  </data>
+  <data name="PrimaryKeyIsNotUnique" xml:space="preserve">
+    <value>Primary Key of the {0} is not unique</value>
+    <comment>format: 0 - nameof(EntityClass)</comment>
   </data>
   <data name="UpdateFailed" xml:space="preserve">
     <value>Failed to update the {0} with id: {1}</value>

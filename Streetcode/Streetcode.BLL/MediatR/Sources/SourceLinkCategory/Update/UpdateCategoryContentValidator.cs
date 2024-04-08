@@ -5,15 +5,13 @@ namespace Streetcode.BLL.MediatR.Sources.SourceLinkCategory.Update;
 
 public class UpdateCategoryContentValidator : AbstractValidator<CategoryContentUpdateDto>
 {
-    private readonly int _maxTextLength;
+    private const int MAXTEXTLENGTH = 4000;
 
     public UpdateCategoryContentValidator()
     {
-        _maxTextLength = 4000;
-
         RuleFor(dto => dto.Text)
             .NotEmpty()
-            .MaximumLength(_maxTextLength);
+            .MaximumLength(MAXTEXTLENGTH);
 
         RuleFor(dto => dto.SourceLinkCategoryId)
             .NotEmpty()

@@ -1,6 +1,9 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using System.IO.Compression;
 using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Newtonsoft.Json;
 using Polly;
@@ -57,7 +60,7 @@ public class WebParsingUtils
 
         var clientHandler = new HttpClientHandler();
         clientHandler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-        clientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+        clientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => CustomCertificateValidationCallback(message, cert, chain, errors);
 
         var retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(
             3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
@@ -468,5 +471,41 @@ public class WebParsingUtils
         }
 
         return (data[0]["lat"].ToString(), data[0]["lon"].ToString());
+    }
+
+    private static bool CustomCertificateValidationCallback(
+        HttpRequestMessage message,
+        X509Certificate? certificate,
+        X509Chain? chain,
+        SslPolicyErrors sslPolicyErrors)
+    {
+        // Anything that would have been accepted by default is OK
+        if (sslPolicyErrors == SslPolicyErrors.None)
+        {
+            return true;
+        }
+
+        // If there is something wrong other than a chain processing error, don't trust it.
+        if (sslPolicyErrors != SslPolicyErrors.RemoteCertificateChainErrors)
+        {
+            return false;
+        }
+
+        // If the reason for RemoteCertificateChainError is that the chain built empty, don't trust it.
+        if (chain?.ChainStatus.Length == 0)
+        {
+            return false;
+        }
+
+        foreach (X509ChainStatus status in chain!.ChainStatus)
+        {
+            // If an error other than `NotTimeValid` (or `NoError`) is present, don't trust it.
+            if ((status.Status & ~X509ChainStatusFlags.NotTimeValid) != X509ChainStatusFlags.NoError)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

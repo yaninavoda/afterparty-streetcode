@@ -106,11 +106,38 @@ namespace Streetcode.BLL.Resources.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot find {0} with the requested PrimaryKey.
+        /// </summary>
+        public static string EntityByPrimaryKeyNotFound {
+            get {
+                return ResourceManager.GetString("EntityByPrimaryKeyNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot find {0} with streetcode id: {1}.
         /// </summary>
         public static string EntityByStreetCodeIdNotFound {
             get {
                 return ResourceManager.GetString("EntityByStreetCodeIdNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete {0}.
+        /// </summary>
+        public static string FailedToDeleteByPrimaryKey {
+            get {
+                return ResourceManager.GetString("FailedToDeleteByPrimaryKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Primary Key of the {0} is not unique.
+        /// </summary>
+        public static string PrimaryKeyIsNotUnique {
+            get {
+                return ResourceManager.GetString("PrimaryKeyIsNotUnique", resourceCulture);
             }
         }
         
