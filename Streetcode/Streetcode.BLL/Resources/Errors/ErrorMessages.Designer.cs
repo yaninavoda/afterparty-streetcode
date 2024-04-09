@@ -124,6 +124,15 @@ namespace Streetcode.BLL.Resources.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to delete {0}.
+        /// </summary>
+        public static string FailedToDeleteByPrimaryKey {
+            get {
+                return ResourceManager.GetString("FailedToDeleteByPrimaryKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Primary Key of the {0} is not unique.
         /// </summary>
         public static string PrimaryKeyIsNotUnique {
