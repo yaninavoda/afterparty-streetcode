@@ -166,12 +166,22 @@ public class DeleteStreetcodeArtHandlerTest
         _mockRepositoryWrapper.Setup(x => x.StreetcodeArtRepository.GetFirstOrDefaultAsync(
             It.IsAny<Expression<Func<StreetcodeArtEntity, bool>>>(),
             It.IsAny<Func<IQueryable<StreetcodeArtEntity>, IIncludableQueryable<StreetcodeArtEntity, object>>>()))
-            .ReturnsAsync(streetcodeArt);
+            .ReturnsAsync(StreetcodeArt(streetcodeArt));
 
         _mockRepositoryWrapper.Setup(x => x.StreetcodeArtRepository.Delete(It.IsAny<StreetcodeArtEntity>()));
 
         _mockRepositoryWrapper.Setup(x => x.SaveChangesAsync())
             .ReturnsAsync(result);
+    }
+
+    private StreetcodeArtEntity? StreetcodeArt(StreetcodeArtEntity streetcodeArt)
+    {
+        if (streetcodeArt.ArtId == 0 || streetcodeArt.StreetcodeId == 0)
+        {
+            return null;
+        }
+
+        return streetcodeArt;
     }
 
     private void SetupMockLogger(DeleteStreetcodeArtRequestDto request, string errorMessage)

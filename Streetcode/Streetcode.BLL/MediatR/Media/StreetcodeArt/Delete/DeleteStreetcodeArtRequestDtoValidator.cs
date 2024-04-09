@@ -3,9 +3,9 @@ using Streetcode.BLL.DTO.Media.Art;
 
 namespace Streetcode.BLL.MediatR.Media.StreetcodeArt.Delete;
 
-public class DeleteStreetcodeArtRequestValidator : AbstractValidator<DeleteStreetcodeArtRequestDto>
+public class DeleteStreetcodeArtRequestDtoValidator : AbstractValidator<DeleteStreetcodeArtRequestDto>
 {
-    public DeleteStreetcodeArtRequestValidator()
+    public DeleteStreetcodeArtRequestDtoValidator()
     {
         RuleFor(dto => dto.StreetcodeId)
             .GreaterThan(0);
