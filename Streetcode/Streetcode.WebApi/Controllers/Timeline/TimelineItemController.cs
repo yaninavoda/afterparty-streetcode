@@ -3,6 +3,7 @@ using Streetcode.BLL.Dto.Timeline;
 using Streetcode.BLL.MediatR.Timeline.TimelineItem.GetAll;
 using Streetcode.BLL.MediatR.Timeline.TimelineItem.GetById;
 using Streetcode.BLL.MediatR.Timeline.TimelineItem.GetByStreetcodeId;
+using Streetcode.BLL.MediatR.Timeline.TimelineItem.Update;
 
 namespace Streetcode.WebApi.Controllers.Timeline;
 
@@ -24,5 +25,11 @@ public class TimelineItemController : BaseApiController
     public async Task<IActionResult> GetByStreetcodeId([FromRoute] int streetcodeId)
     {
         return HandleResult(await Mediator.Send(new GetTimelineItemsByStreetcodeIdQuery(streetcodeId)));
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] UpdateTimelineItemRequestDto timeline)
+    {
+        return HandleResult(await Mediator.Send(new UpdateTimelineItemCommand(timeline)));
     }
 }

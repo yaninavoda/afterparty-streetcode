@@ -5,6 +5,7 @@ namespace Streetcode.BLL.Dto.Timeline;
 public class UpdateTimelineItemRequestDto
 {
     public int Id { get; set; }
+    public int StreetcodeId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public DateTime Date { get; set; }
