@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
 using FluentAssertions;
-using FluentResults;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
 using Streetcode.BLL.Dto.Media.Art;
@@ -13,7 +12,7 @@ using Streetcode.DAL.Repositories.Interfaces.Base;
 using Xunit;
 using ArtEntity = Streetcode.DAL.Entities.Media.Images.Art;
 using ImageEntity = Streetcode.DAL.Entities.Media.Images.Image;
-
+using StreetcodeArtEntity = Streetcode.DAL.Entities.Streetcode.StreetcodeArt;
 namespace Streetcode.XUnitTest.MediatRTests.Media.Art;
 
 public class CreateArtHandlerTests
@@ -35,22 +34,6 @@ public class CreateArtHandlerTests
         _mockLogger = new Mock<ILoggerService>();
     }
 
-    /*[Fact]
-    public async Task Handle_ShouldReturnOkResult_IfCommandHasValidInput()
-    {
-        // Arrange
-        var request = GetValidCreateRequest();
-        SetupMock(request, SUCCESSFULSAVE);
-        var handler = CreateHandler();
-        var command = new CreateArtCommand(request);
-
-        // Act
-        var result = await handler.Handle(command, _cancellationToken);
-
-        // Assert
-        result.IsSuccess.Should().BeTrue();
-    }
-    */
     [Fact]
     public async Task Handle_ShouldReturnSingleErrorWithCorrectMessage_IfCommandWithNonexistentImageId()
     {
@@ -105,24 +88,6 @@ public class CreateArtHandlerTests
         result.Errors.Should().ContainSingle(e => e.Message == expectedErrorMessage);
     }
 
-/*
-    [Fact]
-    public async Task Handle_ShouldReturnResultOfCorrectType_IfInputIsValid()
-    {
-        // Arrange
-        var request = GetValidCreateRequest();
-        var expectedType = typeof(Result<CreateArtResponseDto>);
-        SetupMock(request, SUCCESSFULSAVE);
-        var handler = CreateHandler();
-        var command = new CreateArtCommand(request);
-
-        // Act
-        var result = await handler.Handle(command, _cancellationToken);
-
-        // Assert
-        result.Should().BeOfType(expectedType);
-    }
-*/
     [Fact]
     public async Task Handle_ShouldReturnResultFail_IfSavingOperationFailed()
     {
@@ -139,23 +104,6 @@ public class CreateArtHandlerTests
         // Assert
         result.IsFailed.Should().BeTrue();
     }
-
-    /*
-    [Fact]
-    public async Task Handle_ShouldCallSaveChangesAsyncTwice_IfInputIsValid()
-    {
-        // Arrange
-        var request = GetValidCreateRequest();
-        SetupMock(request, SUCCESSFULSAVE);
-        var handler = CreateHandler();
-        var command = new CreateArtCommand(request);
-
-        // Act
-        await handler.Handle(command, _cancellationToken);
-
-        // Assert
-        _mockRepositoryWrapper.Verify(x => x.SaveChangesAsync(), Times.Exactly(2));
-    }*/
 
     private static CreateArtRequestDto GetValidCreateRequest()
     {
@@ -190,7 +138,7 @@ public class CreateArtHandlerTests
 
         var entity = new ArtEntity { Id = 1 };
 
-        var streetcodeArt = new StreetcodeArt
+        var streetcodeArt = new StreetcodeArtEntity
         {
             StreetcodeId = 1,
             ArtId = 1,
@@ -203,8 +151,8 @@ public class CreateArtHandlerTests
             StreetcodeId: request.StreetcodeId);
 
         _mockRepositoryWrapper.Setup(repo => repo.StreetcodeArtRepository.GetFirstOrDefaultAsync(
-            AnyEntityPredicate<StreetcodeArt>(),
-            AnyEntityInclude<StreetcodeArt>()))
+            AnyEntityPredicate<StreetcodeArtEntity>(),
+            AnyEntityInclude<StreetcodeArtEntity>()))
             .ReturnsAsync(streetcodeArt);
 
         _mockRepositoryWrapper
@@ -223,7 +171,7 @@ public class CreateArtHandlerTests
             It.IsAny<ArtEntity>())).Returns(entity);
 
         _mockRepositoryWrapper.Setup(repo => repo.StreetcodeArtRepository.Create(
-            It.IsAny<StreetcodeArt>())).Returns(streetcodeArt);
+            It.IsAny<StreetcodeArtEntity>())).Returns(streetcodeArt);
 
         _mockRepositoryWrapper.Setup(repo => repo.SaveChangesAsync()).ReturnsAsync(saveChangesAsyncResult);
 
