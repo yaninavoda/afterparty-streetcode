@@ -158,7 +158,7 @@ public class DeleteArtHandlerTest
     {
         return string.Format(
             ErrorMessages.EntityByIdNotFound,
-            nameof(ArtEntity),
+            typeof(ArtEntity).Name,
             id);
     }
 
@@ -166,7 +166,7 @@ public class DeleteArtHandlerTest
     {
         return string.Format(
             ErrorMessages.DeleteFailed,
-            nameof(ArtEntity),
+            typeof(ArtEntity).Name,
             id);
     }
 }
