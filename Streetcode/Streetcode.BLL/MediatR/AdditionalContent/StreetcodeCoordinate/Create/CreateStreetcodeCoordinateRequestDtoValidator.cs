@@ -11,9 +11,11 @@ public class CreateStreetcodeCoordinateRequestDtoValidator : AbstractValidator<C
             .GreaterThan(0);
 
         RuleFor(dto => dto.Latitude)
-            .GreaterThan(0);
+            .GreaterThanOrEqualTo(-90)
+            .LessThanOrEqualTo(90);
 
         RuleFor(dto => dto.Longtitude)
-            .GreaterThan(0);
+            .GreaterThanOrEqualTo(-180)
+            .LessThanOrEqualTo(180);
     }
 }
