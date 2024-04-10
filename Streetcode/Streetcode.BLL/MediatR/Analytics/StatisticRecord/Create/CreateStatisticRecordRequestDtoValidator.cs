@@ -19,12 +19,5 @@ public class CreateStatisticRecordRequestDtoValidator : AbstractValidator<Create
             .NotEmpty()
             .MinimumLength(1)
             .MaximumLength(MAXADDRESSLENGTH);
-
-        // RuleFor(dto => dto.Count)
-        //    .Equal(0);
-
-        RuleFor(dto => dto.QrId)
-            .GreaterThanOrEqualTo(1000000000)
-            .LessThanOrEqualTo(int.MaxValue);
     }
 }

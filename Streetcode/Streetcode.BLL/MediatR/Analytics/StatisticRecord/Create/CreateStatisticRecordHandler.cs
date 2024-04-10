@@ -4,6 +4,7 @@ using MediatR;
 using Streetcode.BLL.DTO.Analytics.StatisticRecord;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
+using Streetcode.DAL.Entities.AdditionalContent.Coordinates.Types;
 using Streetcode.DAL.Entities.Streetcode;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 using StatisticRecordEntity = Streetcode.DAL.Entities.Analytics.StatisticRecord;
@@ -34,6 +35,11 @@ public class CreateStatisticRecordHandler :
         if (!await IsStreetcodeExistAsync(request.StreetcodeId))
         {
             return StreetcodeNotFoundError(request);
+        }
+
+        if (!await IsStreetcodeCoordinateExistAsync(request.StreetcodeCoordinateId))
+        {
+            return StreetcodeCoordinateNotFoundError(request);
         }
 
         var statisticRecordToCreate = _mapper.Map<StatisticRecordEntity>(request);
@@ -67,6 +73,24 @@ public class CreateStatisticRecordHandler :
             ErrorMessages.EntityByIdNotFound,
             typeof(StreetcodeContent).Name,
             request.StreetcodeId);
+        _logger.LogError(request, errorMsg);
+        return Result.Fail(errorMsg);
+    }
+
+    private async Task<bool> IsStreetcodeCoordinateExistAsync(int streetcodeCoordinateId)
+    {
+        var streetcodeCoordinate = await _repositoryWrapper.StreetcodeCoordinateRepository
+            .GetFirstOrDefaultAsync(s => s.Id == streetcodeCoordinateId);
+
+        return streetcodeCoordinate is not null;
+    }
+
+    private Result<CreateStatisticRecordResponseDto> StreetcodeCoordinateNotFoundError(CreateStatisticRecordRequestDto request)
+    {
+        string errorMsg = string.Format(
+            ErrorMessages.EntityByIdNotFound,
+            typeof(StreetcodeCoordinate).Name,
+            request.StreetcodeCoordinateId);
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);
     }

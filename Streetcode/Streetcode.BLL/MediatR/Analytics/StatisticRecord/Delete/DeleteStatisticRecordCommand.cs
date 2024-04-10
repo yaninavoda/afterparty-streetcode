@@ -1,5 +1,8 @@
-﻿namespace Streetcode.BLL.MediatR.Analytics.StatisticRecord.Delete;
+﻿using FluentResults;
+using MediatR;
+using Streetcode.BLL.DTO.Analytics.StatisticRecord;
 
-internal class DeleteStatisticRecordCommand
-{
-}
+namespace Streetcode.BLL.MediatR.Analytics.StatisticRecord.Delete;
+
+public sealed record DeleteStatisticRecordCommand(DeleteStatisticRecordRequestDto Request) :
+    IRequest<Result<DeleteStatisticRecordResponseDto>>;
