@@ -13,9 +13,12 @@ namespace Streetcode.BLL.MediatR.Analytics.StatisticRecord.Create;
 public class CreateStatisticRecordHandler :
     IRequestHandler<CreateStatisticRecordCommand, Result<CreateStatisticRecordResponseDto>>
 {
+    private const int MINQRId = 1000000000;
+    private const int MAXQRId = 2000000000;
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IMapper _mapper;
     private readonly ILoggerService _logger;
+    private Random _random = new Random(DateTime.Now.Ticks.GetHashCode());
 
     public CreateStatisticRecordHandler(IRepositoryWrapper repository, IMapper mapper, ILoggerService logger)
     {
@@ -34,6 +37,7 @@ public class CreateStatisticRecordHandler :
         }
 
         var statisticRecordToCreate = _mapper.Map<StatisticRecordEntity>(request);
+        statisticRecordToCreate.QrId = await GetUniqueQrId();
 
         var statisticRecord = _repositoryWrapper.StatisticRecordRepository.Create(statisticRecordToCreate);
 
@@ -74,5 +78,22 @@ public class CreateStatisticRecordHandler :
             typeof(StatisticRecordEntity).Name);
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);
+    }
+
+    private async Task<int> GetUniqueQrId()
+    {
+        int qrId;
+
+        for (; ; )
+        {
+            qrId = _random.Next(MINQRId, MAXQRId);
+            var statisticRecord = await _repositoryWrapper.StatisticRecordRepository.GetFirstOrDefaultAsync(sr => sr.QrId == qrId);
+            if (statisticRecord is null)
+            {
+                break;
+            }
+        }
+
+        return qrId;
     }
 }
