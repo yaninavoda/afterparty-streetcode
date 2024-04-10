@@ -8,8 +8,10 @@ namespace Streetcode.XUnitTest.ValidationTests.AdditionalContent.Coordinates.Typ
 public class CreateStreetcodeCoordinateRequestDtoValidatorTests
 {
     private const int MINSTREETCODEID = 1;
-    private const int MINLATITUDE = 1;
-    private const int MINLONGTITUDE = 1;
+    private const int MINLATITUDE = -90;
+    private const int MAXLATITUDE = 90;
+    private const int MINLONGTITUDE = -180;
+    private const int MAXLONGTITUDE = 180;
 
     private readonly CreateStreetcodeCoordinateRequestDtoValidator _validator;
 
@@ -19,9 +21,9 @@ public class CreateStreetcodeCoordinateRequestDtoValidatorTests
     }
 
     [Theory]
-    [InlineData(0)]
+    [InlineData(-91)]
     [InlineData(MINLATITUDE - 10000)]
-    public void Should_have_error_when_Latitude_is_zero_or_negative(int latitude)
+    public void Should_have_error_when_Latitude_is_less_than_Minus_90(int latitude)
     {
         // Arrange
         var dto = new CreateStreetcodeCoordinateRequestDto(
@@ -37,9 +39,45 @@ public class CreateStreetcodeCoordinateRequestDtoValidatorTests
     }
 
     [Theory]
-    [InlineData(0)]
+    [InlineData(91)]
+    [InlineData(MAXLATITUDE + 10000)]
+    public void Should_have_error_when_Latitude_is_greater_than_90(int latitude)
+    {
+        // Arrange
+        var dto = new CreateStreetcodeCoordinateRequestDto(
+                    StreetcodeId: MINSTREETCODEID,
+                    Latitude: latitude,
+                    Longtitude: MINLONGTITUDE);
+
+        // Act
+        var validationResult = _validator.TestValidate(dto);
+
+        // Assert
+        validationResult.ShouldHaveValidationErrorFor(x => x.Latitude);
+    }
+
+    [Theory]
+    [InlineData(-181)]
     [InlineData(MINLATITUDE - 10000)]
-    public void Should_have_error_when_Longtitude_is_zero_or_negative(int longtitude)
+    public void Should_have_error_when_Longtitude_is_less_than_Minus_180(int longtitude)
+    {
+        // Arrange
+        var dto = new CreateStreetcodeCoordinateRequestDto(
+                    StreetcodeId: MINSTREETCODEID,
+                    Latitude: MINLATITUDE,
+                    Longtitude: longtitude);
+
+        // Act
+        var validationResult = _validator.TestValidate(dto);
+
+        // Assert
+        validationResult.ShouldHaveValidationErrorFor(x => x.Longtitude);
+    }
+
+    [Theory]
+    [InlineData(181)]
+    [InlineData(MINLATITUDE + 10000)]
+    public void Should_have_error_when_Longtitude_is_greater_than_180(int longtitude)
     {
         // Arrange
         var dto = new CreateStreetcodeCoordinateRequestDto(
