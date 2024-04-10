@@ -3,6 +3,7 @@ using MediatR;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Repositories.Interfaces.Base;
+using SourceLinkCategoryEntity = Streetcode.DAL.Entities.Sources.SourceLinkCategory;
 
 namespace Streetcode.BLL.MediatR.Sources.SourceLinkCategory.Delete;
 
@@ -27,7 +28,7 @@ public class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand, Resu
         {
             string errorMsg = string.Format(
                 ErrorMessages.EntityByIdNotFound,
-                nameof(SourceLinkCategory),
+                typeof(SourceLinkCategoryEntity).Name,
                 request.Id);
 
             _logger.LogError(request, errorMsg);
@@ -43,7 +44,7 @@ public class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand, Resu
         {
             var errorMessage = string.Format(
                 ErrorMessages.DeleteFailed,
-                nameof(SourceLinkCategory),
+                typeof(SourceLinkCategoryEntity).Name,
                 request.Id);
 
             _logger.LogError(request, errorMessage);
