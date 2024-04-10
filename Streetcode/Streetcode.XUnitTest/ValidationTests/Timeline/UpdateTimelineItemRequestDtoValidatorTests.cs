@@ -114,7 +114,7 @@ public class UpdateTimelineItemRequestDtoValidatorTests
     [Theory]
     [InlineData("")]
     [InlineData(null)]
-    public void ShouldHaveErrors_WhenDescrptionIsNullOrEmpty(string description)
+    public void ShouldHaveErrors_WhenDescriptionIsNullOrEmpty(string description)
     {
         // Arrange
         var dto = new UpdateTimelineItemRequestDto(
@@ -131,5 +131,99 @@ public class UpdateTimelineItemRequestDtoValidatorTests
 
         // Assert
         validationResult.ShouldHaveValidationErrorFor(x => x.Description);
+    }
+
+    [Theory]
+    [InlineData(MAXTITLELENGTH)]
+    [InlineData(MAXTITLELENGTH - 1)]
+    [InlineData(MAXTITLELENGTH - 25)]
+    public void ShouldNotHaveErrors_WhenTitleHasAllowedLength(int length)
+    {
+        // Arrange
+        var title = new string('a', length);
+        var dto = new UpdateTimelineItemRequestDto(
+            Id: 1,
+            StreetcodeId: 1,
+            Title: title,
+            Description: "description",
+            Date: DateTime.UtcNow,
+            DateViewPattern: DateViewPattern.DateMonthYear,
+            HistoricalContext: "");
+
+        // Act
+        var validationResult = _validator.TestValidate(dto);
+
+        // Assert
+        validationResult.ShouldNotHaveValidationErrorFor(x => x.Title);
+    }
+
+    [Theory]
+    [InlineData(MAXDESCRIPTIONLENGTH)]
+    [InlineData(MAXDESCRIPTIONLENGTH - 1)]
+    [InlineData(MAXDESCRIPTIONLENGTH - 399)]
+    public void ShouldNotHaveErrors_WhenDescriptionHasAllowedLength(int length)
+    {
+        // Arrange
+        var description = new string('a', length);
+        var dto = new UpdateTimelineItemRequestDto(
+            Id: 1,
+            StreetcodeId: 1,
+            Title: "title",
+            Description: description,
+            Date: DateTime.UtcNow,
+            DateViewPattern: DateViewPattern.DateMonthYear,
+            HistoricalContext: "");
+
+        // Act
+        var validationResult = _validator.TestValidate(dto);
+
+        // Assert
+        validationResult.ShouldNotHaveValidationErrorFor(x => x.Description);
+    }
+
+    [Theory]
+    [InlineData(MAXCONTEXTLENGTH)]
+    [InlineData(MAXCONTEXTLENGTH - 1)]
+    [InlineData(MAXCONTEXTLENGTH - 49)]
+    public void ShouldNotHaveErrors_WhenContextHasAllowedLength(int length)
+    {
+        // Arrange
+        var context = new string('a', length);
+        var dto = new UpdateTimelineItemRequestDto(
+            Id: 1,
+            StreetcodeId: 1,
+            Title: "title",
+            Description: "description",
+            Date: DateTime.UtcNow,
+            DateViewPattern: DateViewPattern.DateMonthYear,
+            HistoricalContext: context);
+
+        // Act
+        var validationResult = _validator.TestValidate(dto);
+
+        // Assert
+        validationResult.ShouldNotHaveValidationErrorFor(x => x.HistoricalContext);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(null)]
+    public void ShouldNotHaveErrors_WhenContextIsNullOrEmpty(string context)
+    {
+        // Arrange
+        var dto = new UpdateTimelineItemRequestDto(
+            Id: 1,
+            StreetcodeId: 1,
+            Title: "title",
+            Description: "description",
+            Date: DateTime.UtcNow,
+            DateViewPattern: DateViewPattern.DateMonthYear,
+            HistoricalContext: context);
+
+        // Act
+        var validationResult = _validator.TestValidate(dto);
+
+        // Assert
+        validationResult.ShouldNotHaveValidationErrorFor(x => x.HistoricalContext);
     }
 }
