@@ -16,7 +16,7 @@ namespace Streetcode.BLL.MediatR.Media.Video.Create
         private readonly IMapper _mapper;
         private readonly ILoggerService _logger;
 
-        public CreateVideoHandler(IMapper mapper, IRepositoryWrapper repositoryWrapper, ILoggerService logger)
+        public CreateVideoHandler(IRepositoryWrapper repositoryWrapper, IMapper mapper, ILoggerService logger)
         {
             _repositoryWrapper = repositoryWrapper;
             _mapper = mapper;
