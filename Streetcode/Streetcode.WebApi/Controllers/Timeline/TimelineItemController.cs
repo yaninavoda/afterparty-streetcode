@@ -33,7 +33,7 @@ public class TimelineItemController : BaseApiController
     {
         return HandleResult(await Mediator.Send(new UpdateTimelineItemCommand(timeline)));
     }
-    
+
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
