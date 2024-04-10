@@ -48,7 +48,7 @@ public class DeleteArtHandler : IRequestHandler<DeleteArtCommand, Result<DeleteA
     {
         string errorMessage = string.Format(
             ErrorMessages.EntityByIdNotFound,
-            nameof(ArtEntity),
+            typeof(ArtEntity).Name,
             id);
 
         _logger.LogError(id, errorMessage);
@@ -60,7 +60,7 @@ public class DeleteArtHandler : IRequestHandler<DeleteArtCommand, Result<DeleteA
     {
         string errorMessage = string.Format(
             ErrorMessages.DeleteFailed,
-            nameof(ArtEntity),
+            typeof(ArtEntity).Name,
             id);
 
         _logger.LogError(id, errorMessage);
