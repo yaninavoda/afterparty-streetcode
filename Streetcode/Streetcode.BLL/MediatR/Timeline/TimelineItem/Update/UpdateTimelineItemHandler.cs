@@ -35,6 +35,8 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
 
         if (!string.IsNullOrEmpty(request.HistoricalContext))
         {
+            // using var transactionScope = _repositoryWrapper.BeginTransaction();
+
             HistoricalContextTimelineEntity? historicalContextTimeline;
             var historicalContext = await GetHistoricalContextByTitleAsync(request);
 
@@ -71,6 +73,8 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
         }
         else
         {
+            // using var transactionScope = _repositoryWrapper.BeginTransaction();
+
             _repositoryWrapper.TimelineRepository.Update(timelineItem!);
 
             if(await _repositoryWrapper.SaveChangesAsync() <= 0)
