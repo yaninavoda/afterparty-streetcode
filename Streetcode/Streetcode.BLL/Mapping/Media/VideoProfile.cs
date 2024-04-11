@@ -11,5 +11,6 @@ public class VideoProfile : Profile
     {
         CreateMap<Video, VideoDto>();
         CreateMap<CreateVideoRequestDto, Video>().ReverseMap();
+        CreateMap<UpdateVideoRequestDto, Video>();
     }
 }

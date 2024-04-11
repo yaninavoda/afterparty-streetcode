@@ -1,18 +1,21 @@
 ﻿using FluentValidation;
-using Streetcode.BLL.Dto.Media.Art;
 using Streetcode.BLL.DTO.Media.Video;
 
-namespace Streetcode.BLL.MediatR.Media.Video.Create
+namespace Streetcode.BLL.MediatR.Media.Video.Update
 {
-    public class CreateVideoRequestDtoValidator : AbstractValidator<CreateVideoRequestDto>
+    public class UpdateVideoRequestDtoValidator : AbstractValidator<UpdateVideoRequestDto>
     {
         private const int MAXTITLELENGTH = 100;
         private const int MAXDESCRPTIONLENGTH = 500;
 
-        public CreateVideoRequestDtoValidator()
+        public UpdateVideoRequestDtoValidator()
         {
+            RuleFor(dto => dto.Id)
+                .NotEmpty()
+                .GreaterThan(0);
+
             RuleFor(dto => dto.Title)
-            .MaximumLength(MAXTITLELENGTH);
+                .MaximumLength(MAXTITLELENGTH);
 
             RuleFor(dto => dto.Description)
                 .MaximumLength(MAXDESCRPTIONLENGTH);
@@ -22,6 +25,7 @@ namespace Streetcode.BLL.MediatR.Media.Video.Create
                 .WithMessage("Only youtube.com links are accepted.");
 
             RuleFor(dto => dto.StreetcodeId)
+                .NotEmpty()
                 .GreaterThan(0);
         }
 
