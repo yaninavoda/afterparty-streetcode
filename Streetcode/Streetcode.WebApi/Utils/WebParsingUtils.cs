@@ -342,14 +342,11 @@ public class WebParsingUtils
 
     public static (string, string) OptimizeStreetname(string streetname)
     {
-        foreach (var mapping in StreetTypeMappings)
+        foreach (var mapping in StreetTypeMappings.Where(m => streetname.Contains(m.Key)))
         {
-            if (streetname.Contains(mapping.Key))
-            {
-                int startIndex = streetname.IndexOf(mapping.Key) + mapping.Key.Length;
-                string trimmedStreetname = streetname.Substring(startIndex).Trim();
-                return (trimmedStreetname, mapping.Value);
-            }
+            int startIndex = streetname.IndexOf(mapping.Key) + mapping.Key.Length;
+            string trimmedStreetname = streetname.Substring(startIndex).Trim();
+            return (trimmedStreetname, mapping.Value);
         }
 
         return (string.Empty, string.Empty);
