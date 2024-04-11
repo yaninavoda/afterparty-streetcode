@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Security.Cryptography;
+using AutoMapper;
 using FluentResults;
 using MediatR;
 using Streetcode.BLL.DTO.Analytics.StatisticRecord;
@@ -14,12 +15,10 @@ namespace Streetcode.BLL.MediatR.Analytics.StatisticRecord.Create;
 public class CreateStatisticRecordHandler :
     IRequestHandler<CreateStatisticRecordCommand, Result<CreateStatisticRecordResponseDto>>
 {
-    private const int MINQRId = 1000000000;
-    private const int MAXQRId = 2000000000;
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IMapper _mapper;
     private readonly ILoggerService _logger;
-    private Random _random = new Random(DateTime.Now.Ticks.GetHashCode());
+    private RandomNumberGenerator _random = RandomNumberGenerator.Create();
 
     public CreateStatisticRecordHandler(IRepositoryWrapper repository, IMapper mapper, ILoggerService logger)
     {
@@ -31,6 +30,11 @@ public class CreateStatisticRecordHandler :
     public async Task<Result<CreateStatisticRecordResponseDto>> Handle(CreateStatisticRecordCommand command, CancellationToken cancellationToken)
     {
         var request = command.Request;
+
+        if (!await IsStreetcodeCoordinateUniqueAsync(request.StreetcodeCoordinateId))
+        {
+            return StreetcodeCoordinateIsNotUniqueError(request);
+        }
 
         if (!await IsStreetcodeExistAsync(request.StreetcodeId))
         {
@@ -95,6 +99,24 @@ public class CreateStatisticRecordHandler :
         return Result.Fail(errorMsg);
     }
 
+    private async Task<bool> IsStreetcodeCoordinateUniqueAsync(int streetcodeCoordinateId)
+    {
+        var streetcodeCoordinate = await _repositoryWrapper.StatisticRecordRepository
+            .GetFirstOrDefaultAsync(sr => sr.StreetcodeCoordinateId == streetcodeCoordinateId);
+
+        return streetcodeCoordinate is null;
+    }
+
+    private Result<CreateStatisticRecordResponseDto> StreetcodeCoordinateIsNotUniqueError(CreateStatisticRecordRequestDto request)
+    {
+        string errorMsg = string.Format(
+            ErrorMessages.PotencialPrimaryKeyIsNotUnique,
+            typeof(StreetcodeCoordinate).Name,
+            request.StreetcodeCoordinateId);
+        _logger.LogError(request, errorMsg);
+        return Result.Fail(errorMsg);
+    }
+
     private Result<CreateStatisticRecordResponseDto> FailedToCreateStatisticRecordError(CreateStatisticRecordRequestDto request)
     {
         string errorMsg = string.Format(
@@ -107,10 +129,11 @@ public class CreateStatisticRecordHandler :
     private async Task<int> GetUniqueQrId()
     {
         int qrId;
-
+        byte[] bytes = new byte[32];
         for (; ; )
         {
-            qrId = _random.Next(MINQRId, MAXQRId);
+            _random.GetBytes(bytes);
+            qrId = Math.Abs((int)BitConverter.ToUInt32(bytes) / 2);
             var statisticRecord = await _repositoryWrapper.StatisticRecordRepository.GetFirstOrDefaultAsync(sr => sr.QrId == qrId);
             if (statisticRecord is null)
             {
