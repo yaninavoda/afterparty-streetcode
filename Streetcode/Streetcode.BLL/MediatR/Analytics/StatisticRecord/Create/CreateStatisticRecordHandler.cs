@@ -18,7 +18,7 @@ public class CreateStatisticRecordHandler :
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IMapper _mapper;
     private readonly ILoggerService _logger;
-    private RandomNumberGenerator _random = RandomNumberGenerator.Create();
+    private readonly RandomNumberGenerator _random = RandomNumberGenerator.Create();
 
     public CreateStatisticRecordHandler(IRepositoryWrapper repository, IMapper mapper, ILoggerService logger)
     {
@@ -128,16 +128,18 @@ public class CreateStatisticRecordHandler :
 
     private async Task<int> GetUniqueQrId()
     {
-        int qrId;
+        int qrId = 0;
         byte[] bytes = new byte[32];
-        for (; ; )
+        bool isNewKey = false;
+
+        while (!isNewKey)
         {
             _random.GetBytes(bytes);
             qrId = Math.Abs((int)BitConverter.ToUInt32(bytes) / 2);
             var statisticRecord = await _repositoryWrapper.StatisticRecordRepository.GetFirstOrDefaultAsync(sr => sr.QrId == qrId);
             if (statisticRecord is null)
             {
-                break;
+                isNewKey = true;
             }
         }
 
