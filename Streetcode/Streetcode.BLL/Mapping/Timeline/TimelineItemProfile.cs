@@ -17,5 +17,7 @@ public class TimelineItemProfile : Profile
                     Id = x.HistoricalContextId,
                     Title = x.HistoricalContext.Title
                 }).ToList()));
+
+        CreateMap<UpdateTimelineItemRequestDto, TimelineItem>();
     }
 }
