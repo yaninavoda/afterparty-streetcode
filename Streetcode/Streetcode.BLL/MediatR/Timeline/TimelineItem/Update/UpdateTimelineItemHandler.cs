@@ -27,6 +27,7 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
 
     public async Task<Result<TimelineItemDto>> Handle(UpdateTimelineItemCommand command, CancellationToken cancellationToken)
     {
+        using var transactionScope = _repositoryWrapper.BeginTransaction();
         var request = command.UpdateTimelineItemDto;
         TimelineItemEntity timelineItem = _mapper.Map<TimelineItemEntity>(request);
         TimelineItemEntity? updatedTimelineItem;
@@ -34,6 +35,8 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
 
         if (!string.IsNullOrEmpty(request.HistoricalContext))
         {
+            // using var transactionScope = _repositoryWrapper.BeginTransaction();
+
             HistoricalContextTimelineEntity? historicalContextTimeline;
             var historicalContext = await GetHistoricalContextByTitleAsync(request);
 
@@ -64,10 +67,14 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
 
             responseDto.HistoricalContexts = historicalContextDtos;
 
+            transactionScope.Complete();
+
             return Result.Ok(responseDto);
         }
         else
         {
+            // using var transactionScope = _repositoryWrapper.BeginTransaction();
+
             _repositoryWrapper.TimelineRepository.Update(timelineItem!);
 
             if(await _repositoryWrapper.SaveChangesAsync() <= 0)
@@ -78,6 +85,8 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
             updatedTimelineItem = await GetUpdatedTimelineItemAsync(request);
 
             responseDto = _mapper.Map<TimelineItemDto>(updatedTimelineItem);
+
+            transactionScope.Complete();
 
             return Result.Ok(responseDto);
         }
@@ -100,7 +109,7 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
                     .Select(pair => new HistoricalContextDto
                     {
                         Id = pair.HistoricalContextId,
-                        Title = request.HistoricalContext
+                        Title = request.HistoricalContext!
                     });
     }
 
