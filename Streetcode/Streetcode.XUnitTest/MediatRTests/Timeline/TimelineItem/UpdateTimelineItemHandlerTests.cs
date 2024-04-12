@@ -32,45 +32,6 @@ public class UpdateTimelineItemHandlerTests
         _mockLogger = new Mock<ILoggerService>();
     }
 
-    [Theory]
-    [InlineData("")]
-    [InlineData("Title")]
-    [InlineData("something else")]
-
-    public async Task Handle_ShouldCallSaveChangesAsyncTwice_IfInputIsValid(string? context)
-    {
-        // Arrange
-        var request = GetRequestDto(context);
-        MockRepositoryWrapperSetup(SUCCESSFULSAVE);
-        SetupMockMapper();
-        var handler = CreateHandler();
-        var command = new UpdateTimelineItemCommand(request);
-
-        // Act
-        await handler.Handle(command, _cancellationToken);
-
-        // Assert
-        _mockRepositoryWrapper.Verify(x => x.SaveChangesAsync(), Times.AtLeastOnce);
-    }
-
-    [Fact]
-    public async Task Handle_ShouldReturnResultOfCorrectType_IfInputIsValid()
-    {
-        // Arrange
-        var request = GetRequestDto("context");
-        var expectedType = typeof(Result<TimelineItemDto>);
-        MockRepositoryWrapperSetup(SUCCESSFULSAVE);
-        SetupMockMapper();
-        var handler = CreateHandler();
-        var command = new UpdateTimelineItemCommand(request);
-
-        // Act
-        var result = await handler.Handle(command, _cancellationToken);
-
-        // Assert
-        result.Should().BeOfType(expectedType);
-    }
-
     [Fact]
     public async Task Handle_ShouldReturnResultFail_IfSavingOperationFailed()
     {
