@@ -107,6 +107,13 @@ public class CreateTimelineItemHandler : IRequestHandler<CreateTimelineItemComma
 
         response = _mapper.Map<TimelineItemDto>(timeline);
 
+        var list = new List<HistoricalContextDto>()
+        {
+            request.HistoricalContext
+        };
+
+        response.HistoricalContexts = list;
+
         return Result.Ok(response);
     }
 
