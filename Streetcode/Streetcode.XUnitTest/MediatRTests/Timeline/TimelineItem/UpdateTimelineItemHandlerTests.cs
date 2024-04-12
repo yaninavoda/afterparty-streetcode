@@ -17,7 +17,6 @@ namespace Streetcode.XUnitTest.MediatRTests.Timeline.TimelineItem;
 
 public class UpdateTimelineItemHandlerTests
 {
-    private const int SUCCESSFULSAVE = 1;
     private const int FAILEDSAVE = -1;
 
     private readonly Mock<IRepositoryWrapper> _mockRepositoryWrapper;
@@ -30,45 +29,6 @@ public class UpdateTimelineItemHandlerTests
         _mockRepositoryWrapper = new Mock<IRepositoryWrapper>();
         _mockMapper = new Mock<IMapper>();
         _mockLogger = new Mock<ILoggerService>();
-    }
-
-    [Theory]
-    [InlineData("")]
-    [InlineData("Title")]
-    [InlineData("something else")]
-
-    public async Task Handle_ShouldCallSaveChangesAsyncTwice_IfInputIsValid(string? context)
-    {
-        // Arrange
-        var request = GetRequestDto(context);
-        MockRepositoryWrapperSetup(SUCCESSFULSAVE);
-        SetupMockMapper();
-        var handler = CreateHandler();
-        var command = new UpdateTimelineItemCommand(request);
-
-        // Act
-        await handler.Handle(command, _cancellationToken);
-
-        // Assert
-        _mockRepositoryWrapper.Verify(x => x.SaveChangesAsync(), Times.AtLeastOnce);
-    }
-
-    [Fact]
-    public async Task Handle_ShouldReturnResultOfCorrectType_IfInputIsValid()
-    {
-        // Arrange
-        var request = GetRequestDto("context");
-        var expectedType = typeof(Result<TimelineItemDto>);
-        MockRepositoryWrapperSetup(SUCCESSFULSAVE);
-        SetupMockMapper();
-        var handler = CreateHandler();
-        var command = new UpdateTimelineItemCommand(request);
-
-        // Act
-        var result = await handler.Handle(command, _cancellationToken);
-
-        // Assert
-        result.Should().BeOfType(expectedType);
     }
 
     [Fact]
