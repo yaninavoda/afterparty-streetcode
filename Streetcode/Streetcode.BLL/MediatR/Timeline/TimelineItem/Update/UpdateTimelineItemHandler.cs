@@ -27,6 +27,8 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
 
     public async Task<Result<TimelineItemDto>> Handle(UpdateTimelineItemCommand command, CancellationToken cancellationToken)
     {
+        using var transactionScope = _repositoryWrapper.BeginTransaction();
+
         var request = command.UpdateTimelineItemDto;
         TimelineItemEntity timelineItem = _mapper.Map<TimelineItemEntity>(request);
         TimelineItemEntity? updatedTimelineItem;
@@ -64,6 +66,8 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
 
             responseDto.HistoricalContexts = historicalContextDtos;
 
+            transactionScope.Complete();
+
             return Result.Ok(responseDto);
         }
         else
@@ -78,6 +82,8 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
             updatedTimelineItem = await GetUpdatedTimelineItemAsync(request);
 
             responseDto = _mapper.Map<TimelineItemDto>(updatedTimelineItem);
+
+            transactionScope.Complete();
 
             return Result.Ok(responseDto);
         }
@@ -100,7 +106,7 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
                     .Select(pair => new HistoricalContextDto
                     {
                         Id = pair.HistoricalContextId,
-                        Title = request.HistoricalContext
+                        Title = request.HistoricalContext!
                     });
     }
 
