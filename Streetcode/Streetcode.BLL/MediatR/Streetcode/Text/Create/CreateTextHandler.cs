@@ -30,6 +30,11 @@ public class CreateTextHandler :
     {
         var request = command.Request;
 
+        if (!await IsStreetcodeUniqueAsync(request.StreetcodeId))
+        {
+            return StreetcodeIsNotUniqueError(request);
+        }
+
         if (!await IsStreetcodeExistAsync(request.StreetcodeId))
         {
             return StreetcodeNotFoundError(request);
@@ -84,6 +89,24 @@ public class CreateTextHandler :
         string errorMsg = string.Format(
             ErrorMessages.CreateFailed,
             typeof(TextEntity).Name);
+        _logger.LogError(request, errorMsg);
+        return Result.Fail(errorMsg);
+    }
+
+    private async Task<bool> IsStreetcodeUniqueAsync(int streetcodeId)
+    {
+        var streetcode = await _repositoryWrapper.TextRepository
+            .GetFirstOrDefaultAsync(sr => sr.Id == streetcodeId);
+
+        return streetcode is null;
+    }
+
+    private Result<CreateTextResponseDto> StreetcodeIsNotUniqueError(CreateTextRequestDto request)
+    {
+        string errorMsg = string.Format(
+            ErrorMessages.PotencialPrimaryKeyIsNotUnique,
+            typeof(StreetcodeContent).Name,
+            request.StreetcodeId);
         _logger.LogError(request, errorMsg);
         return Result.Fail(errorMsg);
     }
