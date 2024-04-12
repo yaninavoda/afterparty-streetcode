@@ -6,7 +6,7 @@ namespace Streetcode.BLL.MediatR.Media.Video.Create
 {
     public class CreateVideoRequestDtoValidator : AbstractValidator<CreateVideoRequestDto>
     {
-        private const int MAXTITLELENGTH = 100;
+        private const int MAXTITLELENGTH = 50;
         private const int MAXDESCRPTIONLENGTH = 500;
 
         public CreateVideoRequestDtoValidator()
