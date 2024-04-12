@@ -31,6 +31,9 @@ public class CreateTimelineItemHandler : IRequestHandler<CreateTimelineItemComma
 
     public async Task<Result<TimelineItemDto>> Handle(CreateTimelineItemCommand command, CancellationToken cancellationToken)
     {
+        TimelineItemEntity timeline;
+        TimelineItemDto response;
+
         using var transaction = _repositoryWrapper.BeginTransaction();
 
         var request = command.CreateTimelineItemRequestDto;
@@ -38,6 +41,24 @@ public class CreateTimelineItemHandler : IRequestHandler<CreateTimelineItemComma
         if (! await IsStreetcodeExistAsync(request.StreetcodeId))
         {
             return StreetcodeNotFoundError(request.StreetcodeId);
+        }
+
+        if (request.HistoricalContext is null)
+        {
+            timeline = _mapper.Map<TimelineItemEntity>(request);
+
+            _repositoryWrapper.TimelineRepository.Create(timeline);
+
+            if (!(await _repositoryWrapper.SaveChangesAsync() > 0))
+            {
+                CreateTimelineItemFailError(request);
+            }
+
+            transaction.Complete();
+
+            response = _mapper.Map<TimelineItemDto>(timeline);
+
+            return Result.Ok(response);
         }
 
         if (request.HistoricalContext.Id <= 0 && !string.IsNullOrEmpty(request.HistoricalContext.Title))
@@ -51,10 +72,16 @@ public class CreateTimelineItemHandler : IRequestHandler<CreateTimelineItemComma
                 CreateHistoricalContextFailError(historicalContext);
             }
 
-            await ConfigurateHistoricalContextAsync(request);
+            var hc = await _repositoryWrapper.HistoricalContextRepository
+            .GetFirstOrDefaultAsync(
+                hc => hc.Title == request.HistoricalContext.Title);
+
+            var hcDto = _mapper.Map<HistoricalContextDto>(hc);
+
+            request.HistoricalContext = hcDto;
         }
 
-        var timeline = _mapper.Map<TimelineItemEntity>(request);
+        timeline = _mapper.Map<TimelineItemEntity>(request);
 
         _repositoryWrapper.TimelineRepository.Create(timeline);
 
@@ -78,20 +105,9 @@ public class CreateTimelineItemHandler : IRequestHandler<CreateTimelineItemComma
 
         transaction.Complete();
 
-        var response = _mapper.Map<TimelineItemDto>(timeline);
+        response = _mapper.Map<TimelineItemDto>(timeline);
 
         return Result.Ok(response);
-    }
-
-    private async Task ConfigurateHistoricalContextAsync(CreateTimelineItemRequestDto request)
-    {
-        var hc = await _repositoryWrapper.HistoricalContextRepository
-            .GetFirstOrDefaultAsync(
-            hc => hc.Title == request.HistoricalContext.Title);
-
-        var dto = _mapper.Map<HistoricalContextDto>(hc);
-
-        request.HistoricalContext = dto;
     }
 
     private async Task<bool> IsStreetcodeExistAsync(int streetcodeId)
