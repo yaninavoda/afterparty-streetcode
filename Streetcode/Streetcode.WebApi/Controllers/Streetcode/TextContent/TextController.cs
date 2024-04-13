@@ -1,6 +1,6 @@
-using FluentResults;
 using Microsoft.AspNetCore.Mvc;
-using Streetcode.BLL.Dto.Streetcode.TextContent;
+using Streetcode.BLL.DTO.Streetcode.TextContent.Text;
+using Streetcode.BLL.MediatR.Streetcode.Text.Delete;
 using Streetcode.BLL.MediatR.Streetcode.Text.GetAll;
 using Streetcode.BLL.MediatR.Streetcode.Text.GetById;
 using Streetcode.BLL.MediatR.Streetcode.Text.GetByStreetcodeId;
@@ -32,5 +32,11 @@ public class TextController : BaseApiController
     public async Task<IActionResult> GetParsedText([FromQuery] string text)
     {
         return HandleResult(await Mediator.Send(new GetParsedTextForAdminPreviewCommand(text)));
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> Delete([FromBody] DeleteTextRequestDto deleteRequest)
+    {
+        return HandleResult(await Mediator.Send(new DeleteTextCommand(deleteRequest)));
     }
 }
