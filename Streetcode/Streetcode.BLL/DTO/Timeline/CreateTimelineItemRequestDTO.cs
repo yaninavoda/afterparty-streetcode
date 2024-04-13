@@ -1,8 +1,6 @@
-﻿using Streetcode.BLL.Dto.Timeline;
-using Streetcode.DAL.Entities.Timeline;
+﻿using System.Diagnostics.CodeAnalysis;
+using Streetcode.BLL.Dto.Timeline;
 using Streetcode.DAL.Enums;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Streetcode.BLL.DTO.Timeline;
 

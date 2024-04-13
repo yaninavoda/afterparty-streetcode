@@ -8,14 +8,12 @@ using Streetcode.DAL.Repositories.Interfaces.Base;
 using Streetcode.BLL.DTO.Timeline;
 using Streetcode.BLL.Dto.Timeline;
 using Streetcode.DAL.Entities.Timeline;
-
-using HistoricalContextEntity = Streetcode.DAL.Entities.Timeline.HistoricalContext;
-using TimelineItemEntity = Streetcode.DAL.Entities.Timeline.TimelineItem;
 using Xunit;
 using Streetcode.BLL.MediatR.Timeline.TimelineItem.Create;
 using FluentAssertions;
-using FluentResults;
-using FluentValidation;
+
+using HistoricalContextEntity = Streetcode.DAL.Entities.Timeline.HistoricalContext;
+using TimelineItemEntity = Streetcode.DAL.Entities.Timeline.TimelineItem;
 
 namespace Streetcode.XUnitTest.MediatRTests.Timeline.TimelineItem;
 
