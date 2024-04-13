@@ -74,5 +74,27 @@ public class StreetcodeDbContext : IdentityDbContext<ApplicationUser, Applicatio
         modelBuilder.UseCollation("SQL_Ukrainian_CP1251_CI_AS");
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(NewsEntityTypeConfiguration).Assembly);
+
+        SeedRoles(modelBuilder);
+    }
+
+    private static void SeedRoles(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ApplicationRole>()
+            .HasData(
+                new ApplicationRole
+                {
+                    Id = -1,
+                    Name = "Admin",
+                    NormalizedName = "ADMIN",
+                    ConcurrencyStamp = Guid.NewGuid().ToString()
+                },
+                new ApplicationRole
+                {
+                    Id = -2,
+                    Name = "User",
+                    NormalizedName = "USER",
+                    ConcurrencyStamp = Guid.NewGuid().ToString()
+                });
     }
 }

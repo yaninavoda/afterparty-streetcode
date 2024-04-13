@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.Account;
 using Streetcode.DAL.Entities.Users;
+using UserRole = Streetcode.DAL.Entities.Users.UserRole;
 
-namespace Streetcode.WebApi.Controllers
+namespace Streetcode.WebApi.Controllers.Account
 {
     [AllowAnonymous]
     public class AccountController : BaseApiController
@@ -21,19 +22,12 @@ namespace Streetcode.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApplicationUser>> PostRegister(RegisterUserDto registerDto)
+        public async Task<ActionResult<ApplicationUser>> Register(RegisterUserDto registerDto)
         {
-            // Validation
-            if (ModelState.IsValid == false)
-            {
-                string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                return Problem(errorMessage);
-            }
-
             await IsEmailAlreadyInUse(registerDto.Email!);
 
             // Create user
-            ApplicationUser user = new ()
+            ApplicationUser user = new()
             {
                 Email = registerDto.Email,
                 UserName = registerDto.Email,
@@ -41,20 +35,43 @@ namespace Streetcode.WebApi.Controllers
                 LastName = registerDto.LastName!,
             };
 
-            IdentityResult result = await _userManager.CreateAsync(user, registerDto.Password);
+            IdentityResult creatingUserResult = await _userManager.CreateAsync(user, registerDto.Password);
 
-            if (result.Succeeded)
+            if (!creatingUserResult.Succeeded)
             {
-                // sign-in
-                await _signInManager.SignInAsync(user, isPersistent: false);
+                return FailedToRegister(creatingUserResult);
+            }
 
-                return Ok(user);
-            }
-            else
+            // sign-in
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            // add user role
+            IdentityResult addingRoleResult = await _userManager.AddToRoleAsync(user, UserRole.User);
+
+            if (!addingRoleResult.Succeeded)
             {
-                string errorMessage = string.Join(" | ", result.Errors.Select(e => e.Description)); // error1 | error2
-                return Problem(errorMessage);
+                return FailedToAssignRole(addingRoleResult);
             }
+
+            return Ok(user);
+        }
+
+        private ActionResult<ApplicationUser> FailedToAssignRole(IdentityResult addingRoleResult)
+        {
+            string errorMessage = string.Join(
+                Environment.NewLine,
+                addingRoleResult.Errors.Select(e => e.Description));
+
+            return Problem(errorMessage);
+        }
+
+        private ActionResult<ApplicationUser> FailedToRegister(IdentityResult creatingUserResult)
+        {
+            string errorMessage = string.Join(
+                Environment.NewLine,
+                creatingUserResult.Errors.Select(e => e.Description));
+
+            return Problem(errorMessage);
         }
 
         private async Task<IActionResult> IsEmailAlreadyInUse(string email)
