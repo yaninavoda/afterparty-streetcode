@@ -187,6 +187,6 @@ public class GetTermByIdHandlerTests
             .GetFirstOrDefaultAsync(
                 It.IsAny<Expression<Func<Term, bool>>>(),
                 It.IsAny<Func<IQueryable<Term>, IIncludableQueryable<Term, object>>>()))
-            .ReturnsAsync((Term)null);
+            .ReturnsAsync((Term?)null);
     }
 }

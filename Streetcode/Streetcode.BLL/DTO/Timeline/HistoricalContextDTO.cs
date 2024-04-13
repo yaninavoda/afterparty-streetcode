@@ -6,5 +6,5 @@ public class HistoricalContextDto
 {
     public int Id { get; set; }
     [MaxLength(50)]
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 }
