@@ -34,7 +34,7 @@ public class TextController : BaseApiController
     {
         return HandleResult(await Mediator.Send(new GetParsedTextForAdminPreviewCommand(text)));
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateTextRequestDto createRequest)
     {
