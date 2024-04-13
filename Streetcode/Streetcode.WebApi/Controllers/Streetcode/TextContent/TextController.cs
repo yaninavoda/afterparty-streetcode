@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.DTO.Streetcode.TextContent.Text;
 using Streetcode.BLL.MediatR.Streetcode.Text.Create;
+using Streetcode.BLL.MediatR.Streetcode.Text.Delete;
 using Streetcode.BLL.MediatR.Streetcode.Text.GetAll;
 using Streetcode.BLL.MediatR.Streetcode.Text.GetById;
 using Streetcode.BLL.MediatR.Streetcode.Text.GetByStreetcodeId;
@@ -45,5 +46,11 @@ public class TextController : BaseApiController
     public async Task<IActionResult> Update([FromBody] UpdateTextRequestDto updateRequest)
     {
         return HandleResult(await Mediator.Send(new UpdateTextCommand(updateRequest)));
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> Delete([FromBody] DeleteTextRequestDto deleteRequest)
+    {
+        return HandleResult(await Mediator.Send(new DeleteTextCommand(deleteRequest)));
     }
 }
