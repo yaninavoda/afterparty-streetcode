@@ -13,5 +13,7 @@ public class TextProfile : Profile
         CreateMap<TextCreateDto, Text>().ReverseMap();
         CreateMap<UpdateTextRequestDto, Text>();
         CreateMap<Text, UpdateTextResponseDto>();
+        CreateMap<CreateTextRequestDto, Text>();
+        CreateMap<Text, CreateTextResponseDto>();
     }
 }

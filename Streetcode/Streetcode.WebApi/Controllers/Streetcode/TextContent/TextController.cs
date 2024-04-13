@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.DTO.Streetcode.TextContent.Text;
+using Streetcode.BLL.MediatR.Streetcode.Text.Create;
 using Streetcode.BLL.MediatR.Streetcode.Text.GetAll;
 using Streetcode.BLL.MediatR.Streetcode.Text.GetById;
 using Streetcode.BLL.MediatR.Streetcode.Text.GetByStreetcodeId;
@@ -32,6 +33,12 @@ public class TextController : BaseApiController
     public async Task<IActionResult> GetParsedText([FromQuery] string text)
     {
         return HandleResult(await Mediator.Send(new GetParsedTextForAdminPreviewCommand(text)));
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateTextRequestDto createRequest)
+    {
+        return HandleResult(await Mediator.Send(new CreateTextCommand(createRequest)));
     }
 
     [HttpPut]
