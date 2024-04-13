@@ -133,6 +133,15 @@ namespace Streetcode.BLL.Resources.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Potencial Primary Key {0}Id = {1} is not unique.
+        /// </summary>
+        public static string PotencialPrimaryKeyIsNotUnique {
+            get {
+                return ResourceManager.GetString("PotencialPrimaryKeyIsNotUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Primary Key of the {0} is not unique.
         /// </summary>
         public static string PrimaryKeyIsNotUnique {

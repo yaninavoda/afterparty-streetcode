@@ -3,6 +3,7 @@ using MediatR;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Repositories.Interfaces.Base;
+using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Fact.Delete;
 
@@ -26,7 +27,7 @@ public class DeleteFactHandler : IRequestHandler<DeleteFactCommand, Result<Unit>
         {
             string errorMsg = string.Format(
                 ErrorMessages.EntityByIdNotFound,
-                nameof(Fact),
+                typeof(FactEntity).Name,
                 request.Id);
 
             _logger.LogError(request, errorMsg);
@@ -46,7 +47,7 @@ public class DeleteFactHandler : IRequestHandler<DeleteFactCommand, Result<Unit>
         {
             string errorMsg = string.Format(
                 ErrorMessages.DeleteFailed,
-                nameof(Fact),
+                typeof(FactEntity).Name,
                 request.Id);
 
             _logger.LogError(request, errorMsg);

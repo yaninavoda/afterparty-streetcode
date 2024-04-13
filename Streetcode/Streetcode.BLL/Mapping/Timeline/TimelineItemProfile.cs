@@ -21,6 +21,6 @@ public class TimelineItemProfile : Profile
                 }).ToList()));
         */
 
-        CreateMap<CreateTimelineItemRequestDto, TimelineItem>();
+        CreateMap<UpdateTimelineItemRequestDto, TimelineItem>();
     }
 }
