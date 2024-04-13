@@ -51,7 +51,7 @@ public class CreateTimelineItemHandler : IRequestHandler<CreateTimelineItemComma
 
             if (!(await _repositoryWrapper.SaveChangesAsync() > 0))
             {
-                CreateTimelineItemFailError(request);
+                return CreateTimelineItemFailError(request);
             }
 
             transaction.Complete();
@@ -69,7 +69,7 @@ public class CreateTimelineItemHandler : IRequestHandler<CreateTimelineItemComma
 
             if (!(await _repositoryWrapper.SaveChangesAsync() > 0))
             {
-                CreateHistoricalContextFailError(historicalContext);
+               return CreateHistoricalContextFailError(historicalContext);
             }
 
             var hc = await _repositoryWrapper.HistoricalContextRepository
@@ -87,7 +87,7 @@ public class CreateTimelineItemHandler : IRequestHandler<CreateTimelineItemComma
 
         if (!(await _repositoryWrapper.SaveChangesAsync() > 0))
         {
-            CreateTimelineItemFailError(request);
+            return CreateTimelineItemFailError(request);
         }
 
         HistoricalContextTimeline historicalContextTimeline = new HistoricalContextTimeline
@@ -100,7 +100,7 @@ public class CreateTimelineItemHandler : IRequestHandler<CreateTimelineItemComma
 
         if (!(await _repositoryWrapper.SaveChangesAsync() > 0))
         {
-            CreateHistoricalContextTimelineFailError(historicalContextTimeline);
+           return CreateHistoricalContextTimelineFailError(historicalContextTimeline);
         }
 
         transaction.Complete();
