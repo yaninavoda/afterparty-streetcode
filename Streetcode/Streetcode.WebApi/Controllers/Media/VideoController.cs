@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Streetcode.BLL.Dto.Media;
 using Streetcode.BLL.DTO.Media.Video;
 using Streetcode.BLL.MediatR.Media.Video.Create;
+using Streetcode.BLL.MediatR.Media.Video.Delete;
 using Streetcode.BLL.MediatR.Media.Video.GetAll;
 using Streetcode.BLL.MediatR.Media.Video.GetById;
 using Streetcode.BLL.MediatR.Media.Video.GetByStreetcodeId;
+using Streetcode.BLL.MediatR.Streetcode.Text.Delete;
 
 namespace Streetcode.WebApi.Controllers.Media;
 
@@ -32,5 +33,11 @@ public class VideoController : BaseApiController
     public async Task<IActionResult> Create([FromBody] CreateVideoRequestDto request)
     {
         return HandleResult(await Mediator.Send(new CreateVideoCommand(request)));
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> Delete([FromBody] DeleteVideoRequestDto deleteRequest)
+    {
+        return HandleResult(await Mediator.Send(new DeleteVideoCommand(deleteRequest)));
     }
 }
