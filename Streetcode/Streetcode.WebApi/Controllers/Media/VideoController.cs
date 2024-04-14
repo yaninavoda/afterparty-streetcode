@@ -5,7 +5,6 @@ using Streetcode.BLL.MediatR.Media.Video.Delete;
 using Streetcode.BLL.MediatR.Media.Video.GetAll;
 using Streetcode.BLL.MediatR.Media.Video.GetById;
 using Streetcode.BLL.MediatR.Media.Video.GetByStreetcodeId;
-using Streetcode.BLL.MediatR.Streetcode.Text.Delete;
 
 namespace Streetcode.WebApi.Controllers.Media;
 
