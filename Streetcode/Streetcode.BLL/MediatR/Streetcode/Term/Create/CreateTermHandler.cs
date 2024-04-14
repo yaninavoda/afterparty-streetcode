@@ -12,7 +12,6 @@ namespace Streetcode.BLL.MediatR.Streetcode.Term.Create;
 public class CreateTermHandler :
     IRequestHandler<CreateTermCommand, Result<CreateTermResponseDto>>
 {
-    private const string PREFILLEDTEXT = "Текст підготовлений спільно з ";
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IMapper _mapper;
     private readonly ILoggerService _logger;
