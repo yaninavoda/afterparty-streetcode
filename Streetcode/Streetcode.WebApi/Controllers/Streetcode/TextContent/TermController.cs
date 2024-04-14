@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Streetcode.BLL.Dto.Streetcode.TextContent;
+using Streetcode.BLL.DTO.Streetcode.TextContent.Term;
+using Streetcode.BLL.MediatR.Streetcode.Term.Create;
 using Streetcode.BLL.MediatR.Streetcode.Term.GetAll;
 using Streetcode.BLL.MediatR.Streetcode.Term.GetById;
 
@@ -17,5 +18,11 @@ public class TermController : BaseApiController
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         return HandleResult(await Mediator.Send(new GetTermByIdQuery(id)));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateTermRequestDto createRequest)
+    {
+        return HandleResult(await Mediator.Send(new CreateTermCommand(createRequest)));
     }
 }

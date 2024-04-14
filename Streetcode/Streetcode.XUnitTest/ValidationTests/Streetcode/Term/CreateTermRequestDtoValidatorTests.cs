@@ -1,0 +1,71 @@
+﻿using FluentValidation.TestHelper;
+using Streetcode.BLL.DTO.Streetcode.TextContent.Term;
+using Streetcode.BLL.MediatR.Streetcode.Term.Create;
+using Xunit;
+
+namespace Streetcode.XUnitTest.ValidationTests.Streetcode.Term;
+
+public class CreateTermRequestDtoValidatorTests
+{
+    private const int MINTITLELENGTH = 1;
+    private const int MINDESCRIPTIONLENGTH = 1;
+    private const int MAXTITLELENGTH = 50;
+    private const int MAXDESCRIPTIONLENGTH = 500;
+
+    private readonly CreateTermRequestDtoValidator _validator;
+
+    public CreateTermRequestDtoValidatorTests()
+    {
+        _validator = new CreateTermRequestDtoValidator();
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(MAXTITLELENGTH + 10000)]
+    public void Should_have_error_when_Title_length_is_greater_than_MAXTITLE_or_equel_Zero(int number)
+    {
+        // Arrange
+        var dto = new CreateTermRequestDto(
+                    Title: new string('a', number),
+                    Description: new string('a', MINDESCRIPTIONLENGTH));
+
+        // Act
+        var validationResult = _validator.TestValidate(dto);
+
+        // Assert
+        validationResult.ShouldHaveValidationErrorFor(x => x.Title);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(MAXDESCRIPTIONLENGTH + 10000)]
+    public void Should_have_error_when_Description_length_is_greater_than_MAXTEXTCONTENTLENGTH_or_equel_Zero(int number)
+    {
+        // Arrange
+        var dto = new CreateTermRequestDto(
+                    Title: new string('a', MINTITLELENGTH),
+                    Description: new string('a', number));
+
+        // Act
+        var validationResult = _validator.TestValidate(dto);
+
+        // Assert
+        validationResult.ShouldHaveValidationErrorFor(x => x.Description);
+    }
+
+    [Fact]
+    public void Should_not_have_error_when_dto_is_valid()
+    {
+        // Arrange
+        var dto = new CreateTermRequestDto(
+            Title: new string('a', MINTITLELENGTH),
+            Description: new string('a', MINDESCRIPTIONLENGTH));
+
+        // Act
+        var validationResult = _validator.TestValidate(dto);
+
+        // Assert
+        validationResult.ShouldNotHaveValidationErrorFor(x => x.Title);
+        validationResult.ShouldNotHaveValidationErrorFor(x => x.Description);
+    }
+}
