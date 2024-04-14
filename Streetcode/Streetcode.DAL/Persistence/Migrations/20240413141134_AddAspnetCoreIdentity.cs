@@ -7,11 +7,20 @@ namespace Streetcode.DAL.Persistence.Migrations
 {
     public partial class AddAspnetCoreIdentity : Migration
     {
+        private const string USERSTABLENAME = "Users";
+        private const string USERSCHEMANAME = "Users";
+        private const string ASPNETUSERS = "AspNetUsers";
+        private const string ASPNETROLES = "AspNetRoles";
+        private const string SQLSERVERIDENTITY = "SqlServer:Identity";
+        private const string NVARCHARMAX = "nvarchar(max)";
+        private const string NVARCHAR256 = "nvarchar(256)";
+        private const string NVARCHAR450 = "nvarchar(450)";
+
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Users",
-                schema: "Users");
+                name: USERSTABLENAME,
+                schema: USERSCHEMANAME);
 
             migrationBuilder.AlterColumn<string>(
                 name: "Text",
@@ -25,14 +34,14 @@ namespace Streetcode.DAL.Persistence.Migrations
                 oldMaxLength: 1000);
 
             migrationBuilder.CreateTable(
-                name: "AspNetRoles",
+                name: ASPNETROLES,
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                        .Annotation(SQLSERVERIDENTITY, "1, 1"),
+                    Name = table.Column<string>(type: NVARCHAR256, maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: NVARCHAR256, maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: NVARCHARMAX, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -40,22 +49,22 @@ namespace Streetcode.DAL.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
+                name: ASPNETUSERS,
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                        .Annotation(SQLSERVERIDENTITY, "1, 1"),
+                    FirstName = table.Column<string>(type: NVARCHARMAX, nullable: false),
+                    LastName = table.Column<string>(type: NVARCHARMAX, nullable: false),
+                    UserName = table.Column<string>(type: NVARCHAR256, maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: NVARCHAR256, maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: NVARCHAR256, maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: NVARCHAR256, maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasswordHash = table.Column<string>(type: NVARCHARMAX, nullable: true),
+                    SecurityStamp = table.Column<string>(type: NVARCHARMAX, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: NVARCHARMAX, nullable: true),
+                    PhoneNumber = table.Column<string>(type: NVARCHARMAX, nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -72,10 +81,10 @@ namespace Streetcode.DAL.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation(SQLSERVERIDENTITY, "1, 1"),
                     RoleId = table.Column<int>(type: "int", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ClaimType = table.Column<string>(type: NVARCHARMAX, nullable: true),
+                    ClaimValue = table.Column<string>(type: NVARCHARMAX, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -83,7 +92,7 @@ namespace Streetcode.DAL.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
+                        principalTable: ASPNETROLES,
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -93,10 +102,10 @@ namespace Streetcode.DAL.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation(SQLSERVERIDENTITY, "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ClaimType = table.Column<string>(type: NVARCHARMAX, nullable: true),
+                    ClaimValue = table.Column<string>(type: NVARCHARMAX, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -104,7 +113,7 @@ namespace Streetcode.DAL.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserClaims_AspNetUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: ASPNETUSERS,
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -113,9 +122,9 @@ namespace Streetcode.DAL.Persistence.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LoginProvider = table.Column<string>(type: NVARCHAR450, nullable: false),
+                    ProviderKey = table.Column<string>(type: NVARCHAR450, nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: NVARCHARMAX, nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -124,7 +133,7 @@ namespace Streetcode.DAL.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserLogins_AspNetUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: ASPNETUSERS,
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -142,13 +151,13 @@ namespace Streetcode.DAL.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
+                        principalTable: ASPNETROLES,
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: ASPNETUSERS,
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -158,9 +167,9 @@ namespace Streetcode.DAL.Persistence.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    LoginProvider = table.Column<string>(type: NVARCHAR450, nullable: false),
+                    Name = table.Column<string>(type: NVARCHAR450, nullable: false),
+                    Value = table.Column<string>(type: NVARCHARMAX, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -168,7 +177,7 @@ namespace Streetcode.DAL.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: ASPNETUSERS,
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -180,7 +189,7 @@ namespace Streetcode.DAL.Persistence.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
-                table: "AspNetRoles",
+                table: ASPNETROLES,
                 column: "NormalizedName",
                 unique: true,
                 filter: "[NormalizedName] IS NOT NULL");
@@ -202,12 +211,12 @@ namespace Streetcode.DAL.Persistence.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
-                table: "AspNetUsers",
+                table: ASPNETUSERS,
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
-                table: "AspNetUsers",
+                table: ASPNETUSERS,
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
@@ -231,13 +240,13 @@ namespace Streetcode.DAL.Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: ASPNETROLES);
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: ASPNETUSERS);
 
             migrationBuilder.EnsureSchema(
-                name: "Users");
+                name: USERSCHEMANAME);
 
             migrationBuilder.AlterColumn<string>(
                 name: "Text",
@@ -251,13 +260,13 @@ namespace Streetcode.DAL.Persistence.Migrations
                 oldMaxLength: 4000);
 
             migrationBuilder.CreateTable(
-                name: "Users",
-                schema: "Users",
+                name: USERSTABLENAME,
+                schema: USERSCHEMANAME,
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                        .Annotation(SQLSERVERIDENTITY, "1, 1"),
+                    Email = table.Column<string>(type: NVARCHARMAX, nullable: false),
                     Login = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
