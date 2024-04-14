@@ -6,8 +6,8 @@ namespace Streetcode.BLL.DTO.Timeline;
 
 public class CreateTimelineItemRequestDto
 {
-    public string Title { get; set; }
-    public string Description { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public DateTime Date { get; set; }
     public DateViewPattern DateViewPattern { get; set; }
     [AllowNull]
