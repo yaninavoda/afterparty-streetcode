@@ -39,7 +39,7 @@ public class CreateTermRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MAXDESCRIPTIONLENGTH + 10000)]
-    public void Should_have_error_when_Description_length_is_greater_than_MAXTEXTCONTENTLENGTH_or_equel_Zero(int number)
+    public void ShouldHaveError_WhenDescriptionlengthIsGreaterThan_MAXTEXTCONTENTLENGTH_OrEquelZero(int number)
     {
         // Arrange
         var dto = new CreateTermRequestDto(
@@ -54,7 +54,7 @@ public class CreateTermRequestDtoValidatorTests
     }
 
     [Fact]
-    public void Should_not_have_error_when_dto_is_valid()
+    public void ShouldNotHaveError_WhenDtoIsValid()
     {
         // Arrange
         var dto = new CreateTermRequestDto(
