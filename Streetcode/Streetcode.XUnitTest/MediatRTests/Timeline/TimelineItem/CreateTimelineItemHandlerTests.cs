@@ -183,27 +183,27 @@ public class CreateTimelineItemHandlerTests
             .Returns(GetHistoricalContextDto());
     }
 
-    private TimelineItemEntity GetTimelineItem()
+    private static TimelineItemEntity GetTimelineItem()
     {
         return new TimelineItemEntity { Id = 1, StreetcodeId = 1, Title = "Valid" };
     }
 
-    private TimelineItemDto GetTimelineItemDto()
+    private static TimelineItemDto GetTimelineItemDto()
     {
         return new TimelineItemDto { Id = 1, Title = "Valid" };
     }
 
-    private HistoricalContextEntity GetHistoricalContext()
+    private static HistoricalContextEntity GetHistoricalContext()
     {
         return new HistoricalContextEntity { Id = 1, Title = "Valid" };
     }
 
-    private HistoricalContextDto GetHistoricalContextDto()
+    private static HistoricalContextDto GetHistoricalContextDto()
     {
         return new HistoricalContextDto { Id = 1, Title = "Valid" };
     }
 
-    private HistoricalContextTimeline GetHistoricalContextTimeline()
+    private static HistoricalContextTimeline GetHistoricalContextTimeline()
     {
         return new HistoricalContextTimeline { TimelineId = 1, HistoricalContextId = 1 };
     }
