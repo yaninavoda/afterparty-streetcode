@@ -1,24 +1,24 @@
 ﻿using FluentValidation.TestHelper;
 using Streetcode.BLL.DTO.Streetcode.TextContent.Text;
-using Streetcode.BLL.MediatR.Streetcode.Text.Update;
+using Streetcode.BLL.MediatR.Streetcode.Text.Create;
 using Xunit;
 
 namespace Streetcode.XUnitTest.ValidationTests.Streetcode.Text;
 
-public class UpdateTextRequestDtoTests
+public class PreviewTextRequestDtoValidatorTests
 {
-    private const int MINTEXTID = 1;
+    private const int MINSTREETCODEID = 1;
     private const int MINTITLELENGTH = 1;
     private const int MINTEXTCONTENTLENGTH = 1;
     private const int MAXTITLELENGTH = 50;
     private const int MAXTEXTCONTENTLENGTH = 15000;
     private const int MAXADDITIONALTEXTLENGTH = 200;
 
-    private readonly UpdateTextRequestDtoValidator _validator;
+    private readonly CreateTextRequestDtoValidator _validator;
 
-    public UpdateTextRequestDtoTests()
+    public PreviewTextRequestDtoValidatorTests()
     {
-        _validator = new UpdateTextRequestDtoValidator();
+        _validator = new CreateTextRequestDtoValidator();
     }
 
     [Theory]
@@ -27,11 +27,11 @@ public class UpdateTextRequestDtoTests
     public void Should_have_error_when_Title_length_is_greater_than_MAXTITLE_or_equel_Zero(int number)
     {
         // Arrange
-        var dto = new UpdateTextRequestDto(
-            Id: MINTEXTID,
-            Title: new string('a', number),
-            TextContent: new string('a', MINTEXTCONTENTLENGTH),
-            AdditionalText: new string('a', 1));
+        var dto = new CreateTextRequestDto(
+                    StreetcodeId: MINSTREETCODEID,
+                    Title: new string('a', number),
+                    TextContent: new string('a', MINTEXTCONTENTLENGTH),
+                    AdditionalText: new string('a', 1));
 
         // Act
         var validationResult = _validator.TestValidate(dto);
@@ -46,8 +46,8 @@ public class UpdateTextRequestDtoTests
     public void Should_have_error_when_TextContent_length_is_greater_than_MAXTEXTCONTENTLENGTH_or_equel_Zero(int number)
     {
         // Arrange
-        var dto = new UpdateTextRequestDto(
-                    Id: MINTEXTID,
+        var dto = new CreateTextRequestDto(
+                    StreetcodeId: MINSTREETCODEID,
                     Title: new string('a', MINTITLELENGTH),
                     TextContent: new string('a', number),
                     AdditionalText: new string('a', 1));
@@ -65,8 +65,8 @@ public class UpdateTextRequestDtoTests
     public void Should_have_error_when_AdditionalText_length_is_greater_than_MAXADDITIONALTEXTLENGTH(int number)
     {
         // Arrange
-        var dto = new UpdateTextRequestDto(
-                    Id: MINTEXTID,
+        var dto = new CreateTextRequestDto(
+                    StreetcodeId: MINSTREETCODEID,
                     Title: new string('a', MINTITLELENGTH),
                     TextContent: new string('a', MINTEXTCONTENTLENGTH),
                     AdditionalText: new string('a', number));
@@ -82,8 +82,8 @@ public class UpdateTextRequestDtoTests
     public void Should_not_have_error_when_dto_is_valid()
     {
         // Arrange
-        var dto = new UpdateTextRequestDto(
-            Id: MINTEXTID,
+        var dto = new CreateTextRequestDto(
+            StreetcodeId: MINSTREETCODEID,
             Title: new string('a', MINTITLELENGTH),
             TextContent: new string('a', MINTEXTCONTENTLENGTH),
             AdditionalText: new string('a', 1));
@@ -92,7 +92,6 @@ public class UpdateTextRequestDtoTests
         var validationResult = _validator.TestValidate(dto);
 
         // Assert
-        validationResult.ShouldNotHaveValidationErrorFor(x => x.Id);
         validationResult.ShouldNotHaveValidationErrorFor(x => x.Title);
         validationResult.ShouldNotHaveValidationErrorFor(x => x.TextContent);
         validationResult.ShouldNotHaveValidationErrorFor(x => x.AdditionalText);
