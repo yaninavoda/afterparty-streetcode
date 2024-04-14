@@ -5,20 +5,17 @@ namespace Streetcode.BLL.MediatR.Sources.SourceLinkCategory.Create;
 
 public class CreateCategoryRequestDtoValidator : AbstractValidator<CreateCategoryRequestDto>
 {
-    private readonly int _maxTitleLength;
-    private readonly int _maxTextLength;
+    private const int MAXTITLELENGTH = 100;
+    private const int MAXTEXTLENGTH = 4000;
 
     public CreateCategoryRequestDtoValidator()
     {
-        _maxTitleLength = 100;
-        _maxTextLength = 4000;
-
         RuleFor(dto => dto.Title)
             .NotEmpty()
-            .MaximumLength(_maxTitleLength);
+            .MaximumLength(MAXTITLELENGTH);
 
         RuleFor(dto => dto.Text)
-            .MaximumLength(_maxTextLength);
+            .MaximumLength(MAXTEXTLENGTH);
 
         RuleFor(dto => dto.ImageId)
             .GreaterThan(0);
