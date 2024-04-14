@@ -70,7 +70,7 @@ public class PreviewTextHandlerTests
         Assert.Equal(expextedAdditionalText, result.Value.AdditionalText);
     }
 
-    private PreviewTextHandler CreateHandler()
+    private static PreviewTextHandler CreateHandler()
     {
         return new PreviewTextHandler();
     }
