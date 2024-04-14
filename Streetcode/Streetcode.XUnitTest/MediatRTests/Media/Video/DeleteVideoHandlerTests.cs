@@ -132,7 +132,7 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video
             var command = new DeleteVideoCommand(request);
 
             // Act
-            var result = await handler.Handle(command, _cancellationToken);
+            await handler.Handle(command, _cancellationToken);
 
             // Assert
             _mockLogger.Verify(x => x.LogError(request, It.IsAny<string>()), Times.Once);
@@ -178,7 +178,7 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video
                 _mockLogger.Object);
         }
 
-        private void SetupMock(int saveChangesAsyncResult, VideoEntity video)
+        private void SetupMock(int saveChangesAsyncResult, VideoEntity? video)
         {
             _mockRepositoryWrapper
                 .Setup(repo => repo.VideoRepository.GetFirstOrDefaultAsync(
@@ -187,7 +187,7 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video
                 .ReturnsAsync(video);
 
             _mockRepositoryWrapper
-                .Setup(repo => repo.VideoRepository.Delete(video));
+                .Setup(repo => repo.VideoRepository.Delete(It.IsAny<VideoEntity>()));
 
             _mockRepositoryWrapper.Setup(repo => repo.SaveChangesAsync()).ReturnsAsync(saveChangesAsyncResult);
         }
