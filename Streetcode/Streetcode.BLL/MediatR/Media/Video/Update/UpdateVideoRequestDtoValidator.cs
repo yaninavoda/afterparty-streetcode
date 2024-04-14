@@ -23,10 +23,6 @@ namespace Streetcode.BLL.MediatR.Media.Video.Update
             RuleFor(dto => dto.Url)
                 .Must(IsValidYoutubeUrl)
                 .WithMessage("Only youtube.com links are accepted.");
-
-            RuleFor(dto => dto.StreetcodeId)
-                .NotEmpty()
-                .GreaterThan(0);
         }
 
         private bool IsValidYoutubeUrl(string url)

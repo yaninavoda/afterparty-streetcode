@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Streetcode.BLL.Dto.Media;
 using Streetcode.BLL.DTO.Media.Video;
 using Streetcode.BLL.MediatR.Media.Video.Create;
 using Streetcode.BLL.MediatR.Media.Video.GetAll;

@@ -1,11 +1,14 @@
-﻿using Moq;
+﻿using System.Linq.Expressions;
+using Moq;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Media.Video.Update;
 using Streetcode.BLL.DTO.Media.Video;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 using Xunit;
 using AutoMapper;
-using Streetcode.BLL.Dto.Media.Video;
+using FluentAssertions;
+using FluentResults;
+using Microsoft.EntityFrameworkCore.Query;
 
 using VideoEntity = Streetcode.DAL.Entities.Media.Video;
 
@@ -13,8 +16,10 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video.Update
 {
     public class UpdateVideoHandlerTests
     {
-        private const int FAILURERESULT = -1;
-        private const int EXISTINGSTREETCODEID = 1;
+        private const int SUCCESSFULSAVE = 1;
+        private const int FAILEDSAVE = -1;
+
+        private readonly CancellationToken _cancellationToken = CancellationToken.None;
 
         private readonly Mock<IRepositoryWrapper> _mockRepositoryWrapper;
         private readonly Mock<IMapper> _mockMapper;
@@ -28,52 +33,114 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video.Update
         }
 
         [Fact]
-        public async Task Handle_Should_ReturnFail_WhenSaveChangesAsyncWorkedIncorrect()
+        public async Task Handle_ShouldReturnOkResult_IfCommandHasValidInput()
         {
             // Arrange
-            var request = new UpdateVideoRequestDto(1, "Title", "Description", "https://www.youtube.com", EXISTINGSTREETCODEID);
-            SetupMockRepository(request, FAILURERESULT);
-            SetupMockMapper();
+            var request = GetValidUpdateVideoRequest();
+            SetupMock(request, SUCCESSFULSAVE);
+            var handler = CreateHandler();
             var command = new UpdateVideoCommand(request);
-            var handler = new UpdateVideoHandler(_mockRepositoryWrapper.Object, _mockMapper.Object, _mockLogger.Object);
 
             // Act
-            var result = await handler.Handle(command, CancellationToken.None);
+            var result = await handler.Handle(command, _cancellationToken);
 
             // Assert
-            Assert.True(result.IsFailed);
+            result.IsSuccess.Should().BeTrue();
         }
 
         [Fact]
-        public async Task Handle_Should_LogError_WhenSaveChangesAsyncFails()
+        public async Task Handle_ShouldReturnResultOfCorrectType_IfInputIsValid()
         {
             // Arrange
-            var request = new UpdateVideoRequestDto(1, "Title", "Description", "https://www.youtube.com", EXISTINGSTREETCODEID);
-            SetupMockRepository(request, FAILURERESULT);
-            SetupMockMapper();
+            var request = GetValidUpdateVideoRequest();
+            var expectedType = typeof(Result<UpdateVideoResponseDto>);
+            SetupMock(request, SUCCESSFULSAVE);
+            var handler = CreateHandler();
             var command = new UpdateVideoCommand(request);
-            var handler = new UpdateVideoHandler(_mockRepositoryWrapper.Object, _mockMapper.Object, _mockLogger.Object);
 
             // Act
-            await handler.Handle(command, CancellationToken.None);
+            var result = await handler.Handle(command, _cancellationToken);
 
             // Assert
-            _mockLogger.Verify(x => x.LogError(request, It.IsAny<string>()), Times.Once);
+            result.Should().BeOfType(expectedType);
         }
 
-        private void SetupMockRepository(UpdateVideoRequestDto request, int resultCase)
+        [Fact]
+        public async Task Handle_ShouldReturnResultFail_IfSavingOperationFailed()
         {
-            var videoEntity = new VideoEntity();
-            _mockMapper.Setup(x => x.Map<VideoEntity>(request)).Returns(videoEntity);
+            // Arrange
+            var request = GetValidUpdateVideoRequest();
+            SetupMock(request, FAILEDSAVE);
+            var handler = CreateHandler();
+            var command = new UpdateVideoCommand(request);
 
-            _mockRepositoryWrapper.Setup(x => x.VideoRepository.Update(videoEntity));
-            _mockRepositoryWrapper.Setup(x => x.SaveChangesAsync()).ReturnsAsync(resultCase);
+            // Act
+            var result = await handler.Handle(command, _cancellationToken);
+
+            // Assert
+            result.IsFailed.Should().BeTrue();
         }
 
-        private void SetupMockMapper()
+        [Fact]
+        public async Task Handle_ShouldCallSaveChangesAsyncOnce_IfInputIsValid()
         {
-            _mockMapper.Setup(x => x.Map<VideoDto>(It.IsAny<VideoEntity>()))
-                .Returns(new VideoDto());
+            // Arrange
+            var request = GetValidUpdateVideoRequest();
+            SetupMock(request, SUCCESSFULSAVE);
+            var handler = CreateHandler();
+            var command = new UpdateVideoCommand(request);
+
+            // Act
+            await handler.Handle(command, _cancellationToken);
+
+            // Assert
+            _mockRepositoryWrapper.Verify(x => x.SaveChangesAsync(), Times.Exactly(1));
+        }
+
+        private UpdateVideoHandler CreateHandler()
+        {
+            return new UpdateVideoHandler(
+                _mockRepositoryWrapper.Object,
+                _mockMapper.Object,
+                _mockLogger.Object);
+        }
+
+        private void SetupMock(UpdateVideoRequestDto request, int saveChangesAsyncResult)
+        {
+            var video = new VideoEntity
+            {
+                Id = request.Id,
+                StreetcodeId = 1,
+                Title = request.Title,
+                Description = request.Description,
+                Url = request.Url
+            };
+
+            _mockRepositoryWrapper.Setup(repo => repo.VideoRepository.GetFirstOrDefaultAsync(
+                    It.IsAny<Expression<System.Func<VideoEntity, bool>>>(),
+                    It.IsAny<Func<IQueryable<VideoEntity>, IIncludableQueryable<VideoEntity, object>>>()))
+                .ReturnsAsync(video);
+
+            _mockRepositoryWrapper.Setup(repo => repo.VideoRepository.Update(
+                It.IsAny<VideoEntity>()));
+
+            _mockRepositoryWrapper.Setup(repo => repo.SaveChangesAsync()).ReturnsAsync(saveChangesAsyncResult);
+
+            _mockMapper
+                .Setup(m => m.Map<VideoEntity>(It.IsAny<UpdateVideoRequestDto>())).Returns(video);
+
+            _mockMapper
+                .Setup(m => m.Map<UpdateVideoResponseDto>(It.IsAny<VideoEntity>())).Returns((VideoEntity video) => new UpdateVideoResponseDto(
+                    video.Id,
+                    video.StreetcodeId,
+                    video.Title,
+                    video.Description,
+                    video.Url!));
+        }
+
+        private static UpdateVideoRequestDto GetValidUpdateVideoRequest()
+        {
+            return new UpdateVideoRequestDto(1, "Updated Video Title", "Updated Video Description", "https://example.com/updated_video");
         }
     }
 }

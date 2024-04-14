@@ -9,7 +9,6 @@ namespace Streetcode.XUnitTest.ValidationTests.Media.Video.Create
     {
         private const int MAXTITLELENGTH = 100;
         private const int MAXDESCRPTIONLENGTH = 500;
-        private const int MINSTREETCODEID = 1;
 
         private readonly UpdateVideoRequestDtoValidator _validator;
 
@@ -28,8 +27,7 @@ namespace Streetcode.XUnitTest.ValidationTests.Media.Video.Create
                 Id: id,
                 Title: "Title",
                 Description: "Description",
-                Url: "https://www.youtube.com",
-                StreetcodeId: MINSTREETCODEID);
+                Url: "https://www.youtube.com");
 
             // Act
             var validationResult = _validator.TestValidate(dto);
@@ -49,8 +47,7 @@ namespace Streetcode.XUnitTest.ValidationTests.Media.Video.Create
                 Id: 1,
                 Title: title,
                 Description: "Description",
-                Url: "https://www.youtube.com",
-                StreetcodeId: MINSTREETCODEID);
+                Url: "https://www.youtube.com");
 
             // Act
             var validationResult = _validator.TestValidate(dto);
@@ -70,8 +67,7 @@ namespace Streetcode.XUnitTest.ValidationTests.Media.Video.Create
                 Id: 1,
                 Title: "Title",
                 Description: description,
-                Url: "https://www.youtube.com",
-                StreetcodeId: MINSTREETCODEID);
+                Url: "https://www.youtube.com");
 
             // Act
             var validationResult = _validator.TestValidate(dto);
@@ -92,8 +88,7 @@ namespace Streetcode.XUnitTest.ValidationTests.Media.Video.Create
                 Id: 1,
                 Title: "Title",
                 Description: "Description",
-                Url: url,
-                StreetcodeId: MINSTREETCODEID);
+                Url: url);
 
             // Act
             var validationResult = _validator.TestValidate(dto);
@@ -114,8 +109,7 @@ namespace Streetcode.XUnitTest.ValidationTests.Media.Video.Create
                 Id: 1,
                 Title: "Title",
                 Description: "Description",
-                Url: url,
-                StreetcodeId: MINSTREETCODEID);
+                Url: url);
 
             // Act
             var validationResult = _validator.TestValidate(dto);
@@ -123,26 +117,6 @@ namespace Streetcode.XUnitTest.ValidationTests.Media.Video.Create
             // Assert
             validationResult.ShouldHaveValidationErrorFor(x => x.Url)
                 .WithErrorMessage("Only youtube.com links are accepted.");
-        }
-
-        [Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void ShouldHaveError_WhenStreetcodeIdIsZeroOrNegative(int id)
-        {
-            // Arrange
-            var dto = new UpdateVideoRequestDto(
-                Id: 1,
-                Title: "Title",
-                Description: "Description",
-                Url: "https://www.youtube.com",
-                StreetcodeId: id);
-
-            // Act
-            var validationResult = _validator.TestValidate(dto);
-
-            // Assert
-            validationResult.ShouldHaveValidationErrorFor(x => x.StreetcodeId);
         }
     }
 }

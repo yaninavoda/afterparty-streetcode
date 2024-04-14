@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
-using Streetcode.BLL.Dto.Media.Video;
 using Streetcode.BLL.DTO.Media.Video;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
@@ -11,7 +10,7 @@ using VideoEntity = Streetcode.DAL.Entities.Media.Video;
 
 namespace Streetcode.BLL.MediatR.Media.Video.Update
 {
-    public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<VideoDto>>
+    public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<UpdateVideoResponseDto>>
     {
         private readonly IRepositoryWrapper _repositoryWrapper;
         private readonly IMapper _mapper;
@@ -24,37 +23,53 @@ namespace Streetcode.BLL.MediatR.Media.Video.Update
             _logger = logger;
         }
 
-        public async Task<Result<VideoDto>> Handle(UpdateVideoCommand command, CancellationToken cancellationToken)
+        public async Task<Result<UpdateVideoResponseDto>> Handle(UpdateVideoCommand command, CancellationToken cancellationToken)
         {
             var request = command.Request;
 
-            var video = _mapper.Map<UpdateVideoRequestDto, VideoEntity>(request);
+            var videoToUpdate = await _repositoryWrapper.VideoRepository.GetFirstOrDefaultAsync(v => v.Id == request.Id);
 
-            _repositoryWrapper.VideoRepository.Update(video);
+            if (videoToUpdate == null)
+            {
+                return VideoNotFoundError(request);
+            }
+
+            videoToUpdate.Title = request.Title;
+            videoToUpdate.Description = request.Description;
+            videoToUpdate.Url = request.Url;
+
+            _repositoryWrapper.VideoRepository.Update(videoToUpdate);
 
             bool resultIsSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
 
             if (!resultIsSuccess)
             {
-                string errorMessage = string.Format(
-                ErrorMessages.UpdateFailed,
-                typeof(VideoEntity).Name,
-                request.StreetcodeId);
-
-                _logger.LogError(request, errorMessage);
-                return Result.Fail(errorMessage);
+                return FailedToUpdateVideoError(request);
             }
 
-            var response = new VideoDto
-            {
-                Id = video.Id,
-                Title = video.Title,
-                Description = video.Description,
-                Url = video.Url,
-                StreetcodeId = video.StreetcodeId,
-            };
+            var responseDto = _mapper.Map<UpdateVideoResponseDto>(videoToUpdate);
 
-            return Result.Ok(response);
+            return Result.Ok(responseDto);
+        }
+
+        private Result<UpdateVideoResponseDto> VideoNotFoundError(UpdateVideoRequestDto request)
+        {
+            string errorMsg = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                typeof(VideoEntity).Name,
+                request.Id);
+            _logger.LogError(request, errorMsg);
+            return Result.Fail(errorMsg);
+        }
+
+        private Result<UpdateVideoResponseDto> FailedToUpdateVideoError(UpdateVideoRequestDto request)
+        {
+            string errorMsg = string.Format(
+                ErrorMessages.UpdateFailed,
+                typeof(VideoEntity).Name,
+                request.Id);
+            _logger.LogError(request, errorMsg);
+            return Result.Fail(errorMsg);
         }
     }
 }
