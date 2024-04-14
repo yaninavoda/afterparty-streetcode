@@ -151,6 +151,15 @@ namespace Streetcode.BLL.Resources.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value of property {0} = {1} is not unique in {2}.
+        /// </summary>
+        public static string PropertyMustBeUnique {
+            get {
+                return ResourceManager.GetString("PropertyMustBeUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to update the {0} with id: {1}.
         /// </summary>
         public static string UpdateFailed {
