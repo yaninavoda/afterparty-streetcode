@@ -5,6 +5,7 @@ using Streetcode.BLL.MediatR.Media.Video.Delete;
 using Streetcode.BLL.MediatR.Media.Video.GetAll;
 using Streetcode.BLL.MediatR.Media.Video.GetById;
 using Streetcode.BLL.MediatR.Media.Video.GetByStreetcodeId;
+using Streetcode.BLL.MediatR.Media.Video.Update;
 
 namespace Streetcode.WebApi.Controllers.Media;
 
@@ -32,6 +33,12 @@ public class VideoController : BaseApiController
     public async Task<IActionResult> Create([FromBody] CreateVideoRequestDto request)
     {
         return HandleResult(await Mediator.Send(new CreateVideoCommand(request)));
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] UpdateVideoRequestDto updateRequest)
+    {
+        return HandleResult(await Mediator.Send(new UpdateVideoCommand(updateRequest)));
     }
 
     [HttpDelete]

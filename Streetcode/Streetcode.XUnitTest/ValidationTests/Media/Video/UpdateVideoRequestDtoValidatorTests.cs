@@ -1,21 +1,39 @@
 ﻿using Xunit;
 using FluentValidation.TestHelper;
-using Streetcode.BLL.MediatR.Media.Video.Create;
 using Streetcode.BLL.DTO.Media.Video;
+using Streetcode.BLL.MediatR.Media.Video.Update;
 
 namespace Streetcode.XUnitTest.ValidationTests.Media.Video.Create
 {
-    public class CreateVideoRequestDtoValidatorTests
+    public class UpdateVideoRequestDtoValidatorTests
     {
         private const int MAXTITLELENGTH = 100;
         private const int MAXDESCRPTIONLENGTH = 500;
-        private const int MINSTREETCODEID = 1;
 
-        private readonly CreateVideoRequestDtoValidator _validator;
+        private readonly UpdateVideoRequestDtoValidator _validator;
 
-        public CreateVideoRequestDtoValidatorTests()
+        public UpdateVideoRequestDtoValidatorTests()
         {
-            _validator = new CreateVideoRequestDtoValidator();
+            _validator = new UpdateVideoRequestDtoValidator();
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void ShouldHaveErrors_WhenIdIsNull(int id)
+        {
+            // Arrange
+            var dto = new UpdateVideoRequestDto(
+                Id: id,
+                Title: "Title",
+                Description: "Description",
+                Url: "https://www.youtube.com");
+
+            // Act
+            var validationResult = _validator.TestValidate(dto);
+
+            // Assert
+            validationResult.ShouldHaveValidationErrorFor(x => x.Id);
         }
 
         [Theory]
@@ -25,11 +43,11 @@ namespace Streetcode.XUnitTest.ValidationTests.Media.Video.Create
         {
             // Arrange
             var title = new string('a', length);
-            var dto = new CreateVideoRequestDto(
+            var dto = new UpdateVideoRequestDto(
+                Id: 1,
                 Title: title,
                 Description: "Description",
-                Url: "https://www.youtube.com",
-                StreetcodeId: MINSTREETCODEID);
+                Url: "https://www.youtube.com");
 
             // Act
             var validationResult = _validator.TestValidate(dto);
@@ -45,11 +63,11 @@ namespace Streetcode.XUnitTest.ValidationTests.Media.Video.Create
         {
             // Arrange
             var description = new string('a', length);
-            var dto = new CreateVideoRequestDto(
+            var dto = new UpdateVideoRequestDto(
+                Id: 1,
                 Title: "Title",
                 Description: description,
-                Url: "https://www.youtube.com",
-                StreetcodeId: MINSTREETCODEID);
+                Url: "https://www.youtube.com");
 
             // Act
             var validationResult = _validator.TestValidate(dto);
@@ -66,11 +84,11 @@ namespace Streetcode.XUnitTest.ValidationTests.Media.Video.Create
         public void ShouldNotHaveError_WhenUrlIsValid(string url)
         {
             // Arrange
-            var dto = new CreateVideoRequestDto(
+            var dto = new UpdateVideoRequestDto(
+                Id: 1,
                 Title: "Title",
                 Description: "Description",
-                Url: url,
-                StreetcodeId: MINSTREETCODEID);
+                Url: url);
 
             // Act
             var validationResult = _validator.TestValidate(dto);
@@ -87,11 +105,11 @@ namespace Streetcode.XUnitTest.ValidationTests.Media.Video.Create
         public void ShouldHaveError_WhenUrlIsNotYoutube(string url)
         {
             // Arrange
-            var dto = new CreateVideoRequestDto(
+            var dto = new UpdateVideoRequestDto(
+                Id: 1,
                 Title: "Title",
                 Description: "Description",
-                Url: url,
-                StreetcodeId: MINSTREETCODEID);
+                Url: url);
 
             // Act
             var validationResult = _validator.TestValidate(dto);
@@ -99,25 +117,6 @@ namespace Streetcode.XUnitTest.ValidationTests.Media.Video.Create
             // Assert
             validationResult.ShouldHaveValidationErrorFor(x => x.Url)
                 .WithErrorMessage("Only youtube.com links are accepted.");
-        }
-
-        [Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void ShouldHaveError_WhenStreetcodeIdIsZeroOrNegative(int id)
-        {
-            // Arrange
-            var dto = new CreateVideoRequestDto(
-                Title: "Title",
-                Description: "Description",
-                Url: "https://www.youtube.com",
-                StreetcodeId: id);
-
-            // Act
-            var validationResult = _validator.TestValidate(dto);
-
-            // Assert
-            validationResult.ShouldHaveValidationErrorFor(x => x.StreetcodeId);
         }
     }
 }
