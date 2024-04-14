@@ -35,7 +35,8 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video
         {
             // Arrange
             var request = GetValidVideoRecordRequest();
-            SetupMock(SUCCESSFULSAVE);
+            var video = new VideoEntity();
+            SetupMock(SUCCESSFULSAVE, video);
             var handler = DeleteHandler();
             var command = new DeleteVideoCommand(request);
 
@@ -52,7 +53,8 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video
             // Arrange
             var request = GetValidVideoRecordRequest();
             var expectedType = typeof(Result<DeleteVideoResponseDto>);
-            SetupMock(SUCCESSFULSAVE);
+            var video = new VideoEntity();
+            SetupMock(SUCCESSFULSAVE, video);
             var handler = DeleteHandler();
             var command = new DeleteVideoCommand(request);
 
@@ -68,7 +70,8 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video
         {
             // Arrange
             var request = GetValidVideoRecordRequest();
-            SetupMock(FAILEDSAVE);
+            var video = new VideoEntity();
+            SetupMock(FAILEDSAVE, video);
             var handler = DeleteHandler();
             var command = new DeleteVideoCommand(request);
 
@@ -84,7 +87,8 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video
         {
             // Arrange
             var request = GetValidVideoRecordRequest();
-            SetupMock(FAILEDSAVE);
+            var video = new VideoEntity();
+            SetupMock(FAILEDSAVE, video);
             var handler = DeleteHandler();
             var command = new DeleteVideoCommand(request);
 
@@ -106,7 +110,8 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video
         {
             // Arrange
             var request = GetValidVideoRecordRequest();
-            SetupMock(SUCCESSFULSAVE);
+            var video = new VideoEntity();
+            SetupMock(SUCCESSFULSAVE, video);
             var handler = DeleteHandler();
             var command = new DeleteVideoCommand(request);
 
@@ -117,6 +122,55 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video
             _mockRepositoryWrapper.Verify(x => x.SaveChangesAsync(), Times.Exactly(1));
         }
 
+        [Fact]
+        public async Task Handle_ShouldLogError_IfVideoNotFound()
+        {
+            // Arrange
+            var request = GetInvalidVideoRecordRequest();
+            SetupMock(SUCCESSFULSAVE, video: null);
+            var handler = DeleteHandler();
+            var command = new DeleteVideoCommand(request);
+
+            // Act
+            var result = await handler.Handle(command, _cancellationToken);
+
+            // Assert
+            _mockLogger.Verify(x => x.LogError(request, It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task Handle_ShouldReturnErrorIfVideoNotFound()
+        {
+            // Arrange
+            var request = GetInvalidVideoRecordRequest();
+            SetupMock(SUCCESSFULSAVE, video: null);
+            var handler = DeleteHandler();
+            var command = new DeleteVideoCommand(request);
+
+            // Act
+            var result = await handler.Handle(command, _cancellationToken);
+
+            // Assert
+            result.IsFailed.Should().BeTrue();
+            result.Errors.Should().ContainSingle();
+        }
+
+        [Fact]
+        public async Task Handle_ShouldNotDeleteIfVideoNotFound()
+        {
+            // Arrange
+            var request = GetInvalidVideoRecordRequest();
+            SetupMock(SUCCESSFULSAVE, video: null);
+            var handler = DeleteHandler();
+            var command = new DeleteVideoCommand(request);
+
+            // Act
+            await handler.Handle(command, _cancellationToken);
+
+            // Assert
+            _mockRepositoryWrapper.Verify(x => x.VideoRepository.Delete(It.IsAny<VideoEntity>()), Times.Never);
+        }
+
         private DeleteVideoHandler DeleteHandler()
         {
             return new DeleteVideoHandler(
@@ -124,10 +178,8 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video
                 _mockLogger.Object);
         }
 
-        private void SetupMock(int saveChangesAsyncResult)
+        private void SetupMock(int saveChangesAsyncResult, VideoEntity video)
         {
-            var video = new VideoEntity { Id = 1 };
-
             _mockRepositoryWrapper
                 .Setup(repo => repo.VideoRepository.GetFirstOrDefaultAsync(
                     AnyEntityPredicate<VideoEntity>(),
@@ -152,7 +204,12 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video
 
         private static DeleteVideoRequestDto GetValidVideoRecordRequest()
         {
-            return new(Id: 1);
+            return new(1);
+        }
+
+        private static DeleteVideoRequestDto GetInvalidVideoRecordRequest()
+        {
+            return new(-1);
         }
     }
 }
