@@ -59,7 +59,7 @@ public class CreateStreetcodeCoordinateRequestDtoValidatorTests
         // Assert
         validationResult.ShouldHaveValidationErrorFor(x => x.Longtitude);
     }
-   
+
     [Theory]
     [InlineData(0)]
     [InlineData(MINSTREETCODEID - 10000)]
