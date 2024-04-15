@@ -35,7 +35,7 @@ public class DeleteTermHandlerTests
     {
         // Arrange
         var request = GetValidTextRecordRequest();
-        SetupMock(request, SUCCESSFULSAVE);
+        SetupMock(SUCCESSFULSAVE);
         var handler = DeleteHandler();
         var command = new DeleteTermCommand(request);
 
@@ -52,7 +52,7 @@ public class DeleteTermHandlerTests
         // Arrange
         var request = GetValidTextRecordRequest();
         var expectedType = typeof(Result<DeleteTermResponseDto>);
-        SetupMock(request, SUCCESSFULSAVE);
+        SetupMock(SUCCESSFULSAVE);
         var handler = DeleteHandler();
         var command = new DeleteTermCommand(request);
 
@@ -68,7 +68,7 @@ public class DeleteTermHandlerTests
     {
         // Arrange
         var request = GetValidTextRecordRequest();
-        SetupMock(request, FAILEDSAVE);
+        SetupMock(FAILEDSAVE);
         var handler = DeleteHandler();
         var command = new DeleteTermCommand(request);
 
@@ -84,7 +84,7 @@ public class DeleteTermHandlerTests
     {
         // Arrange
         var request = GetValidTextRecordRequest();
-        SetupMock(request, FAILEDSAVE);
+        SetupMock(FAILEDSAVE);
         var handler = DeleteHandler();
         var command = new DeleteTermCommand(request);
 
@@ -106,7 +106,7 @@ public class DeleteTermHandlerTests
     {
         // Arrange
         var request = GetValidTextRecordRequest();
-        SetupMock(request, SUCCESSFULSAVE);
+        SetupMock(SUCCESSFULSAVE);
         var handler = DeleteHandler();
         var command = new DeleteTermCommand(request);
 
@@ -124,7 +124,7 @@ public class DeleteTermHandlerTests
             _mockLogger.Object);
     }
 
-    private void SetupMock(DeleteTermRequestDto request, int saveChangesAsyncResult)
+    private void SetupMock(int saveChangesAsyncResult)
     {
         var term = new TermEntity { Id = MINID };
 

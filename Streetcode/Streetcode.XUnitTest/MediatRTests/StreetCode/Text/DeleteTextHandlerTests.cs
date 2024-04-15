@@ -34,7 +34,7 @@ public class DeleteTextHandlerTests
     {
         // Arrange
         var request = GetValidTextRecordRequest();
-        SetupMock(request, SUCCESSFULSAVE);
+        SetupMock(SUCCESSFULSAVE);
         var handler = DeleteHandler();
         var command = new DeleteTextCommand(request);
 
@@ -51,7 +51,7 @@ public class DeleteTextHandlerTests
         // Arrange
         var request = GetValidTextRecordRequest();
         var expectedType = typeof(Result<DeleteTextResponseDto>);
-        SetupMock(request, SUCCESSFULSAVE);
+        SetupMock(SUCCESSFULSAVE);
         var handler = DeleteHandler();
         var command = new DeleteTextCommand(request);
 
@@ -67,7 +67,7 @@ public class DeleteTextHandlerTests
     {
         // Arrange
         var request = GetValidTextRecordRequest();
-        SetupMock(request, FAILEDSAVE);
+        SetupMock(FAILEDSAVE);
         var handler = DeleteHandler();
         var command = new DeleteTextCommand(request);
 
@@ -83,7 +83,7 @@ public class DeleteTextHandlerTests
     {
         // Arrange
         var request = GetValidTextRecordRequest();
-        SetupMock(request, FAILEDSAVE);
+        SetupMock(FAILEDSAVE);
         var handler = DeleteHandler();
         var command = new DeleteTextCommand(request);
 
@@ -105,7 +105,7 @@ public class DeleteTextHandlerTests
     {
         // Arrange
         var request = GetValidTextRecordRequest();
-        SetupMock(request, SUCCESSFULSAVE);
+        SetupMock(SUCCESSFULSAVE);
         var handler = DeleteHandler();
         var command = new DeleteTextCommand(request);
 
@@ -123,7 +123,7 @@ public class DeleteTextHandlerTests
             _mockLogger.Object);
     }
 
-    private void SetupMock(DeleteTextRequestDto request, int saveChangesAsyncResult)
+    private void SetupMock(int saveChangesAsyncResult)
     {
         var text = new TextEntity { Id = 1 };
 

@@ -34,7 +34,7 @@ public class DeleteStreetcodeCoordinateHandlerTests
     {
         // Arrange
         var request = GetValidDeleteStreetcodeCoordinateRequest();
-        SetupMock(request, SUCCESSFULSAVE);
+        SetupMock(SUCCESSFULSAVE);
         var handler = DeleteHandler();
         var command = new DeleteStreetcodeCoordinateCommand(request);
 
@@ -51,7 +51,7 @@ public class DeleteStreetcodeCoordinateHandlerTests
         // Arrange
         var request = GetValidDeleteStreetcodeCoordinateRequest();
         var expectedType = typeof(Result<DeleteStreetcodeCoordinateResponseDto>);
-        SetupMock(request, SUCCESSFULSAVE);
+        SetupMock(SUCCESSFULSAVE);
         var handler = DeleteHandler();
         var command = new DeleteStreetcodeCoordinateCommand(request);
 
@@ -67,7 +67,7 @@ public class DeleteStreetcodeCoordinateHandlerTests
     {
         // Arrange
         var request = GetValidDeleteStreetcodeCoordinateRequest();
-        SetupMock(request, FAILEDSAVE);
+        SetupMock(FAILEDSAVE);
         var handler = DeleteHandler();
         var command = new DeleteStreetcodeCoordinateCommand(request);
 
@@ -83,7 +83,7 @@ public class DeleteStreetcodeCoordinateHandlerTests
     {
         // Arrange
         var request = GetValidDeleteStreetcodeCoordinateRequest();
-        SetupMock(request, FAILEDSAVE);
+        SetupMock(FAILEDSAVE);
         var handler = DeleteHandler();
         var command = new DeleteStreetcodeCoordinateCommand(request);
 
@@ -105,7 +105,7 @@ public class DeleteStreetcodeCoordinateHandlerTests
     {
         // Arrange
         var request = GetValidDeleteStreetcodeCoordinateRequest();
-        SetupMock(request, SUCCESSFULSAVE);
+        SetupMock(SUCCESSFULSAVE);
         var handler = DeleteHandler();
         var command = new DeleteStreetcodeCoordinateCommand(request);
 
@@ -123,7 +123,7 @@ public class DeleteStreetcodeCoordinateHandlerTests
             _mockLogger.Object);
     }
 
-    private void SetupMock(DeleteStreetcodeCoordinateRequestDto request, int saveChangesAsyncResult)
+    private void SetupMock(int saveChangesAsyncResult)
     {
         var streetcodeCoordinate = new StreetcodeCoordinateEntity { Id = 1, StreetcodeId = 1, Longtitude = 1, Latitude = 1 };
 
