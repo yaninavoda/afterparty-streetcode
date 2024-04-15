@@ -86,6 +86,14 @@ namespace Streetcode.WebApi.Controllers.Account
             return Ok(responseUser);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+
+            return NoContent();
+        }
+
         private ActionResult<ApplicationUser> FailedToAssignRole(IdentityResult addingRoleResult)
         {
             string errorMessage = string.Join(
