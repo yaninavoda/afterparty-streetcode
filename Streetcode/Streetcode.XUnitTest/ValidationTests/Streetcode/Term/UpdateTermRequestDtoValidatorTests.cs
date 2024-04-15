@@ -41,7 +41,7 @@ public class UpdateTermRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MAXTITLELENGTH + 10000)]
-    public void ShouldHaveError_WhenTitleLengthIsGreaterThanAllowedOrEquelZero(int number)
+    public void ShouldHaveError_WhenTitleLengthIsGreaterThanAllowedOrEqualZero(int number)
     {
         // Arrange
         var dto = new UpdateTermRequestDto(
@@ -59,7 +59,7 @@ public class UpdateTermRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MAXDESCRIPTIONLENGTH + 10000)]
-    public void ShouldHaveError_WhenDescriptionLengthIsGreaterThanAllowedOrEquelZero(int number)
+    public void ShouldHaveError_WhenDescriptionLengthIsGreaterThanAllowedOrEqualZero(int number)
     {
         // Arrange
         var dto = new UpdateTermRequestDto(
