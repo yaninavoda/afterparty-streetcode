@@ -5,7 +5,7 @@ using Streetcode.DAL.Entities.Partners;
 
 namespace Streetcode.DAL.Persistence.Configurations;
 
-public class IEntityTypeConfiguration : IEntityTypeConfiguration<Image>
+public class EntityTypeConfiguration : IEntityTypeConfiguration<Image>
 {
     public void Configure(EntityTypeBuilder<Image> builder)
     {

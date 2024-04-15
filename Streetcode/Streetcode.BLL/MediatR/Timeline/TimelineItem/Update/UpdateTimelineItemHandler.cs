@@ -62,9 +62,12 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
 
             responseDto = _mapper.Map<TimelineItemDto>(updatedTimelineItem);
 
-            var historicalContextDtos = await GetHistoricalContextDtosAsync(request, historicalContextTimeline);
+            IEnumerable<HistoricalContextDto>? historicalContextDtos = await GetHistoricalContextDtosAsync(request, historicalContextTimeline);
 
-            responseDto.HistoricalContexts = historicalContextDtos;
+            if (historicalContextDtos is not null)
+            {
+                responseDto.HistoricalContexts = historicalContextDtos;
+            }
 
             transactionScope.Complete();
 
@@ -97,17 +100,24 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
             h => h.Include(x => x.HistoricalContextTimelines));
     }
 
-    private async Task<IEnumerable<HistoricalContextDto>> GetHistoricalContextDtosAsync(UpdateTimelineItemRequestDto request, HistoricalContextTimelineEntity? historicalContextTimeline)
+    private async Task<IEnumerable<HistoricalContextDto>?> GetHistoricalContextDtosAsync(UpdateTimelineItemRequestDto request, HistoricalContextTimelineEntity? historicalContextTimeline)
     {
-        return (await _repositoryWrapper.HistoricalContextTimelineRepository
+        var historicalContexts = await _repositoryWrapper.HistoricalContextTimelineRepository
             .GetAllAsync(hct =>
             hct.HistoricalContextId == historicalContextTimeline.HistoricalContextId
-                && hct.TimelineId == historicalContextTimeline.TimelineId))
-                    .Select(pair => new HistoricalContextDto
-                    {
-                        Id = pair.HistoricalContextId,
-                        Title = request.HistoricalContext!
-                    });
+                && hct.TimelineId == historicalContextTimeline.TimelineId);
+
+        if (historicalContexts is null)
+        {
+            return null;
+        }
+
+        return historicalContexts
+            .Select(pair => new HistoricalContextDto
+                {
+                    Id = pair.HistoricalContextId,
+                    Title = request.HistoricalContext!
+                });
     }
 
     private async Task<HistoricalContextTimelineEntity?> GetHistoricalContextTimelineAsync(UpdateTimelineItemRequestDto request, HistoricalContextEntity historicalContext)
