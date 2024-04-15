@@ -14,5 +14,7 @@ public class TermProfile : Profile
         CreateMap<Term, CreateTermResponseDto>();
         CreateMap<UpdateTermRequestDto, Term>();
         CreateMap<Term, UpdateTermResponseDto>();
+        CreateMap<DeleteTermRequestDto, Term>();
+        CreateMap<Term, DeleteTermResponseDto>();
     }
 }
