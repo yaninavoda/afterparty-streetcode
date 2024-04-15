@@ -12,9 +12,6 @@ using Streetcode.DAL.Entities.Streetcode;
 using HistoricalContextEntity = Streetcode.DAL.Entities.Timeline.HistoricalContext;
 using TimelineItemEntity = Streetcode.DAL.Entities.Timeline.TimelineItem;
 
-using HistoricalContextEntity = Streetcode.DAL.Entities.Timeline.HistoricalContext;
-using TimelineItemEntity = Streetcode.DAL.Entities.Timeline.TimelineItem;
-
 namespace Streetcode.BLL.MediatR.Timeline.TimelineItem.Create;
 
 public class CreateTimelineItemHandler : IRequestHandler<CreateTimelineItemCommand, Result<TimelineItemDto>>
