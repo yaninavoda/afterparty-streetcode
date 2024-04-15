@@ -22,7 +22,7 @@ public class CreateStatisticRecordRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MINSTREETCODEID - 10000)]
-    public void Should_have_error_when_StreetcodeId_is_zero_or_negative(int id)
+    public void ShouldHaveError_WhenStreetcodeIdIsZeroOrNegative(int id)
     {
         // Arrange
         var dto = new CreateStatisticRecordRequestDto(
@@ -40,7 +40,7 @@ public class CreateStatisticRecordRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MINSTREETCODECOORDINATEID - 10000)]
-    public void Should_have_error_when_StreetcodeCoordinateId_is_zero_or_negative(int streetcodeCoordinateId)
+    public void ShouldHaveError_WhenStreetcodeCoordinateIdIsZeroOrNegative(int streetcodeCoordinateId)
     {
         // Arrange
         var dto = new CreateStatisticRecordRequestDto(
@@ -58,7 +58,7 @@ public class CreateStatisticRecordRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MAXADDRESSLENGTH + 10000)]
-    public void Should_have_error_when_Address_length_is_greater_than_MAXADDRESSLENGTH_or_equel_Zero(int id)
+    public void ShouldHaveError_WhenAddressIsGreaterThanAllowedOrZero(int id)
     {
         // Arrange
         var dto = new CreateStatisticRecordRequestDto(
@@ -74,7 +74,7 @@ public class CreateStatisticRecordRequestDtoValidatorTests
     }
 
     [Fact]
-    public void Should_not_have_error_when_dto_is_valid()
+    public void ShouldNotHaveError_WhenDtoIsValid()
     {
         // Arrange
         var dto = new CreateStatisticRecordRequestDto(

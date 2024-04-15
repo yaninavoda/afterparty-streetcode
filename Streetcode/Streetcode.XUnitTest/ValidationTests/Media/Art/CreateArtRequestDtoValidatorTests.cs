@@ -21,7 +21,7 @@ public class CreateArtRequestDtoValidatorTests
     }
 
     [Fact]
-    public void Should_not_have_error_when_dto_without_Title()
+    public void ShouldNotHaveError_WhenDtoWithoutTitle()
     {
         // Arrange
         var dto = new CreateArtRequestDto(
@@ -38,7 +38,7 @@ public class CreateArtRequestDtoValidatorTests
     }
 
     [Fact]
-    public void Should_not_have_error_when_dto_without_Description()
+    public void ShouldNotHaveError_WhenDtoWithoutDescription()
     {
         // Arrange
         var dto = new CreateArtRequestDto(
@@ -57,7 +57,7 @@ public class CreateArtRequestDtoValidatorTests
     [Theory]
     [InlineData(MAXTITLELENGTH + 1)]
     [InlineData(MAXTITLELENGTH + 10000)]
-    public void Should_have_error_when_Title_is_longerThanAllowed(int length)
+    public void ShouldHaveError_WhenTitleIsLongerThanAllowed(int length)
     {
         // Arrange
         var title = string.Concat(Enumerable.Repeat('a', length));
@@ -77,7 +77,7 @@ public class CreateArtRequestDtoValidatorTests
     [Theory]
     [InlineData(MAXDESCRPTIONLENGTH + 1)]
     [InlineData(MAXDESCRPTIONLENGTH + 10000)]
-    public void Should_have_error_when_Description_is_longerThanAllowed(int length)
+    public void ShouldHaveError_WhenDescriptionIsLongerThanAllowed(int length)
     {
         // Arrange
         var description = string.Concat(Enumerable.Repeat('a', length));
@@ -97,7 +97,7 @@ public class CreateArtRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MINIMAGEID - 10000)]
-    public void Should_have_error_when_ImageId_is_zero_or_negative(int id)
+    public void ShouldHaveError_WhenImageIdIsZeroOrNegative(int id)
     {
         // Arrange
         var dto = new CreateArtRequestDto(
@@ -116,7 +116,7 @@ public class CreateArtRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MINSTREETCODEID - 10000)]
-    public void Should_have_error_when_StreetcodeId_is_zero_or_negative(int id)
+    public void ShouldHaveError_WhenStreetcodeIdIsZeroOrNegative(int id)
     {
         // Arrange
         var dto = new CreateArtRequestDto(
@@ -133,7 +133,7 @@ public class CreateArtRequestDtoValidatorTests
     }
 
     [Fact]
-    public void Should_not_have_error_when_dto_is_valid()
+    public void ShouldNotHaveError_WhenDtoIsValid()
     {
         // Arrange
         var dto = new CreateArtRequestDto(

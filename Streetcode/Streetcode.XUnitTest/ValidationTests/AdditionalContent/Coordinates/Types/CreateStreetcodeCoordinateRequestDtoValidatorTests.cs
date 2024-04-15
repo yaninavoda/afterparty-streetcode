@@ -23,7 +23,7 @@ public class CreateStreetcodeCoordinateRequestDtoValidatorTests
     [Theory]
     [InlineData(-91)]
     [InlineData(MINLATITUDE - 10000)]
-    public void Should_have_error_when_Latitude_is_less_than_Minus_90(int latitude)
+    public void ShouldHaveError_WhenLatitudeIsLessThanMinus90(int latitude)
     {
         // Arrange
         var dto = new CreateStreetcodeCoordinateRequestDto(
@@ -41,7 +41,7 @@ public class CreateStreetcodeCoordinateRequestDtoValidatorTests
     [Theory]
     [InlineData(91)]
     [InlineData(MAXLATITUDE + 10000)]
-    public void Should_have_error_when_Latitude_is_greater_than_90(int latitude)
+    public void ShouldHaveError_WhenLatitudeIsGreaterThan90(int latitude)
     {
         // Arrange
         var dto = new CreateStreetcodeCoordinateRequestDto(
@@ -59,7 +59,7 @@ public class CreateStreetcodeCoordinateRequestDtoValidatorTests
     [Theory]
     [InlineData(-181)]
     [InlineData(MINLATITUDE - 10000)]
-    public void Should_have_error_when_Longtitude_is_less_than_Minus_180(int longtitude)
+    public void ShouldHaveError_WhenLongtitudeIsLessThanMinus180(int longtitude)
     {
         // Arrange
         var dto = new CreateStreetcodeCoordinateRequestDto(
@@ -77,7 +77,7 @@ public class CreateStreetcodeCoordinateRequestDtoValidatorTests
     [Theory]
     [InlineData(181)]
     [InlineData(MINLATITUDE + 10000)]
-    public void Should_have_error_when_Longtitude_is_greater_than_180(int longtitude)
+    public void ShouldHaveEerror_WhenLongtitudeIsGreaterThan180(int longtitude)
     {
         // Arrange
         var dto = new CreateStreetcodeCoordinateRequestDto(
@@ -95,7 +95,7 @@ public class CreateStreetcodeCoordinateRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MINSTREETCODEID - 10000)]
-    public void Should_have_error_when_StreetcodeId_is_zero_or_negative(int id)
+    public void ShouldHaveError_WhenStreetcodeIdIsZeroOrNegative(int id)
     {
         // Arrange
         var dto = new CreateStreetcodeCoordinateRequestDto(
@@ -111,7 +111,7 @@ public class CreateStreetcodeCoordinateRequestDtoValidatorTests
     }
 
     [Fact]
-    public void Should_not_have_error_when_dto_is_valid()
+    public void ShouldNotHaveError_WhenDtoIsValid()
     {
         // Arrange
         var dto = new CreateStreetcodeCoordinateRequestDto(

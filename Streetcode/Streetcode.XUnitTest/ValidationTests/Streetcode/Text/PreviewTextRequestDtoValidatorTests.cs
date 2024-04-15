@@ -24,7 +24,7 @@ public class PreviewTextRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MAXTITLELENGTH + 10000)]
-    public void Should_have_error_when_Title_length_is_greater_than_MAXTITLE_or_equel_Zero(int number)
+    public void ShouldHaveError_WhenTitleIsGreaterThanAllowedOrZero(int number)
     {
         // Arrange
         var dto = new CreateTextRequestDto(
@@ -43,7 +43,7 @@ public class PreviewTextRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MAXTEXTCONTENTLENGTH + 10000)]
-    public void Should_have_error_when_TextContent_length_is_greater_than_MAXTEXTCONTENTLENGTH_or_equel_Zero(int number)
+    public void ShouldHaveError_WhenTextContentIsGreaterThanAllowedOrZero(int number)
     {
         // Arrange
         var dto = new CreateTextRequestDto(
@@ -62,7 +62,7 @@ public class PreviewTextRequestDtoValidatorTests
     [Theory]
     [InlineData(MAXADDITIONALTEXTLENGTH + 10)]
     [InlineData(MAXADDITIONALTEXTLENGTH + 10000)]
-    public void Should_have_error_when_AdditionalText_length_is_greater_than_MAXADDITIONALTEXTLENGTH(int number)
+    public void ShouldHaveError_WhenAdditionalTextIsGreaterThanAllowed(int number)
     {
         // Arrange
         var dto = new CreateTextRequestDto(
@@ -79,7 +79,7 @@ public class PreviewTextRequestDtoValidatorTests
     }
 
     [Fact]
-    public void Should_not_have_error_when_dto_is_valid()
+    public void ShouldNotHaveError_WhenDtoIsValid()
     {
         // Arrange
         var dto = new CreateTextRequestDto(

@@ -19,7 +19,7 @@ public class DeleteArtRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MINARTID - 10000)]
-    public void Should_have_error_when_ArtId_is_zero_or_negative(int id)
+    public void ShouldHaveError_WhenArtIdIsZeroOrNegative(int id)
     {
         // Arrange
         var dto = new DeleteArtRequestDto(Id: id);
@@ -32,7 +32,7 @@ public class DeleteArtRequestDtoValidatorTests
     }
 
     [Fact]
-    public void Should_not_have_error_when_dto_is_valid()
+    public void ShouldNotHaveError_WhenDtoIsValid()
     {
         // Arrange
         var dto = new DeleteArtRequestDto(Id: MINARTID);

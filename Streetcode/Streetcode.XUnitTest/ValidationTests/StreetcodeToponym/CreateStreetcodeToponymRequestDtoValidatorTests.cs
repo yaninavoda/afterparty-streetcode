@@ -20,7 +20,7 @@ public class CreateStreetcodeToponymRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MINTOPONYMID - 10000)]
-    public void Should_have_error_when_ToponymId_is_zero_or_negative(int id)
+    public void ShouldHaveError_WhenToponymIdIsZeroOrNegative(int id)
     {
         // Arrange
         var dto = new CreateStreetcodeToponymRequestDto(
@@ -37,7 +37,7 @@ public class CreateStreetcodeToponymRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MINSTREETCODEID - 10000)]
-    public void Should_have_error_when_StreetcodeId_is_zero_or_negative(int id)
+    public void ShouldHaveError_WhenStreetcodeIdIsZeroOrNegative(int id)
     {
         // Arrange
         var dto = new CreateStreetcodeToponymRequestDto(
@@ -52,7 +52,7 @@ public class CreateStreetcodeToponymRequestDtoValidatorTests
     }
 
     [Fact]
-    public void Should_not_have_error_when_dto_is_valid()
+    public void ShouldNotHaveError_WhenDtoIsValid()
     {
         // Arrange
         var dto = new CreateStreetcodeToponymRequestDto(
