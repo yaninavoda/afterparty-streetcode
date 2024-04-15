@@ -12,5 +12,7 @@ public class TermProfile : Profile
         CreateMap<Term, TermDto>().ReverseMap();
         CreateMap<CreateTermRequestDto, Term>();
         CreateMap<Term, CreateTermResponseDto>();
+        CreateMap<UpdateTermRequestDto, Term>();
+        CreateMap<Term, UpdateTermResponseDto>();
     }
 }
