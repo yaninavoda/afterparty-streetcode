@@ -37,9 +37,12 @@ public class UpdateTermHandler :
             return TermIsNotFoundError(request);
         }
 
-        if (!await IsTermTitleUniqueAsync(request.Title))
+        if (existedTerm.Title != request.Title)
         {
-            return TermTitleIsNotUniqueError(request);
+            if (!await IsTermTitleUniqueAsync(request.Title))
+            {
+                return TermTitleIsNotUniqueError(request);
+            }
         }
 
         _repositoryWrapper.TermRepository.Update(termToUpdate);

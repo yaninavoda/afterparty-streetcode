@@ -202,7 +202,7 @@ public class UpdateTermHandlerTests
     {
         return new(
             Id: MINID,
-            Title: new string('a', MINLENGTH),
+            Title: new string('a', MINLENGTH + 1),
             Description: new string('a', MINLENGTH));
     }
 }
