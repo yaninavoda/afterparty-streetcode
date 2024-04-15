@@ -164,11 +164,6 @@ public class UpdateCategoryContentHandlerTests
             .Returns(GetStreetcodeCategoryContentDto());
     }
 
-    private void SetupMockLogger(CategoryContentUpdateDto request, string errorMessage)
-    {
-        _mockLogger.Setup(x => x.LogError(request, errorMessage));
-    }
-
     private StreetcodeCategoryContent GetStreetcodeCategoryContent()
     {
         return new StreetcodeCategoryContent { StreetcodeId = 1 };
