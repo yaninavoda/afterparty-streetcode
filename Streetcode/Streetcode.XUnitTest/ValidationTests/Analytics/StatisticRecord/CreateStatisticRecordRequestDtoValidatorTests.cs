@@ -58,7 +58,7 @@ public class CreateStatisticRecordRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MAXADDRESSLENGTH + 10000)]
-    public void     ShouldHaveError_WhenAddressIsGreaterThanAllowedOrZero(int id)
+    public void ShouldHaveError_WhenAddressIsGreaterThanAllowedOrZero(int id)
     {
         // Arrange
         var dto = new CreateStatisticRecordRequestDto(
