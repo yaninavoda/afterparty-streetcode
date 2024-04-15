@@ -92,7 +92,7 @@ public class WebParsingUtils
 
         var clientHandler = new HttpClientHandler();
         clientHandler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-        clientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => CustomCertificateValidationCallback(message, cert, chain, errors);
+        clientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => CustomCertificateValidationCallback(chain, errors);
 
         var retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(
             3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
@@ -382,8 +382,6 @@ public class WebParsingUtils
     }
 
     private static bool CustomCertificateValidationCallback(
-        HttpRequestMessage message,
-        X509Certificate? certificate,
         X509Chain? chain,
         SslPolicyErrors sslPolicyErrors)
     {

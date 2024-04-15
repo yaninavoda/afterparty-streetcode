@@ -19,7 +19,7 @@ public class DeleteStatisticRecordRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MINID - 10000)]
-    public void Should_have_error_when_Id_is_zero_or_negative(int id)
+    public void ShouldHaveError_WhenIdIsZeroOrNegative(int id)
     {
         // Arrange
         var dto = new DeleteStatisticRecordRequestDto(Id: id);
@@ -32,7 +32,7 @@ public class DeleteStatisticRecordRequestDtoValidatorTests
     }
 
     [Fact]
-    public void Should_not_have_error_when_dto_is_valid()
+    public void ShouldNotHaveError_WhenDtoIsValid()
     {
         // Arrange
         var dto = new DeleteStatisticRecordRequestDto(Id: MINID);

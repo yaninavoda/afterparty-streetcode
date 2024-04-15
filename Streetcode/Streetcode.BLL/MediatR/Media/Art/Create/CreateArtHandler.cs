@@ -50,7 +50,7 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
 
         _repositoryWrapper.ArtRepository.Create(newArt);
 
-        if (!(await _repositoryWrapper.SaveChangesAsync() > 0))
+        if (await _repositoryWrapper.SaveChangesAsync() <= 0)
         {
             return FailedToCreateArtError(request);
         }
@@ -69,7 +69,7 @@ public class CreateArtHandler : IRequestHandler<CreateArtCommand, Result<CreateA
 
         _repositoryWrapper.StreetcodeArtRepository.Create(streetcodeArt);
 
-        if (!(await _repositoryWrapper.SaveChangesAsync() > 0))
+        if (await _repositoryWrapper.SaveChangesAsync() <= 0)
         {
             return FailedToCreateStreetcodeArtError(request);
         }
