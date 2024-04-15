@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.Account;
+using Streetcode.BLL.DTO.Account;
 using Streetcode.DAL.Entities.Users;
 using UserRole = Streetcode.DAL.Entities.Users.UserRole;
 
@@ -52,6 +53,37 @@ namespace Streetcode.WebApi.Controllers.Account
             }
 
             return Ok(user);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ApplicationUser>> Login(LoginUserDto loginUserDto)
+        {
+            // sign-in
+            var result = await _signInManager.PasswordSignInAsync(
+                loginUserDto.Email,
+                loginUserDto.Password,
+                isPersistent: false,
+                lockoutOnFailure: false);
+
+            if (!result.Succeeded)
+            {
+                return Problem("Invalid email or password");
+            }
+
+            ApplicationUser user = await _userManager.FindByEmailAsync(loginUserDto.Email);
+
+            if (user == null)
+            {
+                return NoContent();
+            }
+
+            ApplicationUser responseUser = new ApplicationUser
+            {
+                UserName = user.UserName,
+                Email = loginUserDto.Email,
+            };
+
+            return Ok(responseUser);
         }
 
         private ActionResult<ApplicationUser> FailedToAssignRole(IdentityResult addingRoleResult)
