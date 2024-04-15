@@ -28,7 +28,7 @@ namespace Streetcode.WebApi.Middlewares
             }
         }
 
-        private async Task HandleCustomExceptionResponseAsync(HttpContext context, Exception ex)
+        private static async Task HandleCustomExceptionResponseAsync(HttpContext context, Exception ex)
         {
             context.Response.ContentType = MediaTypeNames.Application.Json;
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

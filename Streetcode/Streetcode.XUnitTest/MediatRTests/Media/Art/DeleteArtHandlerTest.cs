@@ -154,7 +154,7 @@ public class DeleteArtHandlerTest
         _mockLogger.Setup(x => x.LogError(id, errorMessage));
     }
 
-    private string ArtNotFoundErrorMessage(int id)
+    private static string ArtNotFoundErrorMessage(int id)
     {
         return string.Format(
             ErrorMessages.EntityByIdNotFound,
@@ -162,7 +162,7 @@ public class DeleteArtHandlerTest
             id);
     }
 
-    private string DeleteFailedErrorMessage(int id)
+    private static string DeleteFailedErrorMessage(int id)
     {
         return string.Format(
             ErrorMessages.DeleteFailed,

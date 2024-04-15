@@ -100,7 +100,7 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video.Create
             result.Should().BeOfType(expectedType);
         }
 
-        private CreateVideoRequestDto GetValidCreateVideoRequest()
+        private static CreateVideoRequestDto GetValidCreateVideoRequest()
         {
             return new CreateVideoRequestDto(
                 Title: "Test Video",

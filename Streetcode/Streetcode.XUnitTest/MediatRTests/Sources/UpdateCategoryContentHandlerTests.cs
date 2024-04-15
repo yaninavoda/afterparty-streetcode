@@ -164,12 +164,12 @@ public class UpdateCategoryContentHandlerTests
             .Returns(GetStreetcodeCategoryContentDto());
     }
 
-    private StreetcodeCategoryContent GetStreetcodeCategoryContent()
+    private static StreetcodeCategoryContent GetStreetcodeCategoryContent()
     {
         return new StreetcodeCategoryContent { StreetcodeId = 1 };
     }
 
-    private StreetcodeCategoryContentDto GetStreetcodeCategoryContentDto()
+    private static StreetcodeCategoryContentDto GetStreetcodeCategoryContentDto()
     {
         return new StreetcodeCategoryContentDto { StreetcodeId = 1 };
     }

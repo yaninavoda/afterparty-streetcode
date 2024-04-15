@@ -146,12 +146,12 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
                 .ReturnsAsync(-1);
         }
 
-        private UpdateFactDto GetRequest()
+        private static UpdateFactDto GetRequest()
         {
             return new UpdateFactDto(1, "Title", "Content", 1, 1);
         }
 
-        private FactEntity GetFact()
+        private static FactEntity GetFact()
         {
             return new FactEntity()
             {
@@ -163,12 +163,12 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Fact
             };
         }
 
-        private FactDto GetFactDto()
+        private static FactDto GetFactDto()
         {
             return new FactDto(1, 1, "Title", "Content", 1, 1);
         }
 
-        private string ExpectedErrorMessage(UpdateFactDto request)
+        private static string ExpectedErrorMessage(UpdateFactDto request)
         {
            return string.Format(
                 ErrorMessages.UpdateFailed,
