@@ -1,7 +1,6 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Streetcode.DAL.Entities.AdditionalContent;
-using Streetcode.DAL.Entities.AdditionalContent.Coordinates;
 using Streetcode.DAL.Entities.AdditionalContent.Coordinates.Types;
 using Streetcode.DAL.Entities.Analytics;
 using Streetcode.DAL.Entities.Feedback;
@@ -12,18 +11,16 @@ using Streetcode.DAL.Entities.Partners;
 using Streetcode.DAL.Entities.Sources;
 using Streetcode.DAL.Entities.Streetcode;
 using Streetcode.DAL.Entities.Streetcode.TextContent;
-using Streetcode.DAL.Entities.Streetcode.Types;
 using Streetcode.DAL.Entities.Team;
 using Streetcode.DAL.Entities.Timeline;
 using Streetcode.DAL.Entities.Toponyms;
 using Streetcode.DAL.Entities.Transactions;
 using Streetcode.DAL.Entities.Users;
-using Streetcode.DAL.Enums;
 using Streetcode.DAL.Persistence.Configurations;
 
 namespace Streetcode.DAL.Persistence;
 
-public class StreetcodeDbContext : DbContext
+public class StreetcodeDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
 {
     public StreetcodeDbContext()
     {
@@ -59,7 +56,6 @@ public class StreetcodeDbContext : DbContext
     public DbSet<Video> Videos { get; set; }
     public DbSet<StreetcodeCategoryContent> StreetcodeCategoryContent { get; set; }
     public DbSet<StreetcodeArt> StreetcodeArts { get; set; }
-    public DbSet<User> Users { get; set; }
     public DbSet<StreetcodeTagIndex> StreetcodeTagIndices { get; set; }
     public DbSet<TeamMember> TeamMembers { get; set; }
     public DbSet<TeamMemberLink> TeamMemberLinks { get; set; }
@@ -71,12 +67,34 @@ public class StreetcodeDbContext : DbContext
     public DbSet<StreetcodePartner> StreetcodePartners { get; set; }
     public DbSet<TeamMemberPositions> TeamMemberPosition { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(builder);
 
-        modelBuilder.UseCollation("SQL_Ukrainian_CP1251_CI_AS");
+        builder.UseCollation("SQL_Ukrainian_CP1251_CI_AS");
 
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(NewsEntityTypeConfiguration).Assembly);
+        builder.ApplyConfigurationsFromAssembly(typeof(NewsEntityTypeConfiguration).Assembly);
+
+        SeedRoles(builder);
+    }
+
+    private static void SeedRoles(ModelBuilder builder)
+    {
+        builder.Entity<ApplicationRole>()
+            .HasData(
+                new ApplicationRole
+                {
+                    Id = -1,
+                    Name = "Admin",
+                    NormalizedName = "ADMIN",
+                    ConcurrencyStamp = Guid.NewGuid().ToString()
+                },
+                new ApplicationRole
+                {
+                    Id = -2,
+                    Name = "User",
+                    NormalizedName = "USER",
+                    ConcurrencyStamp = Guid.NewGuid().ToString()
+                });
     }
 }
