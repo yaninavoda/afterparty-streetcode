@@ -22,26 +22,10 @@ public class CreateStreetcodeCoordinateRequestDtoValidatorTests
 
     [Theory]
     [InlineData(-91)]
-    [InlineData(MINLATITUDE - 10000)]
-    public void Should_have_error_when_Latitude_is_less_than_Minus_90(int latitude)
-    {
-        // Arrange
-        var dto = new CreateStreetcodeCoordinateRequestDto(
-                    StreetcodeId: MINSTREETCODEID,
-                    Latitude: latitude,
-                    Longtitude: MINLONGTITUDE);
-
-        // Act
-        var validationResult = _validator.TestValidate(dto);
-
-        // Assert
-        validationResult.ShouldHaveValidationErrorFor(x => x.Latitude);
-    }
-
-    [Theory]
     [InlineData(91)]
+    [InlineData(MINLATITUDE - 10000)]
     [InlineData(MAXLATITUDE + 10000)]
-    public void Should_have_error_when_Latitude_is_greater_than_90(int latitude)
+    public void ShouldHaveError_WhenLatitudeIsLessOrGraterThanAllowed(int latitude)
     {
         // Arrange
         var dto = new CreateStreetcodeCoordinateRequestDto(
@@ -58,26 +42,10 @@ public class CreateStreetcodeCoordinateRequestDtoValidatorTests
 
     [Theory]
     [InlineData(-181)]
-    [InlineData(MINLATITUDE - 10000)]
-    public void Should_have_error_when_Longtitude_is_less_than_Minus_180(int longtitude)
-    {
-        // Arrange
-        var dto = new CreateStreetcodeCoordinateRequestDto(
-                    StreetcodeId: MINSTREETCODEID,
-                    Latitude: MINLATITUDE,
-                    Longtitude: longtitude);
-
-        // Act
-        var validationResult = _validator.TestValidate(dto);
-
-        // Assert
-        validationResult.ShouldHaveValidationErrorFor(x => x.Longtitude);
-    }
-
-    [Theory]
     [InlineData(181)]
-    [InlineData(MINLATITUDE + 10000)]
-    public void Should_have_error_when_Longtitude_is_greater_than_180(int longtitude)
+    [InlineData(MINLATITUDE - 10000)]
+    [InlineData(MAXLONGTITUDE + 10000)]
+    public void ShouldHaveError_WhenLongtitudeIsLessOrGraterThanAllowed(int longtitude)
     {
         // Arrange
         var dto = new CreateStreetcodeCoordinateRequestDto(

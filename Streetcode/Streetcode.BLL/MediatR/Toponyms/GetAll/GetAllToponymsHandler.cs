@@ -20,7 +20,7 @@ public class GetAllToponymsHandler : IRequestHandler<GetAllToponymsQuery,
         _mapper = mapper;
     }
 
-    public async Task<Result<GetAllToponymsResponseDto>> Handle(GetAllToponymsQuery query, CancellationToken cancellationToken)
+    public Task<Result<GetAllToponymsResponseDto>> Handle(GetAllToponymsQuery query, CancellationToken cancellationToken)
     {
         var filterRequest = query.request;
 
@@ -32,8 +32,6 @@ public class GetAllToponymsHandler : IRequestHandler<GetAllToponymsQuery,
             FindStreetcodesWithMatchTitle(ref toponyms, filterRequest.Title);
         }
 
-        // int pagesAmount = ApplyPagination(ref toponyms, filterRequest.Amount, filterRequest.Page);
-
         var toponymDtos = _mapper.Map<IEnumerable<ToponymDto>>(toponyms.AsEnumerable());
 
         var response = new GetAllToponymsResponseDto
@@ -42,7 +40,7 @@ public class GetAllToponymsHandler : IRequestHandler<GetAllToponymsQuery,
             Toponyms = toponymDtos
         };
 
-        return Result.Ok(response);
+        return Task.FromResult(Result.Ok(response));
     }
 
     private void FindStreetcodesWithMatchTitle(
@@ -56,18 +54,4 @@ public class GetAllToponymsHandler : IRequestHandler<GetAllToponymsQuery,
             .GroupBy(s => s.StreetName)
             .Select(g => g.First());
     }
-
-    // private int ApplyPagination(
-    //    ref IQueryable<Toponym> toponyms,
-    //    int amount,
-    //    int page)
-    // {
-    //    var totalPages = (int)Math.Ceiling(toponyms.Count() / (double)amount);
-
-    // toponyms = toponyms
-    //        .Skip((page - 1) * amount)
-    //        .Take(amount);
-
-    // return totalPages;
-    // }
 }

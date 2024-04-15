@@ -7,12 +7,12 @@ using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 using Streetcode.BLL.DTO.Timeline;
-
-using HistoricalContextEntity = Streetcode.DAL.Entities.Timeline.HistoricalContext;
-using TimelineItemEntity = Streetcode.DAL.Entities.Timeline.TimelineItem;
 using Streetcode.DAL.Entities.Timeline;
 using Streetcode.DAL.Entities.Streetcode;
 using Org.BouncyCastle.Asn1.Ocsp;
+
+using HistoricalContextEntity = Streetcode.DAL.Entities.Timeline.HistoricalContext;
+using TimelineItemEntity = Streetcode.DAL.Entities.Timeline.TimelineItem;
 
 namespace Streetcode.BLL.MediatR.Timeline.TimelineItem.Create;
 
