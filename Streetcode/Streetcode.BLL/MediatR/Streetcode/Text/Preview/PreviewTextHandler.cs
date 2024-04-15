@@ -10,7 +10,7 @@ public class PreviewTextHandler :
 {
     private const string PREFILLEDTEXT = "Текст підготовлений спільно з ";
 
-    public async Task<Result<PreviewTextResponseDto>> Handle(PreviewTextQuery query, CancellationToken cancellationToken)
+    public Task<Result<PreviewTextResponseDto>> Handle(PreviewTextQuery query, CancellationToken cancellationToken)
     {
         var request = query.Request;
         PreviewTextResponseDto responseDto;
@@ -31,6 +31,6 @@ public class PreviewTextHandler :
                 AdditionalText: null);
         }
 
-        return Result.Ok(responseDto);
+        return Task.FromResult(Result.Ok(responseDto));
     }
 }
