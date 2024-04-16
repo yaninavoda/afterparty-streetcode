@@ -38,7 +38,7 @@ public class CreateTermHandlerTests
     {
         // Arrange
         var request = GetValidCreateTermRequest();
-        SetupMock(request, SUCCESSFULSAVE, isUniqueTermTitle: true);
+        SetupMock(SUCCESSFULSAVE, isUniqueTermTitle: true);
         var handler = CreateHandler();
         var command = new CreateTermCommand(request);
 
@@ -50,11 +50,11 @@ public class CreateTermHandlerTests
     }
 
     [Fact]
-    public async Task Handle_InvalidCreateTermCommand_WithNotUniqueTermTitle_ShouldReturnSingleError()
+    public async Task Handle_ShouldReturnSingleError_IfInvalidCreateTermCommandWithNotUniqueTermTitle()
     {
         // Arrange
         var request = GetValidCreateTermRequest();
-        SetupMock(request, SUCCESSFULSAVE, isUniqueTermTitle: false);
+        SetupMock(SUCCESSFULSAVE, isUniqueTermTitle: false);
         string expectedErrorMsg = string.Format(
             ErrorMessages.PropertyMustBeUnique,
             nameof(request.Title),
@@ -76,7 +76,7 @@ public class CreateTermHandlerTests
         // Arrange
         var request = GetValidCreateTermRequest();
         var expectedType = typeof(Result<CreateTermResponseDto>);
-        SetupMock(request, SUCCESSFULSAVE, isUniqueTermTitle: true);
+        SetupMock(SUCCESSFULSAVE, isUniqueTermTitle: true);
         var handler = CreateHandler();
         var command = new CreateTermCommand(request);
 
@@ -92,7 +92,7 @@ public class CreateTermHandlerTests
     {
         // Arrange
         var request = GetValidCreateTermRequest();
-        SetupMock(request, FAILEDSAVE, isUniqueTermTitle: true);
+        SetupMock(FAILEDSAVE, isUniqueTermTitle: true);
 
         var handler = CreateHandler();
         var command = new CreateTermCommand(request);
@@ -109,7 +109,7 @@ public class CreateTermHandlerTests
     {
         // Arrange
         var request = GetValidCreateTermRequest();
-        SetupMock(request, SUCCESSFULSAVE, isUniqueTermTitle: true);
+        SetupMock(SUCCESSFULSAVE, isUniqueTermTitle: true);
         var handler = CreateHandler();
         var command = new CreateTermCommand(request);
 
@@ -128,7 +128,7 @@ public class CreateTermHandlerTests
             _mockLogger.Object);
     }
 
-    private void SetupMock(CreateTermRequestDto request, int saveChangesAsyncResult, bool isUniqueTermTitle)
+    private void SetupMock(int saveChangesAsyncResult, bool isUniqueTermTitle)
     {
         var validTerm = new TermEntity
         {

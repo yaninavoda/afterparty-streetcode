@@ -34,7 +34,7 @@ public class DeleteStatisticRecordHandlerTests
     {
         // Arrange
         var request = GetValidDeleteStatisticRecordRequest();
-        SetupMock(request, SUCCESSFULSAVE);
+        SetupMock(SUCCESSFULSAVE);
         var handler = DeleteHandler();
         var command = new DeleteStatisticRecordCommand(request);
 
@@ -51,7 +51,7 @@ public class DeleteStatisticRecordHandlerTests
         // Arrange
         var request = GetValidDeleteStatisticRecordRequest();
         var expectedType = typeof(Result<DeleteStatisticRecordResponseDto>);
-        SetupMock(request, SUCCESSFULSAVE);
+        SetupMock(SUCCESSFULSAVE);
         var handler = DeleteHandler();
         var command = new DeleteStatisticRecordCommand(request);
 
@@ -67,7 +67,7 @@ public class DeleteStatisticRecordHandlerTests
     {
         // Arrange
         var request = GetValidDeleteStatisticRecordRequest();
-        SetupMock(request, FAILEDSAVE);
+        SetupMock(FAILEDSAVE);
         var handler = DeleteHandler();
         var command = new DeleteStatisticRecordCommand(request);
 
@@ -83,7 +83,7 @@ public class DeleteStatisticRecordHandlerTests
     {
         // Arrange
         var request = GetValidDeleteStatisticRecordRequest();
-        SetupMock(request, FAILEDSAVE);
+        SetupMock(FAILEDSAVE);
         var handler = DeleteHandler();
         var command = new DeleteStatisticRecordCommand(request);
 
@@ -105,7 +105,7 @@ public class DeleteStatisticRecordHandlerTests
     {
         // Arrange
         var request = GetValidDeleteStatisticRecordRequest();
-        SetupMock(request, SUCCESSFULSAVE);
+        SetupMock(SUCCESSFULSAVE);
         var handler = DeleteHandler();
         var command = new DeleteStatisticRecordCommand(request);
 
@@ -123,7 +123,7 @@ public class DeleteStatisticRecordHandlerTests
             _mockLogger.Object);
     }
 
-    private void SetupMock(DeleteStatisticRecordRequestDto request, int saveChangesAsyncResult)
+    private void SetupMock(int saveChangesAsyncResult)
     {
         var statisticRecord = new StatisticRecordEntity { Id = 1, StreetcodeId = 1, StreetcodeCoordinateId = 1 };
 

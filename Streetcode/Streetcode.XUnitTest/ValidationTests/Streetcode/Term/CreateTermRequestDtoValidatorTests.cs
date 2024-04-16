@@ -22,7 +22,7 @@ public class CreateTermRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MAXTITLELENGTH + 10000)]
-    public void ShouldHaveError_WhenTitleLengthIsGreaterThan_MAXTITLE_OrEquelZero(int number)
+    public void ShouldHaveError_WhenTitleLengthIsGreaterThanAllowedOrEqualZero(int number)
     {
         // Arrange
         var dto = new CreateTermRequestDto(
@@ -39,7 +39,7 @@ public class CreateTermRequestDtoValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(MAXDESCRIPTIONLENGTH + 10000)]
-    public void ShouldHaveError_WhenDescriptionlengthIsGreaterThan_MAXTEXTCONTENTLENGTH_OrEquelZero(int number)
+    public void ShouldHaveError_WhenDescriptionlengthIsGreaterThanAllowedOrEqualZero(int number)
     {
         // Arrange
         var dto = new CreateTermRequestDto(
