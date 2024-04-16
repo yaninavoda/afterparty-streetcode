@@ -8,6 +8,8 @@ using Streetcode.WebApi.Extensions;
 using Streetcode.WebApi.Middlewares;
 using Streetcode.WebApi.Utils;
 using Streetcode.DAL.Persistence;
+using Streetcode.BLL.Interfaces.Users;
+using Streetcode.BLL.Services.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.ConfigureApplication();
@@ -30,6 +32,8 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
  .AddDefaultTokenProviders()
  .AddUserStore<UserStore<ApplicationUser, ApplicationRole, StreetcodeDbContext, int>>()
  .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>();
+
+builder.Services.AddTransient<ITokenService, TokenService>();
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();

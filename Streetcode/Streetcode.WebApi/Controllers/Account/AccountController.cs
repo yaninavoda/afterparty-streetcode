@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.Account;
 using Streetcode.BLL.DTO.Account;
+using Streetcode.BLL.Interfaces.Users;
 using Streetcode.DAL.Entities.Users;
 using UserRole = Streetcode.DAL.Entities.Users.UserRole;
 
@@ -13,11 +15,13 @@ namespace Streetcode.WebApi.Controllers.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ITokenService _tokenService;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _tokenService = tokenService;
         }
 
         [HttpPost]
@@ -52,7 +56,20 @@ namespace Streetcode.WebApi.Controllers.Account
                 return FailedToAssignRole(addingRoleResult);
             }
 
-            return Ok(user);
+            JwtSecurityToken tokenGenerator = _tokenService.GenerateJWTToken(user);
+
+            JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+
+            var token = jwtSecurityTokenHandler.WriteToken(tokenGenerator);
+
+            AuthenticationResponse response = new AuthenticationResponse()
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Token = token,
+            };
+
+            return Ok(response);
         }
 
         [HttpPost]
@@ -72,18 +89,28 @@ namespace Streetcode.WebApi.Controllers.Account
 
             ApplicationUser user = await _userManager.FindByEmailAsync(loginUserDto.Email);
 
-            if (user == null)
+            if (user is null)
             {
                 return NoContent();
             }
 
-            ApplicationUser responseUser = new ApplicationUser
+            // sign-in
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            JwtSecurityToken tokenGenerator = _tokenService.GenerateJWTToken(user);
+
+            JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+
+            var token = jwtSecurityTokenHandler.WriteToken(tokenGenerator);
+
+            AuthenticationResponse response = new AuthenticationResponse()
             {
                 UserName = user.UserName,
-                Email = loginUserDto.Email,
+                Email = user.Email,
+                Token = token,
             };
 
-            return Ok(responseUser);
+            return Ok(response);
         }
 
         [HttpGet]
