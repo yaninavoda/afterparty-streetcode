@@ -23,12 +23,13 @@ public static class ServiceProviderExtensions
         }
     }
 
-    public static async Task SeedAdmin(this IServiceProvider app)
+    public static async Task SeedAdmin(this IServiceProvider app, WebApplicationBuilder builder)
     {
         var userManager = app.GetRequiredService<UserManager<ApplicationUser>>();
 
         const string USERNAME = "myadmin@myadmin.com";
-        const string PASSWORD = "Admin1@";
+
+        string? password = builder.Configuration.GetSection("Admin").GetValue<string>("Password");
 
         var existingUser = await userManager.FindByNameAsync(USERNAME);
 
@@ -40,7 +41,7 @@ public static class ServiceProviderExtensions
                 Email = USERNAME
             };
 
-            var result = await userManager.CreateAsync(user, PASSWORD);
+            var result = await userManager.CreateAsync(user, password);
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(user, UserRole.ADMIN);

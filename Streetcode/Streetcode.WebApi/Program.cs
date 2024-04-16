@@ -38,7 +38,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 using (var scope = app.Services.CreateScope())
 {
     scope.ServiceProvider.SeedRoles().Wait();
-    scope.ServiceProvider.SeedAdmin().Wait();
+    scope.ServiceProvider.SeedAdmin(builder).Wait();
 }
 
 if (app.Environment.EnvironmentName == "Local")
