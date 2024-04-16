@@ -32,6 +32,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
         public async Task<Result<CreateStreetcodeResponseDto>> Handle(CreateStreetcodeCommand command, CancellationToken cancellationToken)
         {
             var request = command.Request;
+            using var transaction = _repositoryWrapper.BeginTransaction();
 
             var streetcode = _mapper.Map<CreateStreetcodeRequestDto, StreetcodeEntity>(request);
 
@@ -62,6 +63,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
                 return FailedToCreateStreetCodeError(request);
             }
 
+            transaction.Complete();
             return Result.Ok(new CreateStreetcodeResponseDto(streetcode.Id));
         }
 
