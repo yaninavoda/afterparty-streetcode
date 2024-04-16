@@ -1,10 +1,9 @@
-﻿using Streetcode.BLL.Dto.Streetcode.TextContent.Fact;
-using Xunit;
+﻿using Xunit;
 using FluentValidation.TestHelper;
-using Streetcode.BLL.MediatR.Streetcode.Fact.Update;
 using Streetcode.BLL.MediatR.Timeline.TimelineItem.Update;
 using Streetcode.BLL.Dto.Timeline;
 using Streetcode.DAL.Enums;
+
 namespace Streetcode.XUnitTest.ValidationTests.Timeline;
 
 public class UpdateTimelineItemRequestDtoValidatorTests
