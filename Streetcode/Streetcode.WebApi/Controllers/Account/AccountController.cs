@@ -45,7 +45,7 @@ namespace Streetcode.WebApi.Controllers.Account
             await _signInManager.SignInAsync(user, isPersistent: false);
 
             // add user role
-            IdentityResult addingRoleResult = await _userManager.AddToRoleAsync(user, UserRole.User);
+            IdentityResult addingRoleResult = await _userManager.AddToRoleAsync(user, UserRole.USER);
 
             if (!addingRoleResult.Succeeded)
             {

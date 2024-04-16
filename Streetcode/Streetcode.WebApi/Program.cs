@@ -32,7 +32,14 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
  .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>();
 
 var app = builder.Build();
+
 app.UseMiddleware<ExceptionMiddleware>();
+
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.SeedRoles().Wait();
+    scope.ServiceProvider.SeedAdmin(builder).Wait();
+}
 
 if (app.Environment.EnvironmentName == "Local")
 {
