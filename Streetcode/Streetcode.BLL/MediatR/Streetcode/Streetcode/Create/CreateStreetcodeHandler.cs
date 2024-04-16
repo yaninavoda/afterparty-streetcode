@@ -41,7 +41,6 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
             streetcode.DateString = lifeperiod.CreateDateString();
 
             _repositoryWrapper.StreetcodeRepository.Create(streetcode);
-            await _repositoryWrapper.SaveChangesAsync();
 
             var audioValidationResult = await ValidateAudioFileAsync(request.AudioId);
             if (audioValidationResult.IsFailed)
@@ -54,6 +53,8 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
             {
                 return urlValidationResult;
             }
+
+            await _repositoryWrapper.SaveChangesAsync();
 
             CreateStreetcodeTagIndices(request, streetcode);
             CreateStreetcodeImages(request, streetcode);
