@@ -174,7 +174,7 @@ public class DeleteStreetcodeArtHandlerTest
             .ReturnsAsync(result);
     }
 
-    private StreetcodeArtEntity? StreetcodeArt(StreetcodeArtEntity streetcodeArt)
+    private static StreetcodeArtEntity? StreetcodeArt(StreetcodeArtEntity streetcodeArt)
     {
         if (streetcodeArt.ArtId == 0 || streetcodeArt.StreetcodeId == 0)
         {
@@ -189,14 +189,14 @@ public class DeleteStreetcodeArtHandlerTest
         _mockLogger.Setup(x => x.LogError(request, errorMessage));
     }
 
-    private string StreetcodeArtNotFoundErrorMessage()
+    private static string StreetcodeArtNotFoundErrorMessage()
     {
         return string.Format(
             ErrorMessages.EntityByPrimaryKeyNotFound,
             typeof(StreetcodeArtEntity).Name);
     }
 
-    private string DeleteFailedErrorMessage()
+    private static string DeleteFailedErrorMessage()
     {
         return string.Format(
             ErrorMessages.FailedToDeleteByPrimaryKey,
