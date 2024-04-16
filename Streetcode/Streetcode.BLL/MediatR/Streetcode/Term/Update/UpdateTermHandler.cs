@@ -37,12 +37,11 @@ public class UpdateTermHandler :
             return TermIsNotFoundError(request);
         }
 
-        if (existedTerm.Title != request.Title)
+        bool isCurrentTitle = existedTerm.Title == request.Title;
+
+        if (!isCurrentTitle && !await IsTermTitleUniqueAsync(request.Title))
         {
-            if (!await IsTermTitleUniqueAsync(request.Title))
-            {
-                return TermTitleIsNotUniqueError(request);
-            }
+            return TermTitleIsNotUniqueError(request);
         }
 
         _repositoryWrapper.TermRepository.Update(termToUpdate);
