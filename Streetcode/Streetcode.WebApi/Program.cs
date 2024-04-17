@@ -33,8 +33,6 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
  .AddUserStore<UserStore<ApplicationUser, ApplicationRole, StreetcodeDbContext, int>>()
  .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>();
 
-builder.Services.AddTransient<ITokenService, TokenService>();
-
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
 

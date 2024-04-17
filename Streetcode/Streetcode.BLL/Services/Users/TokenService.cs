@@ -9,22 +9,21 @@ using Streetcode.BLL.Interfaces.Users;
 using Streetcode.DAL.Entities.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Streetcode.DAL.Entities.AdditionalContent.Jwt;
 
 namespace Streetcode.BLL.Services.Users;
 
 public class TokenService : ITokenService
 {
-    private readonly ConfigurationManager _configuration;
-    public TokenService(ConfigurationManager configuration)
+    private readonly JwtConfiguration _jwtConfiguration;
+    public TokenService(JwtConfiguration jwtConfiguration)
     {
-        _configuration = configuration;
+        _jwtConfiguration = jwtConfiguration;
     }
 
     public JwtSecurityToken GenerateJWTToken(ApplicationUser user)
     {
-        var jwtConfig = _configuration.GetSection("Jwt");
-
-        DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtConfig.GetValue<string>("EXPIRATION_MINUTES")));
+        DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_jwtConfiguration.ExpirationMinutes));
 
         Claim[] claims = new Claim[]
         {
@@ -35,7 +34,7 @@ public class TokenService : ITokenService
             new Claim(ClaimTypes.Name, user.UserName.ToString()), // Name of the user
         };
 
-        SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.GetValue<string>("Key")));
+        SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.Key));
 
         SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
