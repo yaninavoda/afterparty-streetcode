@@ -5,7 +5,6 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
 {
     public class CreateStreetcodeRequestDtoValidator : AbstractValidator<CreateStreetcodeRequestDto>
     {
-        private const int MINIMUMLENGTH = 1;
         private const int MAXTITLELENGTH = 100;
         private const int MAXFIRSTNAMELENGTH = 50;
         private const int MAXLASTNAMELENGTH = 50;
@@ -22,22 +21,23 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
                 .WithMessage("Invalid StreetcodeType.");
 
             RuleFor(dto => dto.Title)
-                .MinimumLength(MINIMUMLENGTH)
+                .NotEmpty()
                 .MaximumLength(MAXTITLELENGTH);
 
             RuleFor(dto => dto.FirstName)
                 .NotEmpty()
-                .MinimumLength(MINIMUMLENGTH)
                 .MaximumLength(MAXFIRSTNAMELENGTH);
 
             RuleFor(dto => dto.LastName)
                 .NotEmpty()
-                .MinimumLength(MINIMUMLENGTH)
                 .MaximumLength(MAXLASTNAMELENGTH);
+
+            RuleFor(dto => dto.EventEndOrPersonDeathDate)
+                .Must((dto, endDate) => endDate == null || endDate >= dto.EventStartOrPersonBirthDate)
+                .WithMessage("EventEndOrPersonDeathDate cannot be before EventStartOrPersonBirthDate.");
 
             RuleFor(dto => dto.Alias)
                 .NotEmpty()
-                .MinimumLength(MINIMUMLENGTH)
                 .MaximumLength(MAXALIASLENGTH);
 
             RuleFor(dto => dto.TagIds)
