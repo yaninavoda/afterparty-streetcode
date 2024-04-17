@@ -1,9 +1,7 @@
-﻿using System.Text.RegularExpressions;
-using AutoMapper;
+﻿using AutoMapper;
 using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.Ocsp;
 using Streetcode.BLL.DTO.Streetcode;
 using Streetcode.BLL.Extensions;
 using Streetcode.BLL.Interfaces.Logging;
@@ -12,7 +10,6 @@ using Streetcode.DAL.Entities.AdditionalContent;
 using Streetcode.DAL.Entities.Media.Images;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 
-using AudioEntity = Streetcode.DAL.Entities.Media.Audio;
 using StreetcodeEntity = Streetcode.DAL.Entities.Streetcode.StreetcodeContent;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
@@ -95,7 +92,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
             }
 
             var existingAudioFile = await _repositoryWrapper.AudioRepository.GetSingleOrDefaultAsync(a => a.Id == audioId.Value);
-            if (existingAudioFile == null || !existingAudioFile.MimeType.Equals("audio/mpeg"))
+            if (existingAudioFile == null || existingAudioFile.MimeType == null || !existingAudioFile.MimeType.Equals("audio/mpeg"))
             {
                 return Result.Fail("Invalid audio file. Please upload an MP3 file.");
             }
@@ -158,12 +155,6 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
             });
 
             _repositoryWrapper.StreetcodeTagIndexRepository.CreateRange(streetcodeTags);
-        }
-
-        private async Task<string> GenerateIndexAsync(int streetcodeId)
-        {
-            var indexString = streetcodeId.ToString().PadLeft(4, '0');
-            return indexString;
         }
 
         private void CreateStreetcodeImages(CreateStreetcodeRequestDto request, StreetcodeEntity streetcode)
