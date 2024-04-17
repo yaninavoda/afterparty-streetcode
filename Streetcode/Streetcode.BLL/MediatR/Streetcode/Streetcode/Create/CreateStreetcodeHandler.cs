@@ -2,6 +2,7 @@
 using AutoMapper;
 using FluentResults;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Streetcode.BLL.DTO.Streetcode;
 using Streetcode.BLL.Extensions;
 using Streetcode.BLL.Interfaces.Logging;
@@ -36,6 +37,8 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
 
             var streetcode = _mapper.Map<CreateStreetcodeRequestDto, StreetcodeEntity>(request);
 
+            streetcode.Index = await GenerateIndexAsync();
+
             var lifeperiod = (streetcode.EventStartOrPersonBirthDate, streetcode.EventEndOrPersonDeathDate);
 
             streetcode.DateString = lifeperiod.CreateDateString();
@@ -66,6 +69,15 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
 
             transaction.Complete();
             return Result.Ok(new CreateStreetcodeResponseDto(streetcode.Id));
+        }
+
+        private async Task<int> GenerateIndexAsync()
+        {
+            var maxIndex = await _repositoryWrapper.StreetcodeRepository
+                .FindAll()
+                .MaxAsync(s => s.Index);
+
+            return maxIndex + 1;
         }
 
         private async Task<Result> ValidateAudioFileAsync(int? audioId)
@@ -106,6 +118,12 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
             });
 
             _repositoryWrapper.StreetcodeTagIndexRepository.CreateRange(streetcodeTags);
+        }
+
+        private async Task<string> GenerateIndexAsync(int streetcodeId)
+        {
+            var indexString = streetcodeId.ToString().PadLeft(4, '0');
+            return indexString;
         }
 
         private void CreateStreetcodeImages(CreateStreetcodeRequestDto request, StreetcodeEntity streetcode)
