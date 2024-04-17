@@ -37,7 +37,7 @@ public class StreetcodeProfile : Profile
             });
     }
 
-    private StreetcodeType GetStreetcodeType(StreetcodeContent streetcode)
+    private static StreetcodeType GetStreetcodeType(StreetcodeContent streetcode)
     {
         if(streetcode is EventStreetcode)
         {
