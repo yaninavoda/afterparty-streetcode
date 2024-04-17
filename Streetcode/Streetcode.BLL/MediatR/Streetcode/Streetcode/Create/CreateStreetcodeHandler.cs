@@ -3,6 +3,7 @@ using AutoMapper;
 using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Streetcode.BLL.DTO.Streetcode;
 using Streetcode.BLL.Extensions;
 using Streetcode.BLL.Interfaces.Logging;
@@ -57,6 +58,12 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
                 return urlValidationResult;
             }
 
+            var imageValidationResult = await ValidateImageFilesAsync(request.ImageIds);
+            if (imageValidationResult.IsFailed)
+            {
+                return imageValidationResult;
+            }
+
             await _repositoryWrapper.SaveChangesAsync();
 
             CreateStreetcodeTagIndices(request, streetcode);
@@ -102,6 +109,33 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
             if (existingStreetcode != null)
             {
                 return Result.Fail("URL already exists. Please use a different URL.");
+            }
+
+            return Result.Ok();
+        }
+
+        private async Task<Result> ValidateImageFilesAsync(IEnumerable<int> imageIds)
+        {
+            var imageExtensions = new Dictionary<string, string>
+            {
+                { "image/gif", ".gif" },
+                { "image/jpeg", ".jpeg" }
+            };
+
+            foreach (var imageId in imageIds)
+            {
+                var image = await _repositoryWrapper.ImageRepository.GetSingleOrDefaultAsync(i => i.Id == imageId);
+                if (image == null)
+                {
+                    string errorMsg = string.Format(ErrorMessages.EntityByIdNotFound, nameof(Image), imageId);
+                    _logger.LogError(imageId, errorMsg);
+                    return Result.Fail(errorMsg);
+                }
+
+                if (!imageExtensions.ContainsValue(image.MimeType))
+                {
+                    return Result.Fail($"Invalid image file format for image with ID {imageId}. Please upload a .gif or .jpeg file.");
+                }
             }
 
             return Result.Ok();
