@@ -9,6 +9,7 @@ namespace Streetcode.BLL.DTO.Streetcode
         public StreetcodeType StreetcodeType { get; set; } = StreetcodeType.Person;
         public string Title { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
+        public string? Rank { get; init; }
         public string LastName { get; set; } = string.Empty;
         public DateTime EventStartOrPersonBirthDate { get; init; }
         public DateTime? EventEndOrPersonDeathDate { get; init; }

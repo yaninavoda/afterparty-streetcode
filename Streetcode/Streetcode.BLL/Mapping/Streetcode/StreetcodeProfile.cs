@@ -27,6 +27,7 @@ public class StreetcodeProfile : Profile
                 StreetcodeType.Person => new PersonStreetcode
                 {
                     FirstName = dto.FirstName,
+                    Rank = dto.Rank,
                     LastName = dto.LastName,
                 },
                 _ => new StreetcodeContent(),
