@@ -8,6 +8,9 @@ using Streetcode.WebApi.Extensions;
 using Streetcode.WebApi.Middlewares;
 using Streetcode.WebApi.Utils;
 using Streetcode.DAL.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.ConfigureApplication();
@@ -30,6 +33,27 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
  .AddDefaultTokenProviders()
  .AddUserStore<UserStore<ApplicationUser, ApplicationRole, StreetcodeDbContext, int>>()
  .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>();
+
+// JWT
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt").GetValue<string>("Key")!))
+        };
+    });
+
+builder.Services.AddControllers();
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 

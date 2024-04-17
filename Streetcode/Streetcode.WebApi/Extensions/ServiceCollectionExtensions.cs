@@ -29,6 +29,8 @@ using FluentValidation;
 using Streetcode.BLL.ActionFilters;
 using Streetcode.BLL.MediatR.Streetcode.Fact.Create;
 using Streetcode.DAL.Entities.Streetcode.TextContent;
+using Streetcode.DAL.Entities.AdditionalContent.Jwt;
+using Streetcode.BLL.Services.Users;
 
 namespace Streetcode.WebApi.Extensions;
 
@@ -54,6 +56,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IInstagramService, InstagramService>();
         services.AddScoped<ITextService, AddTermsToTextService>();
+        services.AddScoped<ITokenService, TokenService>();
     }
 
     public static void AddApplicationServices(this IServiceCollection services, ConfigurationManager configuration)
@@ -72,9 +75,17 @@ public static class ServiceCollectionExtensions
         }
 
         var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+
         if (emailConfig is not null)
         {
             services.AddSingleton(emailConfig);
+        }
+
+        var jwtConfig = configuration.GetSection("Jwt").Get<JwtConfiguration>();
+
+        if (jwtConfig is not null)
+        {
+            services.AddSingleton(jwtConfig);
         }
 
         services.AddDbContext<StreetcodeDbContext>(options =>
