@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.Account;
 using Streetcode.BLL.DTO.Account;
+using Streetcode.BLL.DTO.Streetcode.TextContent.Text;
 using Streetcode.BLL.Interfaces.Users;
+using Streetcode.BLL.MediatR.Account.Register;
+using Streetcode.BLL.MediatR.Streetcode.Text.Create;
 using Streetcode.DAL.Entities.Users;
 using UserRole = Streetcode.DAL.Entities.Users.UserRole;
 
@@ -24,6 +27,13 @@ namespace Streetcode.WebApi.Controllers.Account
             _tokenService = tokenService;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Register([FromBody] RegisterUserDto registerRequest)
+        {
+            return HandleResult(await Mediator.Send(new RegisterUserCommand(registerRequest)));
+        }
+
+        /*
         [HttpPost]
         public async Task<ActionResult<ApplicationUser>> Register(RegisterUserDto registerDto)
         {
@@ -70,7 +80,7 @@ namespace Streetcode.WebApi.Controllers.Account
             };
 
             return Ok(response);
-        }
+        }*/
 
         [HttpPost]
         public async Task<ActionResult<ApplicationUser>> Login(LoginUserDto loginUserDto)
