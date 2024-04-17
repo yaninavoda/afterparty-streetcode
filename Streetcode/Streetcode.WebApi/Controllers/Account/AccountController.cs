@@ -81,32 +81,5 @@ namespace Streetcode.WebApi.Controllers.Account
 
             return NoContent();
         }
-
-        private ActionResult<ApplicationUser> FailedToAssignRole(IdentityResult addingRoleResult)
-        {
-            string errorMessage = string.Join(
-                Environment.NewLine,
-                addingRoleResult.Errors.Select(e => e.Description));
-
-            return Problem(errorMessage);
-        }
-
-        private ActionResult<ApplicationUser> FailedToRegister(IdentityResult creatingUserResult)
-        {
-            string errorMessage = string.Join(
-                Environment.NewLine,
-                creatingUserResult.Errors.Select(e => e.Description));
-
-            return Problem(errorMessage);
-        }
-
-        private async Task<IActionResult> IsEmailAlreadyInUse(string email)
-        {
-            ApplicationUser? user = await _userManager.FindByEmailAsync(email);
-
-            return user is null ?
-                Ok(true) :
-                Ok(false);
-        }
     }
 }
