@@ -116,11 +116,8 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
 
         private async Task<Result> ValidateImageFilesAsync(IEnumerable<int> imageIds)
         {
-            var imageExtensions = new Dictionary<string, string>
-            {
-                { "image/gif", ".gif" },
-                { "image/jpeg", ".jpeg" }
-            };
+            bool hasJpeg = false;
+            bool hasGif = false;
 
             foreach (var imageId in imageIds)
             {
@@ -132,10 +129,19 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
                     return Result.Fail(errorMsg);
                 }
 
-                if (!imageExtensions.ContainsValue(image.MimeType))
+                if (image.MimeType == "image/jpeg")
                 {
-                    return Result.Fail($"Invalid image file format for image with ID {imageId}. Please upload a .gif or .jpeg file.");
+                    hasJpeg = true;
                 }
+                else if (image.MimeType == "image/gif")
+                {
+                    hasGif = true;
+                }
+            }
+
+            if (!hasJpeg || !hasGif)
+            {
+                return Result.Fail("The images must contain at least one .gif and one .jpeg file.");
             }
 
             return Result.Ok();
