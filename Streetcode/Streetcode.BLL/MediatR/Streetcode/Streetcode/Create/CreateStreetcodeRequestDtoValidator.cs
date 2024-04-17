@@ -1,11 +1,19 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.DTO.Streetcode;
-using Streetcode.BLL.DTO.Streetcode.TextContent.Term;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
 {
     public class CreateStreetcodeRequestDtoValidator : AbstractValidator<CreateStreetcodeRequestDto>
     {
+        private const int MINIMUMLENGTH = 1;
+        private const int MAXTITLELENGTH = 100;
+        private const int MAXFIRSTNAMELENGTH = 50;
+        private const int MAXLASTNAMELENGTH = 50;
+        private const int MAXALIASLENGTH = 33;
+        private const int MAXTEASERLENGTH = 450;
+        private const int MAXPARAGRAPHTEASERLENGTH = 400;
+        private const int MAXTRANSLITERATIONURLLENGTH = 100;
+
         public CreateStreetcodeRequestDtoValidator()
         {
             RuleFor(x => x.StreetcodeType)
@@ -13,41 +21,37 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
                 .WithMessage("Invalid StreetcodeType.");
 
             RuleFor(x => x.Title)
-                .MaximumLength(100)
-                .WithMessage("Title must be less than 100 characters.");
+                .MinimumLength(MINIMUMLENGTH)
+                .MaximumLength(MAXTITLELENGTH);
 
             RuleFor(x => x.FirstName)
-                .MaximumLength(50)
-                .WithMessage("FirstName must be less than 50 characters.");
+                .NotEmpty()
+                .MinimumLength(MINIMUMLENGTH)
+                .MaximumLength(MAXFIRSTNAMELENGTH);
 
             RuleFor(x => x.LastName)
-                .MaximumLength(50)
-                .WithMessage("LastName must be less than 50 characters.");
+                .NotEmpty()
+                .MinimumLength(MINIMUMLENGTH)
+                .MaximumLength(MAXLASTNAMELENGTH);
 
             RuleFor(x => x.Alias)
-                .MaximumLength(33)
-                .WithMessage("Alias must be less than 33 characters.");
+                .NotEmpty()
+                .MinimumLength(MINIMUMLENGTH)
+                .MaximumLength(MAXALIASLENGTH);
 
             RuleFor(x => x.Teaser)
-                .Must(BeValidTeaser)
-                .WithMessage("Teaser must be less than 450 characters or 400 characters if it contains a paragraph.");
+               .Must(teaser => string.IsNullOrEmpty(teaser) || IsValidTeaser(teaser))
+               .WithMessage($"Teaser must be less than {MAXTEASERLENGTH} characters or {MAXPARAGRAPHTEASERLENGTH} characters if it contains a paragraph.");
 
             RuleFor(x => x.TransliterationUrl)
                 .NotEmpty()
-                .MaximumLength(100)
-                .WithMessage("TransliterationUrl must be less than 100 characters.")
-                .Matches(@"^[a-z0-9\-]+$")
-                .WithMessage("Invalid URL. Only small latin alphabet letters, special symbol '-' and numbers are allowed.");
+                .MaximumLength(MAXTRANSLITERATIONURLLENGTH)
+                .Matches(@"^[a-z0-9\-]+$");
         }
 
-        private bool BeValidTeaser(string teaser)
+        private bool IsValidTeaser(string teaser)
         {
-            if (string.IsNullOrEmpty(teaser))
-            {
-                return true;
-            }
-
-            var limit = teaser.Contains("\n") ? 400 : 450;
+            var limit = teaser.Contains("\n") ? MAXPARAGRAPHTEASERLENGTH : MAXTEASERLENGTH;
             return teaser.Length <= limit;
         }
     }
