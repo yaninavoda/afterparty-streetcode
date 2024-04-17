@@ -27,18 +27,17 @@ public static class ServiceProviderExtensions
     {
         var userManager = app.GetRequiredService<UserManager<ApplicationUser>>();
 
-        const string USERNAME = "myadmin@myadmin.com";
-
+        string? userName = builder.Configuration.GetSection("Admin").GetValue<string>("Email");
         string? password = builder.Configuration.GetSection("Admin").GetValue<string>("Password");
 
-        var existingUser = await userManager.FindByNameAsync(USERNAME);
+        var existingUser = await userManager.FindByNameAsync(userName);
 
         if (existingUser == null)
         {
             var user = new ApplicationUser
             {
-                UserName = USERNAME,
-                Email = USERNAME
+                UserName = userName,
+                Email = userName
             };
 
             var result = await userManager.CreateAsync(user, password);
