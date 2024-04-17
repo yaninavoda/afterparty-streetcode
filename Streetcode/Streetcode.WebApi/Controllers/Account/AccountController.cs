@@ -62,7 +62,7 @@ namespace Streetcode.WebApi.Controllers.Account
 
             var token = jwtSecurityTokenHandler.WriteToken(tokenGenerator);
 
-            AuthenticationResponse response = new AuthenticationResponse()
+            AuthenticationResponseDto response = new AuthenticationResponseDto()
             {
                 UserName = user.UserName,
                 Email = user.Email,
@@ -103,7 +103,7 @@ namespace Streetcode.WebApi.Controllers.Account
 
             var token = jwtSecurityTokenHandler.WriteToken(tokenGenerator);
 
-            AuthenticationResponse response = new AuthenticationResponse()
+            AuthenticationResponseDto response = new AuthenticationResponseDto()
             {
                 UserName = user.UserName,
                 Email = user.Email,
