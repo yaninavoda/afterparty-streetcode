@@ -33,55 +33,6 @@ namespace Streetcode.WebApi.Controllers.Account
             return HandleResult(await Mediator.Send(new RegisterUserCommand(registerRequest)));
         }
 
-        /*
-        [HttpPost]
-        public async Task<ActionResult<ApplicationUser>> Register(RegisterUserDto registerDto)
-        {
-            await IsEmailAlreadyInUse(registerDto.Email!);
-
-            // Create user
-            ApplicationUser user = new()
-            {
-                Email = registerDto.Email,
-                UserName = registerDto.Email,
-                FirstName = registerDto.FirstName!,
-                LastName = registerDto.LastName!,
-            };
-
-            IdentityResult creatingUserResult = await _userManager.CreateAsync(user, registerDto.Password);
-
-            if (!creatingUserResult.Succeeded)
-            {
-                return FailedToRegister(creatingUserResult);
-            }
-
-            // sign-in
-            await _signInManager.SignInAsync(user, isPersistent: false);
-
-            // add user role
-            IdentityResult addingRoleResult = await _userManager.AddToRoleAsync(user, UserRole.USER);
-
-            if (!addingRoleResult.Succeeded)
-            {
-                return FailedToAssignRole(addingRoleResult);
-            }
-
-            JwtSecurityToken tokenGenerator = _tokenService.GenerateJWTToken(user);
-
-            JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-
-            var token = jwtSecurityTokenHandler.WriteToken(tokenGenerator);
-
-            AuthenticationResponseDto response = new AuthenticationResponseDto()
-            {
-                UserName = user.UserName,
-                Email = user.Email,
-                Token = token,
-            };
-
-            return Ok(response);
-        }*/
-
         [HttpPost]
         public async Task<ActionResult<ApplicationUser>> Login(LoginUserDto loginUserDto)
         {
