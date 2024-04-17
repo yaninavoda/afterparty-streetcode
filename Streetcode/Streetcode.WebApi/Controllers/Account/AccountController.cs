@@ -4,12 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.Account;
 using Streetcode.BLL.DTO.Account;
-using Streetcode.BLL.DTO.Streetcode.TextContent.Text;
 using Streetcode.BLL.Interfaces.Users;
 using Streetcode.BLL.MediatR.Account.Register;
-using Streetcode.BLL.MediatR.Streetcode.Text.Create;
 using Streetcode.DAL.Entities.Users;
-using UserRole = Streetcode.DAL.Entities.Users.UserRole;
 
 namespace Streetcode.WebApi.Controllers.Account
 {
