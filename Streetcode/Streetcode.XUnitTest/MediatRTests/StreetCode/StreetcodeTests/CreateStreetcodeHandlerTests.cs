@@ -7,6 +7,7 @@ using Moq;
 using Streetcode.BLL.DTO.Streetcode;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Streetcode.Streetcode.Create;
+using Streetcode.DAL.Entities.Media;
 using Streetcode.DAL.Enums;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 using Xunit;
@@ -19,9 +20,6 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
 {
     public class CreateStreetcodeHandlerTests
     {
-        private const int SUCCESSFULSAVE = 1;
-        private const int FAILEDSAVE = -1;
-
         private readonly Mock<IRepositoryWrapper> _mockRepositoryWrapper;
         private readonly Mock<IMapper> _mockMapper;
         private readonly Mock<ILoggerService> _mockLogger;
@@ -36,45 +34,11 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
         }
 
         [Fact]
-        public async Task Handle_ShouldReturnOkResult_IfCommandHasValidInput()
+        public async Task Handle_ShouldReturnError_IfInvalidAudioFile()
         {
             // Arrange
-            var request = GetValidCreateStreetcodeRequestDto();
-            SetupMock(request, SUCCESSFULSAVE);
-            var handler = CreateHandler();
-            var command = new CreateStreetcodeCommand(request);
-
-            // Act
-            var result = await handler.Handle(command, _cancellationToken);
-
-            // Assert
-            result.IsSuccess.Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task Handle_ShouldReturnResultOfCorrectType_IfInputIsValid()
-        {
-            // Arrange
-            var request = GetValidCreateStreetcodeRequestDto();
-            var expectedType = typeof(Result<CreateStreetcodeResponseDto>);
-            SetupMock(request, SUCCESSFULSAVE);
-            var handler = CreateHandler();
-            var command = new CreateStreetcodeCommand(request);
-
-            // Act
-            var result = await handler.Handle(command, _cancellationToken);
-
-            // Assert
-            result.Should().BeOfType(expectedType);
-        }
-
-        [Fact]
-        public async Task Handle_ShouldReturnResultFail_IfSavingOperationFailed()
-        {
-            // Arrange
-            var request = GetValidCreateStreetcodeRequestDto();
-            SetupMock(request, FAILEDSAVE);
-
+            var request = GetValidCreateStreetcodeRequest();
+            SetupMock(request, audioId: 1, url: "test-url", imageIds: new List<int> { 1 }, isAudioValid: false);
             var handler = CreateHandler();
             var command = new CreateStreetcodeCommand(request);
 
@@ -83,30 +47,15 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
 
             // Assert
             result.IsFailed.Should().BeTrue();
+            result.Errors.Should().ContainSingle();
         }
 
         [Fact]
-        public async Task Handle_ShouldCallSaveChangesAsyncOnce_IfInputIsValid()
+        public async Task Handle_ShouldReturnError_IfNonUniqueUrl()
         {
             // Arrange
-            var request = GetValidCreateStreetcodeRequestDto();
-            SetupMock(request, SUCCESSFULSAVE);
-            var handler = CreateHandler();
-            var command = new CreateStreetcodeCommand(request);
-
-            // Act
-            await handler.Handle(command, _cancellationToken);
-
-            // Assert
-            _mockRepositoryWrapper.Verify(x => x.SaveChangesAsync(), Times.Once);
-        }
-
-        [Fact]
-        public async Task Handle_ShouldReturnFailure_WhenAudioValidationFails()
-        {
-            // Arrange
-            var request = GetValidCreateStreetcodeRequestDto();
-            SetupMock(request, FAILEDSAVE);
+            var request = GetValidCreateStreetcodeRequest();
+            SetupMock(request, audioId: 1, url: "test-url", imageIds: new List<int> { 1 }, isUrlUnique: false);
             var handler = CreateHandler();
             var command = new CreateStreetcodeCommand(request);
 
@@ -114,15 +63,16 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
             var result = await handler.Handle(command, _cancellationToken);
 
             // Assert
-            result.IsSuccess.Should().BeFalse();
+            result.IsFailed.Should().BeTrue();
+            result.Errors.Should().ContainSingle();
         }
 
         [Fact]
-        public async Task Handle_ShouldReturnFailure_WhenUrlValidationFails()
+        public async Task Handle_ShouldReturnError_IfInvalidImageFiles()
         {
             // Arrange
-            var request = GetValidCreateStreetcodeRequestDto();
-            SetupMock(request, FAILEDSAVE);
+            var request = GetValidCreateStreetcodeRequest();
+            SetupMock(request, audioId: 1, url: "test-url", imageIds: new List<int> { 1 }, hasJpeg: false, hasGif: false);
             var handler = CreateHandler();
             var command = new CreateStreetcodeCommand(request);
 
@@ -130,15 +80,16 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
             var result = await handler.Handle(command, _cancellationToken);
 
             // Assert
-            result.IsSuccess.Should().BeFalse();
+            result.IsFailed.Should().BeTrue();
+            result.Errors.Should().ContainSingle();
         }
 
         [Fact]
-        public async Task Handle_ShouldReturnFailure_WhenImageValidationFails()
+        public async Task Handle_ShouldReturnError_IfSaveChangesFailed()
         {
             // Arrange
-            var request = GetValidCreateStreetcodeRequestDto();
-            SetupMock(request, FAILEDSAVE);
+            var request = GetValidCreateStreetcodeRequest();
+            SetupMock(request, audioId: 1, url: "test-url", imageIds: new List<int> { 1 }, saveChangesResult: -1);
             var handler = CreateHandler();
             var command = new CreateStreetcodeCommand(request);
 
@@ -146,7 +97,8 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
             var result = await handler.Handle(command, _cancellationToken);
 
             // Assert
-            result.IsSuccess.Should().BeFalse();
+            result.IsFailed.Should().BeTrue();
+            result.Errors.Should().ContainSingle();
         }
 
         private CreateStreetcodeHandler CreateHandler()
@@ -157,61 +109,55 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
                 _mockLogger.Object);
         }
 
-        private void SetupMock(CreateStreetcodeRequestDto request, int saveChangesAsyncResult)
+        private void SetupMock(
+            CreateStreetcodeRequestDto request,
+            int audioId,
+            string url,
+            List<int> imageIds,
+            bool isAudioValid = true,
+            bool isUrlUnique = true,
+            bool hasJpeg = true,
+            bool hasGif = true,
+            int saveChangesResult = 1)
         {
-             var image = new ImageEntity { Id = 1 };
-             var audio = new AudioEntity { Id = 1 };
+            var streetcode = new StreetcodeEntity();
 
-             var streetcode = new StreetcodeEntity { Id = 1 };
+            _mockMapper
+                .Setup(m => m.Map<CreateStreetcodeRequestDto, StreetcodeEntity>(request))
+                .Returns(streetcode);
 
-             _mockRepositoryWrapper.Setup(r => r.StreetcodeRepository
-               .Create(It.IsAny<StreetcodeEntity>())).Returns(streetcode);
+            _mockRepositoryWrapper.Setup(x => x.BeginTransaction())
+                .Returns(new System.Transactions.TransactionScope());
 
-             _mockMapper.Setup(m => m.Map<StreetcodeEntity>(request)).Returns(streetcode);
+            _mockRepositoryWrapper
+                .Setup(repo => repo.StreetcodeRepository.Create(streetcode));
 
-             _mockRepositoryWrapper.Setup(r => r.SaveChangesAsync())
-                .ReturnsAsync(saveChangesAsyncResult);
-
-             _mockRepositoryWrapper.Setup(r => r.AudioRepository.GetSingleOrDefaultAsync(
+            _mockRepositoryWrapper.Setup(r => r.AudioRepository.GetSingleOrDefaultAsync(
                 It.IsAny<Expression<Func<AudioEntity, bool>>>(),
                 null))
-                .ReturnsAsync(audio);
+                .ReturnsAsync(isAudioValid ? new AudioEntity() : null);
 
-             _mockRepositoryWrapper.Setup(r => r.ImageRepository.GetSingleOrDefaultAsync(
+            _mockRepositoryWrapper
+                .Setup(r => r.StreetcodeRepository.GetSingleOrDefaultAsync(
+                    It.IsAny<Expression<Func<StreetcodeEntity, bool>>>(), null))
+                .ReturnsAsync(isUrlUnique ? null : new StreetcodeEntity());
+
+            _mockRepositoryWrapper.Setup(r => r.ImageRepository.GetSingleOrDefaultAsync(
                 It.IsAny<Expression<Func<ImageEntity, bool>>>(),
                 null))
-                .ReturnsAsync(image);
+                .ReturnsAsync(hasJpeg ? new ImageEntity() { MimeType = "image/jpeg" } : null);
 
-             _mockRepositoryWrapper
-                .Setup(r => r.StreetcodeRepository.GetSingleOrDefaultAsync(
-                    AnyEntityPredicate<StreetcodeEntity>(),
-                    AnyEntityInclude<StreetcodeEntity>()))
-                .ReturnsAsync(streetcode);
+            _mockRepositoryWrapper
+                .Setup(r => r.ImageRepository.FindAll(
+                 It.IsAny<Expression<Func<ImageEntity, bool>>>()))
+                .Returns(imageIds.Select(id => new ImageEntity { Id = id, MimeType = hasGif ? "image/gif" : "image/jpeg" }).AsQueryable());
 
-             _mockRepositoryWrapper.Setup(r => r.StreetcodeRepository.FindAll(
-                 It.IsAny<Expression<Func<StreetcodeEntity, bool>>>()))
-                .Returns(new List<StreetcodeEntity>().AsQueryable());
-
-             _mockRepositoryWrapper.Setup(x => x.BeginTransaction())
-                .Returns(new System.Transactions.TransactionScope());
+            _mockRepositoryWrapper
+                .Setup(repo => repo.SaveChangesAsync())
+                .ReturnsAsync(saveChangesResult);
         }
 
-        private static Expression<Func<TEntity, bool>> AnyEntityPredicate<TEntity>()
-        {
-            return It.IsAny<Expression<Func<TEntity, bool>>>();
-        }
-
-        private static Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> AnyEntityInclude<TEntity>()
-        {
-            return It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>();
-        }
-
-        private static StreetcodeEntity GetStreetcodeItem()
-        {
-            return new StreetcodeEntity { Id = 1, Index = 1, Teaser = "Teaser" };
-        }
-
-        private static CreateStreetcodeRequestDto GetValidCreateStreetcodeRequestDto()
+        private static CreateStreetcodeRequestDto GetValidCreateStreetcodeRequest()
         {
             return new CreateStreetcodeRequestDto
             {

@@ -35,7 +35,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
 
             var streetcode = _mapper.Map<CreateStreetcodeRequestDto, StreetcodeEntity>(request);
 
-            streetcode.Index = await GenerateIndexAsync();
+            streetcode.Index = GenerateIndex();
 
             var lifeperiod = (streetcode.EventStartOrPersonBirthDate, streetcode.EventEndOrPersonDeathDate);
 
@@ -75,13 +75,10 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
             return Result.Ok(new CreateStreetcodeResponseDto(streetcode.Id));
         }
 
-        private async Task<int> GenerateIndexAsync()
+        private int GenerateIndex()
         {
-            var maxIndex = await _repositoryWrapper.StreetcodeRepository
-                .FindAll()
-                .MaxAsync(s => s.Index);
-
-            return maxIndex + 1;
+            var existingStreetcodes = _repositoryWrapper.StreetcodeRepository.FindAll();
+            return existingStreetcodes.Any() ? existingStreetcodes.Max(s => s.Index) + 1 : 1;
         }
 
         private async Task<Result> ValidateAudioFileAsync(int? audioId)
