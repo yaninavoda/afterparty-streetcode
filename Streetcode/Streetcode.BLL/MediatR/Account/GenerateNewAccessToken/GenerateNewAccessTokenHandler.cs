@@ -12,13 +12,11 @@ namespace Streetcode.BLL.MediatR.Account.GenerateNewAccessToken;
 public sealed class GenerateNewAccessTokenHandler : IRequestHandler<GenerateNewAccessTokenCommand, Result<AuthenticationResponseDto>>
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ITokenService _tokenService;
     private readonly ILoggerService _logger;
     public GenerateNewAccessTokenHandler(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, ILoggerService logger)
     {
         _userManager = userManager;
-        _signInManager = signInManager;
         _tokenService = tokenService;
         _logger = logger;
     }
@@ -42,9 +40,9 @@ public sealed class GenerateNewAccessTokenHandler : IRequestHandler<GenerateNewA
 
         var user = await _userManager.FindByEmailAsync(email);
 
-        if (user is null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpirationDateTime <= DateTime.Now)
+        if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpirationDateTime <= DateTime.Now)
         {
-            return InvalidRefreshToken(request.RefreshToken);
+            return InvalidRefreshToken(refreshToken);
         }
 
         var response = _tokenService.GenerateJWTToken(user);

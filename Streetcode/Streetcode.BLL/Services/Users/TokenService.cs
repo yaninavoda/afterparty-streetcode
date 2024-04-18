@@ -81,7 +81,7 @@ public class TokenService : ITokenService
     }
 
     // Creates refresh token (base 64 string of random numbers)
-    private string GenerateRefreshToken()
+    private static string GenerateRefreshToken()
     {
         byte[] bytes = new byte[64];
 

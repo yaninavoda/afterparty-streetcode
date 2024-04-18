@@ -15,15 +15,11 @@ namespace Streetcode.WebApi.Controllers.Account
     [AllowAnonymous]
     public class AccountController : BaseApiController
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ITokenService _tokenService;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService)
+        public AccountController(SignInManager<ApplicationUser> signInManager)
         {
-            _userManager = userManager;
             _signInManager = signInManager;
-            _tokenService = tokenService;
         }
 
         [HttpPost]
