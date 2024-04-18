@@ -172,25 +172,25 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
              _mockRepositoryWrapper.Setup(r => r.SaveChangesAsync())
                 .ReturnsAsync(saveChangesAsyncResult);
 
-             _mockRepositoryWrapper.Setup(r => r.StreetcodeRepository
-                .Create(It.IsAny<StreetcodeEntity>())).Returns(streetcode);
+             _mockRepositoryWrapper.Setup(r => r.AudioRepository.GetSingleOrDefaultAsync(
+                It.IsAny<Expression<Func<AudioEntity, bool>>>(),
+                null))
+                .ReturnsAsync(audio);
 
-             _mockRepositoryWrapper.Setup(r => r.AudioRepository.GetFirstOrDefaultAsync(
-                   AnyEntityPredicate<AudioEntity>(),
-                   AnyEntityInclude<AudioEntity>()))
-               .ReturnsAsync(audio);
-
-             _mockRepositoryWrapper
-               .Setup(repo => repo.ImageRepository.GetFirstOrDefaultAsync(
-                   AnyEntityPredicate<ImageEntity>(),
-                   AnyEntityInclude<ImageEntity>()))
-               .ReturnsAsync(image);
+             _mockRepositoryWrapper.Setup(r => r.ImageRepository.GetSingleOrDefaultAsync(
+                It.IsAny<Expression<Func<ImageEntity, bool>>>(),
+                null))
+                .ReturnsAsync(image);
 
              _mockRepositoryWrapper
-             .Setup(repo => repo.StreetcodeRepository.GetFirstOrDefaultAsync(
-                AnyEntityPredicate<StreetcodeEntity>(),
-                AnyEntityInclude<StreetcodeEntity>()))
-             .ReturnsAsync(streetcode);
+                .Setup(r => r.StreetcodeRepository.GetSingleOrDefaultAsync(
+                    AnyEntityPredicate<StreetcodeEntity>(),
+                    AnyEntityInclude<StreetcodeEntity>()))
+                .ReturnsAsync(streetcode);
+
+             _mockRepositoryWrapper.Setup(r => r.StreetcodeRepository.FindAll(
+                 It.IsAny<Expression<Func<StreetcodeEntity, bool>>>()))
+                .Returns(new List<StreetcodeEntity>().AsQueryable());
 
              _mockRepositoryWrapper.Setup(x => x.BeginTransaction())
                 .Returns(new System.Transactions.TransactionScope());
