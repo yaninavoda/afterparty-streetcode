@@ -67,7 +67,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
 
         private static bool IsValidTeaser(string teaser)
         {
-            var limit = teaser.Contains("\n") ? MAXPARAGRAPHTEASERLENGTH : MAXTEASERLENGTH;
+            var limit = teaser.Contains('\n') ? MAXPARAGRAPHTEASERLENGTH : MAXTEASERLENGTH;
             return teaser.Length <= limit;
         }
     }
