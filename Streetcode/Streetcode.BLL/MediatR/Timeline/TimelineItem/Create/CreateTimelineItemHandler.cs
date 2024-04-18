@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using AutoMapper;
+﻿using AutoMapper;
 using FluentResults;
 using MediatR;
 using Streetcode.BLL.Dto.Timeline;
@@ -9,6 +8,7 @@ using Streetcode.DAL.Repositories.Interfaces.Base;
 using Streetcode.BLL.DTO.Timeline;
 using Streetcode.DAL.Entities.Timeline;
 using Streetcode.DAL.Entities.Streetcode;
+
 using HistoricalContextEntity = Streetcode.DAL.Entities.Timeline.HistoricalContext;
 using TimelineItemEntity = Streetcode.DAL.Entities.Timeline.TimelineItem;
 

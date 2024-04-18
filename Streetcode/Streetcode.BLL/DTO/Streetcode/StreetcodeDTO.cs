@@ -7,10 +7,10 @@ public class StreetcodeDto
 {
     public int Id { get; set; }
     public int Index { get; set; }
-    public string Title { get; set; }
-    public string DateString { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string DateString { get; set; } = string.Empty;
     public string? Alias { get; set; }
-    public string TransliterationUrl { get; set; }
+    public string TransliterationUrl { get; set; } = string.Empty;
     public StreetcodeStatus Status { get; set; }
     public DateTime EventStartOrPersonBirthDate { get; set; }
     public DateTime? EventEndOrPersonDeathDate { get; set; }
@@ -18,6 +18,6 @@ public class StreetcodeDto
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public IEnumerable<StreetcodeTagDto> Tags { get; set; }
-    public string Teaser { get; set; }
+    public string Teaser { get; set; } = string.Empty;
     public StreetcodeType StreetcodeType { get; set; }
 }
