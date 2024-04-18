@@ -88,6 +88,13 @@ public static class ServiceCollectionExtensions
             services.AddSingleton(jwtConfig);
         }
 
+        var refreshTokenConfig = configuration.GetSection("RefreshToken").Get<RefreshTokenConfiguration>();
+
+        if (refreshTokenConfig is not null)
+        {
+            services.AddSingleton(refreshTokenConfig);
+        }
+
         services.AddDbContext<StreetcodeDbContext>(options =>
         {
             options.UseSqlServer(connectionString, opt =>

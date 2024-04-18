@@ -50,18 +50,13 @@ public sealed class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<
         // sign-in
         await _signInManager.SignInAsync(user, isPersistent: false);
 
-        JwtSecurityToken tokenGenerator = _tokenService.GenerateJWTToken(user);
+        var response = _tokenService.GenerateJWTToken(user);
 
-        JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+        user.RefreshToken = response.RefreshToken;
 
-        var token = jwtSecurityTokenHandler.WriteToken(tokenGenerator);
+        user.RefreshTokenExpirationDateTime = response.RefreshTokenExpirationDateTime;
 
-        AuthenticationResponseDto response = new AuthenticationResponseDto()
-        {
-            UserName = user.UserName,
-            Email = user.Email,
-            Token = token,
-        };
+        await _userManager.UpdateAsync(user);
 
         return Result.Ok(response);
     }
