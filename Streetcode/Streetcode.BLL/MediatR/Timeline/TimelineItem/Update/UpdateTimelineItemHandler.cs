@@ -104,7 +104,7 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
     {
         var historicalContexts = await _repositoryWrapper.HistoricalContextTimelineRepository
             .GetAllAsync(hct =>
-            hct.HistoricalContextId == historicalContextTimeline.HistoricalContextId
+            hct.HistoricalContextId == historicalContextTimeline!.HistoricalContextId
                 && hct.TimelineId == historicalContextTimeline.TimelineId);
 
         if (historicalContexts is null)
