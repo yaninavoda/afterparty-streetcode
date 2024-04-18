@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
-namespace Streetcode.BLL.DTO.Account.Validation;
+using Streetcode.BLL.DTO.Account;
+namespace Streetcode.BLL.MediatR.Account.Login;
 
 public class LoginUserDtoValidator : AbstractValidator<LoginUserDto>
 {

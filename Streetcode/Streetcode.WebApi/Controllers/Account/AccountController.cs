@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.Account;
 using Streetcode.BLL.DTO.Account;
 using Streetcode.BLL.Interfaces.Users;
+using Streetcode.BLL.MediatR.Account.Login;
 using Streetcode.BLL.MediatR.Account.Register;
 using Streetcode.DAL.Entities.Users;
 
@@ -33,42 +34,7 @@ namespace Streetcode.WebApi.Controllers.Account
         [HttpPost]
         public async Task<ActionResult<ApplicationUser>> Login(LoginUserDto loginUserDto)
         {
-            // sign-in
-            var result = await _signInManager.PasswordSignInAsync(
-                loginUserDto.Email,
-                loginUserDto.Password,
-                isPersistent: false,
-                lockoutOnFailure: false);
-
-            if (!result.Succeeded)
-            {
-                return Problem("Invalid email or password");
-            }
-
-            ApplicationUser user = await _userManager.FindByEmailAsync(loginUserDto.Email);
-
-            if (user is null)
-            {
-                return NoContent();
-            }
-
-            // sign-in
-            await _signInManager.SignInAsync(user, isPersistent: false);
-
-            JwtSecurityToken tokenGenerator = _tokenService.GenerateJWTToken(user);
-
-            JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-
-            var token = jwtSecurityTokenHandler.WriteToken(tokenGenerator);
-
-            AuthenticationResponseDto response = new AuthenticationResponseDto()
-            {
-                UserName = user.UserName,
-                Email = user.Email,
-                Token = token,
-            };
-
-            return Ok(response);
+            return HandleResult(await Mediator.Send(new LoginUserCommand(loginUserDto)));
         }
 
         [HttpGet]
