@@ -101,6 +101,24 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
             result.Errors.Should().ContainSingle();
         }
 
+        [Fact]
+        public async Task Handle_ShouldReturnError_IfInternalErrorOccursDuringSave()
+        {
+            // Arrange
+            var request = GetValidCreateStreetcodeRequest();
+            SetupMock(request, audioId: 1, url: "test-url", imageIds: new List<int> { 1 }, saveChangesResult: -1);
+            var handler = CreateHandler();
+            var command = new CreateStreetcodeCommand(request);
+
+            // Act
+            var result = await handler.Handle(command, _cancellationToken);
+
+            // Assert
+            result.IsFailed.Should().BeTrue();
+            result.Errors.Should().ContainSingle();
+            result.Errors.Single().Message.Should().Be("The images must contain at least one .gif and one .jpeg file.");
+        }
+
         private CreateStreetcodeHandler CreateHandler()
         {
             return new CreateStreetcodeHandler(
