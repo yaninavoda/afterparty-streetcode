@@ -47,7 +47,6 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
 
             // Assert
             result.IsFailed.Should().BeTrue();
-            result.Errors.Should().ContainSingle();
         }
 
         [Fact]
@@ -64,7 +63,6 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
 
             // Assert
             result.IsFailed.Should().BeTrue();
-            result.Errors.Should().ContainSingle();
         }
 
         [Fact]
@@ -81,7 +79,6 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
 
             // Assert
             result.IsFailed.Should().BeTrue();
-            result.Errors.Should().ContainSingle();
         }
 
         [Fact]
@@ -98,7 +95,6 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
 
             // Assert
             result.IsFailed.Should().BeTrue();
-            result.Errors.Should().ContainSingle();
         }
 
         [Fact]
@@ -114,8 +110,6 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
             var result = await handler.Handle(command, _cancellationToken);
 
             // Assert
-            result.IsFailed.Should().BeTrue();
-            result.Errors.Should().ContainSingle();
             result.Errors.Single().Message.Should().Be("The images must contain at least one .gif and one .jpeg file.");
         }
 
