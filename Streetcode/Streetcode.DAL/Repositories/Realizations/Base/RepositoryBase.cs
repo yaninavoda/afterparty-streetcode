@@ -4,7 +4,6 @@ using Ardalis.Specification.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
-using Streetcode.DAL.Contracts;
 using Streetcode.DAL.Persistence;
 
 namespace Streetcode.DAL.Repositories.Realizations.Base;
@@ -128,14 +127,14 @@ public abstract class RepositoryBase<T> : Interfaces.Base.IRepositoryBase<T>
         return await GetQueryable(predicate, include, selector).FirstOrDefaultAsync();
     }
 
-    public async Task<T?> GetItemBySpec(ISpecification<T> spec)
+    public async Task<T?> GetItemBySpecAsync(ISpecification<T> spec)
     {
         return await ApplySpecification(spec).FirstOrDefaultAsync();
     }
 
-    public Task<IEnumerable<T>?> GetItemsAsync(ISpecification<T> spec)
+    public async Task<IEnumerable<T>?> GetItemsBySpecAsync(ISpecification<T> spec)
     {
-        throw new NotImplementedException();
+        return await ApplySpecification(spec).ToListAsync();
     }
 
     private IQueryable<T> ApplySpecification(ISpecification<T> specification)

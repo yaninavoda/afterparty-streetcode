@@ -1,11 +1,13 @@
 using AutoMapper;
 using FluentResults;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Streetcode.BLL.Dto.Timeline;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Repositories.Interfaces.Base;
+using static Streetcode.DAL.Specifications.TimelineSpecifications.HistoricalContextSpecs;
+using static Streetcode.DAL.Specifications.TimelineSpecifications.HistoricalContextTimelineSpecs;
+using static Streetcode.DAL.Specifications.TimelineSpecifications.TimelineItemSpecs;
 using HistoricalContextEntity = Streetcode.DAL.Entities.Timeline.HistoricalContext;
 using HistoricalContextTimelineEntity = Streetcode.DAL.Entities.Timeline.HistoricalContextTimeline;
 using TimelineItemEntity = Streetcode.DAL.Entities.Timeline.TimelineItem;
@@ -95,17 +97,15 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
     private async Task<HistoricalContextEntity?> GetHistoricalContextByTitleAsync(UpdateTimelineItemRequestDto request)
     {
         return await _repositoryWrapper.HistoricalContextRepository
-            .GetFirstOrDefaultAsync(
-            hc => hc.Title == request.HistoricalContext,
-            h => h.Include(x => x.HistoricalContextTimelines));
+            .GetItemBySpecAsync(new GetByTitleWithHistoricalContextTimelines(request.HistoricalContext!));
     }
 
     private async Task<IEnumerable<HistoricalContextDto>?> GetHistoricalContextDtosAsync(UpdateTimelineItemRequestDto request, HistoricalContextTimelineEntity? historicalContextTimeline)
     {
         var historicalContexts = await _repositoryWrapper.HistoricalContextTimelineRepository
-            .GetAllAsync(hct =>
-            hct.HistoricalContextId == historicalContextTimeline!.HistoricalContextId
-                && hct.TimelineId == historicalContextTimeline.TimelineId);
+            .GetItemsBySpecAsync(new GetAllByHistoricalContextIdAndTimelineId(
+                historicalContextTimeline!.HistoricalContextId,
+                request.Id));
 
         if (historicalContexts is null)
         {
@@ -122,12 +122,8 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
 
     private async Task<HistoricalContextTimelineEntity?> GetHistoricalContextTimelineAsync(UpdateTimelineItemRequestDto request, HistoricalContextEntity historicalContext)
     {
-        var historicalContextTimeline = await _repositoryWrapper.HistoricalContextTimelineRepository
-            .GetFirstOrDefaultAsync(
-            hct => hct.TimelineId == request.Id
-                && hct.HistoricalContextId == historicalContext.Id);
-
-        return historicalContextTimeline;
+        return await _repositoryWrapper.HistoricalContextTimelineRepository
+            .GetItemBySpecAsync(new GetByHistoricalContextIdAndTimelineId(historicalContext.Id, request.Id));
     }
 
     private HistoricalContextTimelineEntity CreateHistoricalContextTimeline(UpdateTimelineItemRequestDto request, HistoricalContextEntity historicalContext)
@@ -169,10 +165,6 @@ public class UpdateTimelineItemHandler : IRequestHandler<UpdateTimelineItemComma
     private async Task<TimelineItemEntity?> GetUpdatedTimelineItemAsync(UpdateTimelineItemRequestDto request)
     {
         return await _repositoryWrapper.TimelineRepository
-        .GetFirstOrDefaultAsync(
-                predicate: ti => ti.Id == request.Id,
-                include: ti => ti
-                    .Include(til => til.HistoricalContextTimelines)
-                        .ThenInclude(x => x.HistoricalContext)!);
+            .GetItemBySpecAsync(new GetByIdWithHistoricalContextTimelinesAndHistoricalContext(request.Id));
     }
 }

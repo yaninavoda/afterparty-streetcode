@@ -1,7 +1,7 @@
 ﻿using Ardalis.Specification;
 using Streetcode.DAL.Entities.Timeline;
 
-namespace Streetcode.DAL.Specifications.TimelineSpecifications.TimelineItemSpecs;
+namespace Streetcode.DAL.Specifications.TimelineSpecifications;
 
 public static class TimelineItemSpecs
 {
