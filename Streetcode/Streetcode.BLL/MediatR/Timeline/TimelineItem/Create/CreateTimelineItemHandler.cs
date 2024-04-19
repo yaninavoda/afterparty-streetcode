@@ -2,16 +2,15 @@
 using FluentResults;
 using MediatR;
 using Streetcode.BLL.Dto.Timeline;
+using Streetcode.BLL.DTO.Timeline;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Repositories.Interfaces.Base;
-using Streetcode.BLL.DTO.Timeline;
-using Streetcode.DAL.Entities.Timeline;
 using Streetcode.DAL.Entities.Streetcode;
-
+using Streetcode.DAL.Entities.Timeline;
+using Streetcode.DAL.Repositories.Interfaces.Base;
+using static Streetcode.DAL.Specifications.TimelineSpecifications.TimelineItemSpecs.HistoricalContextSpecs;
 using HistoricalContextEntity = Streetcode.DAL.Entities.Timeline.HistoricalContext;
 using TimelineItemEntity = Streetcode.DAL.Entities.Timeline.TimelineItem;
-using static Streetcode.DAL.Specifications.TimelineSpecifications.TimelineItemSpecs.HistoricalContextSpecs;
 
 namespace Streetcode.BLL.MediatR.Timeline.TimelineItem.Create;
 
@@ -72,7 +71,7 @@ public class CreateTimelineItemHandler : IRequestHandler<CreateTimelineItemComma
             }
 
             var hc = await _repositoryWrapper.HistoricalContextRepository
-            .GetItemBySpec(new GetByTitleWithHistoricalContextTimelines(request.HistoricalContext.Title));
+            .GetItemBySpecAsync(new GetByTitleWithHistoricalContextTimelines(request.HistoricalContext.Title));
 
             var hcDto = _mapper.Map<HistoricalContextDto>(hc);
 
