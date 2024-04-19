@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.Account;
 using Streetcode.BLL.DTO.Account;
 using Streetcode.BLL.Interfaces.Users;
+using Streetcode.BLL.MediatR.Account.GenerateNewAccessToken;
+using Streetcode.BLL.MediatR.Account.Login;
 using Streetcode.BLL.MediatR.Account.Register;
 using Streetcode.DAL.Entities.Users;
 
@@ -13,15 +15,11 @@ namespace Streetcode.WebApi.Controllers.Account
     [AllowAnonymous]
     public class AccountController : BaseApiController
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ITokenService _tokenService;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService)
+        public AccountController(SignInManager<ApplicationUser> signInManager)
         {
-            _userManager = userManager;
             _signInManager = signInManager;
-            _tokenService = tokenService;
         }
 
         [HttpPost]
@@ -31,44 +29,9 @@ namespace Streetcode.WebApi.Controllers.Account
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApplicationUser>> Login(LoginUserDto loginUserDto)
+        public async Task<IActionResult> Login(LoginUserDto loginUserDto)
         {
-            // sign-in
-            var result = await _signInManager.PasswordSignInAsync(
-                loginUserDto.Email,
-                loginUserDto.Password,
-                isPersistent: false,
-                lockoutOnFailure: false);
-
-            if (!result.Succeeded)
-            {
-                return Problem("Invalid email or password");
-            }
-
-            ApplicationUser user = await _userManager.FindByEmailAsync(loginUserDto.Email);
-
-            if (user is null)
-            {
-                return NoContent();
-            }
-
-            // sign-in
-            await _signInManager.SignInAsync(user, isPersistent: false);
-
-            JwtSecurityToken tokenGenerator = _tokenService.GenerateJWTToken(user);
-
-            JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-
-            var token = jwtSecurityTokenHandler.WriteToken(tokenGenerator);
-
-            AuthenticationResponseDto response = new AuthenticationResponseDto()
-            {
-                UserName = user.UserName,
-                Email = user.Email,
-                Token = token,
-            };
-
-            return Ok(response);
+            return HandleResult(await Mediator.Send(new LoginUserCommand(loginUserDto)));
         }
 
         [HttpGet]
@@ -77,6 +40,12 @@ namespace Streetcode.WebApi.Controllers.Account
             await _signInManager.SignOutAsync();
 
             return NoContent();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GenerateNewAccessToken(TokenModelDto tokenModel)
+        {
+            return HandleResult(await Mediator.Send(new GenerateNewAccessTokenCommand(tokenModel)));
         }
     }
 }
