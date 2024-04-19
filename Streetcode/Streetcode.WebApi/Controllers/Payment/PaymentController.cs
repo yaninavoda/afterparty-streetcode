@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.Payment;
 using Streetcode.BLL.MediatR.Payment;
 
 namespace Streetcode.WebApi.Controllers.Payment
 {
+    [Authorize]
     public class PaymentController : BaseApiController
     {
         [HttpPost]
