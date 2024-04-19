@@ -11,6 +11,7 @@ using Streetcode.DAL.Entities.Streetcode;
 
 using HistoricalContextEntity = Streetcode.DAL.Entities.Timeline.HistoricalContext;
 using TimelineItemEntity = Streetcode.DAL.Entities.Timeline.TimelineItem;
+using static Streetcode.DAL.Specifications.TimelineSpecifications.TimelineItemSpecs.HistoricalContextSpecs;
 
 namespace Streetcode.BLL.MediatR.Timeline.TimelineItem.Create;
 
@@ -71,8 +72,7 @@ public class CreateTimelineItemHandler : IRequestHandler<CreateTimelineItemComma
             }
 
             var hc = await _repositoryWrapper.HistoricalContextRepository
-            .GetFirstOrDefaultAsync(
-                hc => hc.Title == request.HistoricalContext.Title);
+            .GetItemBySpec(new GetByTitleWithHistoricalContextTimelines(request.HistoricalContext.Title));
 
             var hcDto = _mapper.Map<HistoricalContextDto>(hc);
 
