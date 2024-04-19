@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Streetcode.BLL.Services.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.ConfigureApplication();
@@ -36,6 +37,8 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
  .AddUserStore<UserStore<ApplicationUser, ApplicationRole, StreetcodeDbContext, int>>()
  .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>();
 
+builder.Services.AddHostedService<DeleteExpiredRefreshTokensService>();
+
 builder.Services.AddControllers(options =>
 {
     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
@@ -53,6 +56,8 @@ builder.Services.AddAuthentication(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters()
         {
+            ValidateAudience = false,
+            ValidateIssuer = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt").GetValue<string>("Key")!))

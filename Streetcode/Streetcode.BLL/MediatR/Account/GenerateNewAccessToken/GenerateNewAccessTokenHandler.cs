@@ -40,7 +40,7 @@ public sealed class GenerateNewAccessTokenHandler : IRequestHandler<GenerateNewA
 
         var user = await _userManager.FindByEmailAsync(email);
 
-        if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpirationDateTime <= DateTime.Now)
+        if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpirationDateTime <= DateTime.UtcNow)
         {
             return InvalidRefreshToken(refreshToken);
         }
