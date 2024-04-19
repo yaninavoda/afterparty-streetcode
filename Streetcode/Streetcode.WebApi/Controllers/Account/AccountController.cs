@@ -38,7 +38,7 @@ namespace Streetcode.WebApi.Controllers.Account
         [HttpPost]
         public async Task<IActionResult> Logout(LogoutUserDto logoutUser)
         {
-            return HandleResult(await Mediator.Send(new LogoutUserCommand(logoutUser));
+            return HandleResult(await Mediator.Send(new LogoutUserCommand(logoutUser)));
         }
 
         [HttpPost]
