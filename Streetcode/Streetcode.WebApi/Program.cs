@@ -36,11 +36,13 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
  .AddUserStore<UserStore<ApplicationUser, ApplicationRole, StreetcodeDbContext, int>>()
  .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>();
 
+/*
 builder.Services.AddControllers(options =>
 {
     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
     options.Filters.Add(new AuthorizeFilter(policy));
 });
+*/
 
 // JWT
 builder.Services.AddAuthentication(options =>
