@@ -42,6 +42,7 @@ namespace Streetcode.WebApi.Controllers.Account
             return NoContent();
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> GenerateNewAccessToken(TokenModelDto tokenModel)
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.DTO.Media.Video;
 using Streetcode.BLL.MediatR.Media.Video.Create;
 using Streetcode.BLL.MediatR.Media.Video.Delete;
@@ -9,6 +10,7 @@ using Streetcode.BLL.MediatR.Media.Video.Update;
 
 namespace Streetcode.WebApi.Controllers.Media;
 
+[Authorize]
 public class VideoController : BaseApiController
 {
     [HttpGet]
@@ -29,18 +31,21 @@ public class VideoController : BaseApiController
         return HandleResult(await Mediator.Send(new GetVideoByIdQuery(id)));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateVideoRequestDto request)
     {
         return HandleResult(await Mediator.Send(new CreateVideoCommand(request)));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateVideoRequestDto updateRequest)
     {
         return HandleResult(await Mediator.Send(new UpdateVideoCommand(updateRequest)));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete]
     public async Task<IActionResult> Delete([FromBody] DeleteVideoRequestDto deleteRequest)
     {

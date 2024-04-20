@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.DTO.Analytics.StatisticRecord;
 using Streetcode.BLL.MediatR.Analytics.StatisticRecord.Create;
 using Streetcode.BLL.MediatR.Analytics.StatisticRecord.Delete;
 
 namespace Streetcode.WebApi.Controllers.Analytics;
 
+[Authorize(Roles = "Admin")]
 public class StatisticRecordController : BaseApiController
 {
     [HttpPost]

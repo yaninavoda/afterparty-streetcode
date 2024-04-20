@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.DTO.AdditionalContent.Coordinates.Types;
 using Streetcode.BLL.MediatR.AdditionalContent.StreetcodeCoordinate.Create;
 using Streetcode.BLL.MediatR.AdditionalContent.StreetcodeCoordinate.Delete;
 
 namespace Streetcode.WebApi.Controllers.AdditionalContent;
 
+[Authorize(Roles = "Admin")]
 public class StreetcodeCoordinateController : BaseApiController
 {
     [HttpPost]
