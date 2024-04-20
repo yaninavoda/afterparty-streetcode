@@ -69,12 +69,6 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-using (var scope = app.Services.CreateScope())
-{
-    scope.ServiceProvider.SeedRoles().Wait();
-    scope.ServiceProvider.SeedAdmin(builder).Wait();
-}
-
 if (app.Environment.EnvironmentName == "Local")
 {
     app.UseSwagger();
@@ -86,6 +80,12 @@ else
 }
 
 await app.ApplyMigrations();
+
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.SeedRoles().Wait();
+    scope.ServiceProvider.SeedAdmin(builder).Wait();
+}
 
 await app.SeedDataAsync(); // uncomment for seeding data in local
 app.UseCors();
