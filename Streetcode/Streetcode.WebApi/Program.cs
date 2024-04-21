@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Streetcode.BLL.Services.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.ConfigureApplication();
@@ -32,9 +33,11 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
  .AddEntityFrameworkStores<StreetcodeDbContext>()
- .AddDefaultTokenProviders()
  .AddUserStore<UserStore<ApplicationUser, ApplicationRole, StreetcodeDbContext, int>>()
- .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>();
+ .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>()
+ .AddDefaultTokenProviders();
+
+builder.Services.AddHostedService<DeleteExpiredRefreshTokensService>();
 
 /*
 builder.Services.AddControllers(options =>
@@ -55,6 +58,8 @@ builder.Services.AddAuthentication(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters()
         {
+            ValidateAudience = false,
+            ValidateIssuer = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt").GetValue<string>("Key")!))
