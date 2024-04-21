@@ -33,10 +33,9 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
  .AddEntityFrameworkStores<StreetcodeDbContext>()
- .AddDefaultTokenProviders()
  .AddUserStore<UserStore<ApplicationUser, ApplicationRole, StreetcodeDbContext, int>>()
- .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>();
-
+ .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>()
+ .AddDefaultTokenProviders();
 
 builder.Services.AddHostedService<DeleteExpiredRefreshTokensService>();
 

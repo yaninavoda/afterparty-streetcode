@@ -10,7 +10,6 @@ using Streetcode.DAL.Entities.Users;
 
 namespace Streetcode.BLL.Services.BackgroundServices;
 
-// create new db context
 public class DeleteExpiredRefreshTokensService : IHostedService, IDisposable
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -22,7 +21,7 @@ public class DeleteExpiredRefreshTokensService : IHostedService, IDisposable
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromDays(10));
+        _timer = new Timer(DeleteExpiredRefreshTokens, null, TimeSpan.Zero, TimeSpan.FromDays(10));
 
         return Task.CompletedTask;
     }
@@ -39,7 +38,7 @@ public class DeleteExpiredRefreshTokensService : IHostedService, IDisposable
         _timer?.Dispose();
     }
 
-    private async void DoWork(object? state)
+    private async void DeleteExpiredRefreshTokens(object? state)
     {
         var users = _userManager.Users.Where(x => x.RefreshTokenExpirationDateTime <= DateTime.UtcNow).ToList();
 

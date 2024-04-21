@@ -43,7 +43,7 @@ public class LogoutUserHandler : IRequestHandler<LogoutUserCommand, Result<Logou
         LogoutUserResponseDto response = new LogoutUserResponseDto()
         {
             Email = request.Email,
-            Text = "Successfully logout"
+            Text = string.Format("The user '{0}' is logged out successfully", request.Email)
         };
 
         return Result.Ok(response);
