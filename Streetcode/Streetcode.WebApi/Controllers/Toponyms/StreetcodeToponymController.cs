@@ -2,9 +2,11 @@
 using Streetcode.BLL.DTO.StreetcodeToponym;
 using Streetcode.BLL.MediatR.StreetcodeToponym.Delete;
 using Streetcode.BLL.MediatR.StreetcodeToponym.Create;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Streetcode.WebApi.Controllers.Toponyms;
 
+[Authorize(Roles = "Admin")]
 public class StreetcodeToponymController : BaseApiController
 {
     [HttpPost]

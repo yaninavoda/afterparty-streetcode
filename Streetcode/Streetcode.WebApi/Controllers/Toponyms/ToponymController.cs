@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.Toponyms;
 using Streetcode.BLL.MediatR.Toponyms.GetAll;
@@ -6,6 +7,7 @@ using Streetcode.BLL.MediatR.Toponyms.GetByStreetcodeId;
 
 namespace Streetcode.WebApi.Controllers.Toponyms;
 
+[Authorize(Roles = "Admin, User")]
 public class ToponymController : BaseApiController
 {
     [HttpGet]

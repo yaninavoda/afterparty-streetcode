@@ -7,6 +7,7 @@ using Streetcode.BLL.DTO.Account;
 using Streetcode.BLL.Interfaces.Users;
 using Streetcode.BLL.MediatR.Account.GenerateNewAccessToken;
 using Streetcode.BLL.MediatR.Account.Login;
+using Streetcode.BLL.MediatR.Account.Logout;
 using Streetcode.BLL.MediatR.Account.Register;
 using Streetcode.DAL.Entities.Users;
 
@@ -34,14 +35,13 @@ namespace Streetcode.WebApi.Controllers.Account
             return HandleResult(await Mediator.Send(new LoginUserCommand(loginUserDto)));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Logout()
+        [HttpPost]
+        public async Task<IActionResult> Logout(LogoutUserDto logoutUser)
         {
-            await _signInManager.SignOutAsync();
-
-            return NoContent();
+            return HandleResult(await Mediator.Send(new LogoutUserCommand(logoutUser)));
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> GenerateNewAccessToken(TokenModelDto tokenModel)
         {

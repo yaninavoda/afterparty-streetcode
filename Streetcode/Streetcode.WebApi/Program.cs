@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Streetcode.BLL.Services.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.ConfigureApplication();
@@ -32,15 +33,19 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
  .AddEntityFrameworkStores<StreetcodeDbContext>()
- .AddDefaultTokenProviders()
  .AddUserStore<UserStore<ApplicationUser, ApplicationRole, StreetcodeDbContext, int>>()
- .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>();
+ .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>()
+ .AddDefaultTokenProviders();
 
+builder.Services.AddHostedService<DeleteExpiredRefreshTokensService>();
+
+/*
 builder.Services.AddControllers(options =>
 {
     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
     options.Filters.Add(new AuthorizeFilter(policy));
 });
+*/
 
 // JWT
 builder.Services.AddAuthentication(options =>
@@ -53,6 +58,8 @@ builder.Services.AddAuthentication(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters()
         {
+            ValidateAudience = false,
+            ValidateIssuer = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt").GetValue<string>("Key")!))
@@ -67,12 +74,6 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-using (var scope = app.Services.CreateScope())
-{
-    scope.ServiceProvider.SeedRoles().Wait();
-    scope.ServiceProvider.SeedAdmin(builder).Wait();
-}
-
 if (app.Environment.EnvironmentName == "Local")
 {
     app.UseSwagger();
@@ -84,6 +85,12 @@ else
 }
 
 await app.ApplyMigrations();
+
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.SeedRoles().Wait();
+    scope.ServiceProvider.SeedAdmin(builder).Wait();
+}
 
 await app.SeedDataAsync(); // uncomment for seeding data in local
 app.UseCors();

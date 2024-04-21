@@ -63,6 +63,8 @@ public class TokenService : ITokenService
     {
         var tokenValidationParameters = new TokenValidationParameters()
         {
+            ValidateAudience = false,
+            ValidateIssuer = false,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.Key!)),
             ValidateLifetime = false
@@ -80,7 +82,6 @@ public class TokenService : ITokenService
         return claims;
     }
 
-    // Creates refresh token (base 64 string of random numbers)
     private static string GenerateRefreshToken()
     {
         byte[] bytes = new byte[64];
