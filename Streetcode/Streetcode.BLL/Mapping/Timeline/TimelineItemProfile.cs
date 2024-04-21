@@ -11,5 +11,6 @@ public class TimelineItemProfile : Profile
     {
         CreateMap<TimelineItem, TimelineItemDto>().ReverseMap();
         CreateMap<UpdateTimelineItemRequestDto, TimelineItem>();
+        CreateMap<CreateHistoricalContextRequestDto, TimelineItem>();
     }
 }
