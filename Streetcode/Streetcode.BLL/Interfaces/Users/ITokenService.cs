@@ -7,9 +7,8 @@ namespace Streetcode.BLL.Interfaces.Users
 {
     public interface ITokenService
     {
-        public AuthenticationResponseDto GenerateJWTToken(ApplicationUser user);
-
-        // claims principal represents user details
+        public AuthenticationResponseDto GenerateJWTToken(ApplicationUser user, List<Claim> claims);
+        public Task<List<Claim>> GetUserClaimsAsync(ApplicationUser user);
         public ClaimsPrincipal? GetPrincipalFromJwtToken(string? token);
     }
 }

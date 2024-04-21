@@ -39,13 +39,11 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
 
 builder.Services.AddHostedService<DeleteExpiredRefreshTokensService>();
 
-/*
 builder.Services.AddControllers(options =>
 {
     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
     options.Filters.Add(new AuthorizeFilter(policy));
 });
-*/
 
 // JWT
 builder.Services.AddAuthentication(options =>
