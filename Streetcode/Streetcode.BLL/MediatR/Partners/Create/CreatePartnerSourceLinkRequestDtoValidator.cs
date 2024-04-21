@@ -14,6 +14,7 @@ public class CreatePartnerSourceLinkRequestDtoValidator : AbstractValidator<Crea
 
         RuleFor(dto => dto.TargetUrl)
             .Must((dto, targetUrl) => targetUrl is null || targetUrl.Contains(dto.LogoType.ToString(), StringComparison.OrdinalIgnoreCase))
+            .WithMessage(dto => string.Format("URL must contain the corresponding social network name - {0}", dto.LogoType.ToString()))
             .MaximumLength(MAXTARGETURL);
     }
 }
