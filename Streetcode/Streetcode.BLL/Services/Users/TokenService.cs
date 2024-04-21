@@ -7,6 +7,7 @@ using Streetcode.DAL.Entities.Users;
 using Microsoft.IdentityModel.Tokens;
 using Streetcode.DAL.Entities.AdditionalContent.Jwt;
 using Streetcode.BLL.DTO.Account;
+using Microsoft.AspNetCore.Identity;
 
 namespace Streetcode.BLL.Services.Users;
 
@@ -14,25 +15,17 @@ public class TokenService : ITokenService
 {
     private readonly JwtConfiguration _jwtConfiguration;
     private readonly RefreshTokenConfiguration _refreshTokenConfiguration;
-    public TokenService(JwtConfiguration jwtConfiguration, RefreshTokenConfiguration refreshTokenConfiguration)
+    private readonly UserManager<ApplicationUser> _userManager;
+    public TokenService(JwtConfiguration jwtConfiguration, RefreshTokenConfiguration refreshTokenConfiguration, UserManager<ApplicationUser> userManager)
     {
         _jwtConfiguration = jwtConfiguration;
         _refreshTokenConfiguration = refreshTokenConfiguration;
+        _userManager = userManager;
     }
 
-    public AuthenticationResponseDto GenerateJWTToken(ApplicationUser user)
+    public AuthenticationResponseDto GenerateJWTToken(ApplicationUser user, List<Claim> claims)
     {
         DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_jwtConfiguration.ExpirationMinutes));
-
-        Claim[] claims = new Claim[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()), // Subject (user id)
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT unique ID
-            new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()), // Date and time of token generation
-            new Claim(ClaimTypes.NameIdentifier, user.Email.ToString()), // Email
-            new Claim(ClaimTypes.Name, user.UserName.ToString()), // Name of the user
-            new Claim(ClaimTypes.Email, user.Email), // Name of the user
-        };
 
         SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.Key!));
 
@@ -56,7 +49,30 @@ public class TokenService : ITokenService
             RefreshToken = GenerateRefreshToken(),
             RefreshTokenExpirationDateTime = DateTime.UtcNow.AddDays(_refreshTokenConfiguration.ExpirationDays)
         };
+
         return response;
+    }
+
+    public async Task<List<Claim>> GetUserClaimsAsync(ApplicationUser user)
+    {
+        List<Claim> claims = new List<Claim>
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()), // Subject (user id)
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT unique ID
+            new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()), // Date and time of token generation
+            new Claim(ClaimTypes.NameIdentifier, user.Email.ToString()), // Email
+            new Claim(ClaimTypes.Name, user.UserName.ToString()), // Name of the user
+            new Claim(ClaimTypes.Email, user.Email), // Name of the user
+        };
+
+        var userRoles = await _userManager.GetRolesAsync(user);
+
+        foreach (var userRole in userRoles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, userRole)); // Role of the user
+        }
+
+        return claims;
     }
 
     public ClaimsPrincipal? GetPrincipalFromJwtToken(string? token)
@@ -65,7 +81,7 @@ public class TokenService : ITokenService
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.Key!)),
-            ValidateLifetime = false
+            ValidateLifetime = false,
         };
 
         JwtSecurityTokenHandler tokenValidationHandler = new JwtSecurityTokenHandler();

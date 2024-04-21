@@ -29,14 +29,14 @@ public sealed class GenerateNewAccessTokenHandler : IRequestHandler<GenerateNewA
 
         string refreshToken = request.RefreshToken;
 
-        ClaimsPrincipal claims = _tokenService.GetPrincipalFromJwtToken(accessToken)!;
+        ClaimsPrincipal principals = _tokenService.GetPrincipalFromJwtToken(accessToken)!;
 
-        if (claims is null)
+        if (principals is null)
         {
             return InvalidJwtToken(accessToken);
         }
 
-        string email = claims.FindFirstValue(ClaimTypes.Email);
+        string email = principals.FindFirstValue(ClaimTypes.Email);
 
         var user = await _userManager.FindByEmailAsync(email);
 
@@ -45,7 +45,9 @@ public sealed class GenerateNewAccessTokenHandler : IRequestHandler<GenerateNewA
             return InvalidRefreshToken(refreshToken);
         }
 
-        var response = _tokenService.GenerateJWTToken(user);
+        var claims = await _tokenService.GetUserClaimsAsync(user);
+
+        var response = _tokenService.GenerateJWTToken(user, claims);
 
         user.RefreshToken = response.RefreshToken;
 

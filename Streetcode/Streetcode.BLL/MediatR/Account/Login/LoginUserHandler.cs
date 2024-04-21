@@ -50,7 +50,9 @@ public sealed class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<
         // sign-in
         await _signInManager.SignInAsync(user, isPersistent: false);
 
-        var response = _tokenService.GenerateJWTToken(user);
+        var claims = await _tokenService.GetUserClaimsAsync(user);
+
+        var response = _tokenService.GenerateJWTToken(user, claims);
 
         user.RefreshToken = response.RefreshToken;
 

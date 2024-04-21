@@ -61,7 +61,9 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Result<A
             return FailedToAssignRole(addingRoleResult);
         }
 
-        var response = _tokenService.GenerateJWTToken(user);
+        var claims = await _tokenService.GetUserClaimsAsync(user);
+
+        var response = _tokenService.GenerateJWTToken(user, claims);
 
         user.RefreshToken = response.RefreshToken;
 
@@ -70,6 +72,11 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Result<A
         await _userManager.UpdateAsync(user);
 
         return Result.Ok(response);
+    }
+
+    private Task GetUserClaimsAsync(ApplicationUser user)
+    {
+        throw new NotImplementedException();
     }
 
     private Result<AuthenticationResponseDto> EmailIsAlreadyRegistered(RegisterUserDto request)
