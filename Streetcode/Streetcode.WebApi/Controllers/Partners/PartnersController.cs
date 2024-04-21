@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.Partners;
+using Streetcode.BLL.DTO.Partners.Create;
 using Streetcode.BLL.MediatR.Partners.Create;
 using Streetcode.BLL.MediatR.Partners.GetAll;
 using Streetcode.BLL.MediatR.Partners.GetAllPartnerShort;
@@ -38,10 +39,15 @@ public class PartnersController : BaseApiController
 
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreatePartnerDto partner)
+    public async Task<IActionResult> Create([FromBody] CreatePartnerRequestDto partner)
     {
-        return HandleResult(await Mediator.Send(new CreatePartnerQuery(partner)));
+        return HandleResult(await Mediator.Send(new CreatePartnerCommand(partner)));
     }
+
+    // public async Task<IActionResult> Create([FromBody] CreatePartnerDto partner)
+    // {
+    //     return HandleResult(await Mediator.Send(new CreatePartnerQuery(partner)));
+    // }
 
     [Authorize(Roles = "Admin")]
     [HttpPut]

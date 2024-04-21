@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
-using Streetcode.BLL.Dto.Partners;
 using Streetcode.BLL.DTO.Partners.Create;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.DAL.Entities.Partners;
@@ -24,18 +23,23 @@ public class CreatePartnerHandler : IRequestHandler<CreatePartnerCommand, Result
 
     public async Task<Result<CreatePartnerResponseDto>> Handle(CreatePartnerCommand command, CancellationToken cancellationToken)
     {
-        var newPartner = _mapper.Map<Partner>(command.Request);
+        var request = command.Request;
+        var newPartner = _mapper.Map<Partner>(request);
         try
         {
             newPartner.Streetcodes.Clear();
+
             newPartner = _repositoryWrapper.PartnersRepository.Create(newPartner);
             await _repositoryWrapper.SaveChangesAsync();
-            var streetcodeIds = newPartner.Streetcodes.Select(s => s.Id).ToList();
-            newPartner.Streetcodes.AddRange(await _repositoryWrapper
-                .StreetcodeRepository
-                .GetAllAsync(s => streetcodeIds.Contains(s.Id)));
+
+            var streetcodes = await _repositoryWrapper.StreetcodeRepository.GetAllAsync(s => request.Streetcodes.Contains(s.Id));
+            if (streetcodes is not null)
+            {
+                newPartner.Streetcodes.AddRange(streetcodes);
+            }
 
             await _repositoryWrapper.SaveChangesAsync();
+
             return Result.Ok(_mapper.Map<CreatePartnerResponseDto>(newPartner));
         }
         catch (Exception ex)

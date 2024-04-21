@@ -8,5 +8,5 @@ public sealed record CreatePartnerRequestDto(
     string? TargetUrl,
     string? UrlTitle,
     string? Description,
-    List<int> PartnerSourceLinks,
+    List<CreatePartnerSourceLinkRequestDto> PartnerSourceLinks,
     List<int> Streetcodes);

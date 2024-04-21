@@ -1,6 +1,9 @@
-﻿namespace Streetcode.BLL.DTO.Partners.Create;
+﻿using Streetcode.BLL.Dto.Streetcode;
+
+namespace Streetcode.BLL.DTO.Partners.Create;
 
 public sealed record CreatePartnerResponseDto(
+    int Id,
     string Title,
     int LogoId,
     bool IsKeyPartner,
@@ -8,5 +11,5 @@ public sealed record CreatePartnerResponseDto(
     string? TargetUrl,
     string? UrlTitle,
     string? Description,
-    List<int> PartnerSourceLinks,
-    List<int> Streetcodes);
+    List<CreatePartnerSourceLinkResponseDto> PartnerSourceLinks,
+    List<StreetcodeShortDto> Streetcodes);
