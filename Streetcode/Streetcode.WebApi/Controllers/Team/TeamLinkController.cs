@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.Team;
 using Streetcode.BLL.MediatR.Team.Create;
@@ -8,6 +9,7 @@ using Streetcode.BLL.MediatR.Team.TeamMembersLinks.GetAll;
 
 namespace Streetcode.WebApi.Controllers.Team
 {
+    [Authorize(Roles = "Admin")]
     public class TeamLinkController : BaseApiController
     {
         [HttpGet]

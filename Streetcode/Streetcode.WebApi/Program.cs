@@ -37,13 +37,16 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
  .AddUserStore<UserStore<ApplicationUser, ApplicationRole, StreetcodeDbContext, int>>()
  .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>();
 
+
 builder.Services.AddHostedService<DeleteExpiredRefreshTokensService>();
 
+/*
 builder.Services.AddControllers(options =>
 {
     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
     options.Filters.Add(new AuthorizeFilter(policy));
 });
+*/
 
 // JWT
 builder.Services.AddAuthentication(options =>
@@ -72,12 +75,6 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-using (var scope = app.Services.CreateScope())
-{
-    scope.ServiceProvider.SeedRoles().Wait();
-    scope.ServiceProvider.SeedAdmin(builder).Wait();
-}
-
 if (app.Environment.EnvironmentName == "Local")
 {
     app.UseSwagger();
@@ -89,6 +86,12 @@ else
 }
 
 await app.ApplyMigrations();
+
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.SeedRoles().Wait();
+    scope.ServiceProvider.SeedAdmin(builder).Wait();
+}
 
 await app.SeedDataAsync(); // uncomment for seeding data in local
 app.UseCors();

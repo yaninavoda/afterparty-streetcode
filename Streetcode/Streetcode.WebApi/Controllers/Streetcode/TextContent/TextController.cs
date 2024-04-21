@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.DTO.Streetcode.TextContent.Text;
 using Streetcode.BLL.MediatR.Streetcode.Text.Create;
@@ -11,6 +12,7 @@ using Streetcode.BLL.MediatR.Streetcode.Text.Update;
 
 namespace Streetcode.WebApi.Controllers.Streetcode.TextContent;
 
+[AllowAnonymous]
 public class TextController : BaseApiController
 {
     [HttpGet]
@@ -37,24 +39,28 @@ public class TextController : BaseApiController
         return HandleResult(await Mediator.Send(new GetParsedTextForAdminPreviewCommand(text)));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateTextRequestDto createRequest)
     {
         return HandleResult(await Mediator.Send(new CreateTextCommand(createRequest)));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateTextRequestDto updateRequest)
     {
         return HandleResult(await Mediator.Send(new UpdateTextCommand(updateRequest)));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> Preview([FromBody] PreviewTextRequestDto previewRequest)
     {
         return HandleResult(await Mediator.Send(new PreviewTextQuery(previewRequest)));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete]
     public async Task<IActionResult> Delete([FromBody] DeleteTextRequestDto deleteRequest)
     {

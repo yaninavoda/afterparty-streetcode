@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.AdditionalContent;
 using Streetcode.BLL.Dto.AdditionalContent.Tag;
@@ -8,6 +9,7 @@ using Streetcode.BLL.MediatR.AdditionalContent.Tag.GetByStreetcodeId;
 
 namespace Streetcode.WebApi.Controllers.AdditionalContent;
 
+[AllowAnonymous]
 public class TagController : BaseApiController
 {
     [HttpGet]

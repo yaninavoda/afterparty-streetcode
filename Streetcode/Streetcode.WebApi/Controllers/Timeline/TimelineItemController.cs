@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.Timeline;
 using Streetcode.BLL.DTO.Timeline;
@@ -10,6 +11,7 @@ using Streetcode.BLL.MediatR.Timeline.TimelineItem.Update;
 
 namespace Streetcode.WebApi.Controllers.Timeline;
 
+[AllowAnonymous]
 public class TimelineItemController : BaseApiController
 {
     [HttpGet]
@@ -30,18 +32,21 @@ public class TimelineItemController : BaseApiController
         return HandleResult(await Mediator.Send(new GetTimelineItemsByStreetcodeIdQuery(streetcodeId)));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateTimelineItemRequestDto createTimelineItemRequestDto)
     {
         return HandleResult(await Mediator.Send(new CreateTimelineItemCommand(createTimelineItemRequestDto)));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateTimelineItemRequestDto timeline)
     {
         return HandleResult(await Mediator.Send(new UpdateTimelineItemCommand(timeline)));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {

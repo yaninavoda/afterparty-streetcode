@@ -41,6 +41,7 @@ namespace Streetcode.WebApi.Controllers.Account
             return HandleResult(await Mediator.Send(new LogoutUserCommand(logoutUser)));
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> GenerateNewAccessToken(TokenModelDto tokenModel)
         {
