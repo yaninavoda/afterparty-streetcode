@@ -74,11 +74,6 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Result<A
         return Result.Ok(response);
     }
 
-    private Task GetUserClaimsAsync(ApplicationUser user)
-    {
-        throw new NotImplementedException();
-    }
-
     private Result<AuthenticationResponseDto> EmailIsAlreadyRegistered(RegisterUserDto request)
     {
         string errorMessage = "A user with this email is already registered.";
