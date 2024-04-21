@@ -64,7 +64,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
                 .MaximumLength(MAXACCEPTANCECRITERIALENGTH);
 
             RuleFor(dto => dto.InvolvedPeople)
-                .MinimumLength(MAXACCEPTANCECRITERIALENGTH);
+                .MaximumLength(MAXACCEPTANCECRITERIALENGTH);
 
             RuleFor(dto => dto.TransliterationUrl)
                 .NotEmpty()
