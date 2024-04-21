@@ -12,8 +12,8 @@ using Streetcode.DAL.Persistence;
 namespace Streetcode.DAL.Persistence.Migrations
 {
     [DbContext(typeof(StreetcodeDbContext))]
-    [Migration("20240413154617_SeedRoles")]
-    partial class SeedRoles
+    [Migration("20240421124901_AR")]
+    partial class AR
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -662,6 +662,12 @@ namespace Streetcode.DAL.Persistence.Migrations
                     b.Property<int>("Index")
                         .HasColumnType("int");
 
+                    b.Property<string>("InstagramARLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InvolvedPeople")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -1100,22 +1106,6 @@ namespace Streetcode.DAL.Persistence.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = -1,
-                            ConcurrencyStamp = "5d263631-f9e8-4b43-b134-ee671bfe6c4f",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = -2,
-                            ConcurrencyStamp = "8deb0689-7749-4dbb-9978-27075379215c",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        });
                 });
 
             modelBuilder.Entity("Streetcode.DAL.Entities.Users.ApplicationUser", b =>
@@ -1170,6 +1160,12 @@ namespace Streetcode.DAL.Persistence.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenExpirationDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

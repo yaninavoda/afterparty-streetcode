@@ -14,6 +14,8 @@ public class StreetcodeDto
     public StreetcodeStatus Status { get; set; }
     public DateTime EventStartOrPersonBirthDate { get; set; }
     public DateTime? EventEndOrPersonDeathDate { get; set; }
+    public string? InstagramARLink { get; set; }
+    public string? InvolvedPeople { get; set; }
     public int ViewCount { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

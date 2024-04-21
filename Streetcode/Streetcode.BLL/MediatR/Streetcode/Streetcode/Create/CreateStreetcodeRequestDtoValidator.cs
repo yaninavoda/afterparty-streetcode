@@ -13,6 +13,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
         private const int MAXTEASERLENGTH = 450;
         private const int MAXPARAGRAPHTEASERLENGTH = 400;
         private const int MAXTRANSLITERATIONURLLENGTH = 100;
+        private const int MAXACCEPTANCECRITERIALENGTH = 255;
 
         public CreateStreetcodeRequestDtoValidator()
         {
@@ -58,6 +59,12 @@ namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
                     var actualCount = ids.Distinct().Count();
                     return expectedCount == actualCount;
                 });
+
+            RuleFor(dto => dto.InstagramARLink)
+                .MaximumLength(MAXACCEPTANCECRITERIALENGTH);
+
+            RuleFor(dto => dto.InvolvedPeople)
+                .MaximumLength(MAXACCEPTANCECRITERIALENGTH);
 
             RuleFor(dto => dto.TransliterationUrl)
                 .NotEmpty()

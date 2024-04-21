@@ -660,6 +660,12 @@ namespace Streetcode.DAL.Persistence.Migrations
                     b.Property<int>("Index")
                         .HasColumnType("int");
 
+                    b.Property<string>("InstagramARLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InvolvedPeople")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
