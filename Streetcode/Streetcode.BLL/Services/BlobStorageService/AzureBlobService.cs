@@ -9,17 +9,23 @@ namespace Streetcode.BLL.Services.BlobStorageService
 {
     public sealed class AzureBlobService : IBlobService
     {
+        public const string AzureStorageConnectionString = nameof(AzureStorageConnectionString);
+        public const string AzureStorageContainerName = nameof(AzureStorageContainerName);
+
+        public const string DefaultContainerName = "images";
+
         private readonly string _connectionString;
         private readonly string _containerName;
+
         private readonly ILoggerService _loggerService;
-        private readonly IRepositoryWrapper _repositoryWrapper;
+        private readonly IRepositoryWrapper? _repositoryWrapper;
 
-        public AzureBlobService(IConfiguration configuration, ILoggerService loggerService, IRepositoryWrapper repositoryWrapper)
+        public AzureBlobService(IConfiguration configuration, ILoggerService loggerService, IRepositoryWrapper? repositoryWrapper = null)
         {
-            _connectionString = configuration.GetConnectionString("AzureStorageConnectionString")
-                ?? throw new InvalidOperationException("Connection string 'AzureStorageConnectionString' not found.");
+            _connectionString = configuration.GetConnectionString(AzureStorageConnectionString)
+               ?? throw new InvalidOperationException($"Connection string '{AzureStorageConnectionString}' not found.");
 
-            _containerName = "images";
+            _containerName = configuration[AzureStorageContainerName] ?? DefaultContainerName;
 
             _loggerService = loggerService;
             _repositoryWrapper = repositoryWrapper;
