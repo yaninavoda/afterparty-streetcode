@@ -12,8 +12,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Streetcode.BLL.Services.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.ConfigureApplication();
@@ -36,8 +34,6 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
  .AddUserStore<UserStore<ApplicationUser, ApplicationRole, StreetcodeDbContext, int>>()
  .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>()
  .AddDefaultTokenProviders();
-
-builder.Services.AddHostedService<DeleteExpiredRefreshTokensService>();
 
 builder.Services.AddControllers(options =>
 {
@@ -100,7 +96,7 @@ app.UseAuthorization();
 
 app.UseHangfireDashboard("/dash");
 
-if (app.Environment.EnvironmentName != "Local")
+// if (app.Environment.EnvironmentName != "Local")
 {
     BackgroundJob.Schedule<WebParsingUtils>(
     wp => wp.ParseZipFileFromWebAsync(), TimeSpan.FromMinutes(1));
@@ -108,6 +104,8 @@ if (app.Environment.EnvironmentName != "Local")
         wp => wp.ParseZipFileFromWebAsync(), Cron.Monthly);
     RecurringJob.AddOrUpdate<BlobService>(
         b => b.CleanBlobStorage(), Cron.Monthly);
+    BackgroundJob.Schedule<DeleteExpiredRefreshTokensUtils>(
+        dt => dt.DeleteExpiredRefreshTokens(), TimeSpan.FromDays(10));
 }
 
 app.MapControllers();
