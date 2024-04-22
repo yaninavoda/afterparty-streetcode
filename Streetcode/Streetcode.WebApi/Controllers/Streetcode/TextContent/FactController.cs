@@ -35,28 +35,24 @@ public class FactController : BaseApiController
         return HandleResult(await Mediator.Send(new GetFactByStreetcodeIdQuery(streetcodeId)));
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateFactDto createRequest)
     {
         return HandleResult(await Mediator.Send(new CreateFactCommand(createRequest)));
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateFactDto updateRequest)
     {
         return HandleResult(await Mediator.Send(new UpdateFactCommand(updateRequest)));
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> ReorderFacts([FromBody] ReorderFactRequestDto reorderFactRequestDto)
     {
         return HandleResult(await Mediator.Send(new ReorderFactCommand(reorderFactRequestDto)));
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
