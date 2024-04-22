@@ -15,6 +15,9 @@ public class StreetcodeProfile : Profile
             .ForMember(x => x.StreetcodeType, conf => conf.MapFrom(s => GetStreetcodeType(s)))
             .ReverseMap();
 
+        CreateMap<int, StreetcodeContent>()
+           .ForMember(x => x.Id, conf => conf.MapFrom(i => i));
+
         CreateMap<StreetcodeContent, StreetcodeShortDto>().ReverseMap();
 
         CreateMap<StreetcodeContent, StreetcodeMainPageDto>()
@@ -39,7 +42,7 @@ public class StreetcodeProfile : Profile
 
     private static StreetcodeType GetStreetcodeType(StreetcodeContent streetcode)
     {
-        if(streetcode is EventStreetcode)
+        if (streetcode is EventStreetcode)
         {
             return StreetcodeType.Event;
         }
