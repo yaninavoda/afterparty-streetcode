@@ -62,9 +62,7 @@ public class LogoutUserHandler : IRequestHandler<LogoutUserCommand, Result<Logou
 
     private Result<LogoutUserResponseDto> FailedToLogout(ApplicationUser user)
     {
-        string errorMessage = string.Format(
-            "Logout fail",
-            user);
+        string errorMessage = "Logout failed.";
 
         _logger.LogError(user, errorMessage);
 
