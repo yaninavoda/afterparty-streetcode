@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Streetcode.BLL.Services.BackgroundServices;
+using Streetcode.BLL.Interfaces.BlobStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.ConfigureApplication();
@@ -106,8 +107,8 @@ if (app.Environment.EnvironmentName != "Local")
     wp => wp.ParseZipFileFromWebAsync(), TimeSpan.FromMinutes(1));
     RecurringJob.AddOrUpdate<WebParsingUtils>(
         wp => wp.ParseZipFileFromWebAsync(), Cron.Monthly);
-    RecurringJob.AddOrUpdate<BlobService>(
-        b => b.CleanBlobStorage(), Cron.Monthly);
+    RecurringJob.AddOrUpdate<AzureBlobService>(
+        b => b.CleanBlobStorageAsync(default), Cron.Monthly);
 }
 
 app.MapControllers();

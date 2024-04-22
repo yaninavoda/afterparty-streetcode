@@ -5,6 +5,7 @@ using Streetcode.BLL.Dto.Media.Images;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
+using Streetcode.BLL.Services.BlobStorageService;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Media.Image.Create;
@@ -13,11 +14,11 @@ public class CreateImageHandler : IRequestHandler<CreateImageCommand, Result<Ima
 {
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
-    private readonly IBlobService _blobService;
+    private readonly AzureBlobService _blobService;
     private readonly ILoggerService _logger;
 
     public CreateImageHandler(
-        IBlobService blobService,
+        AzureBlobService blobService,
         IRepositoryWrapper repositoryWrapper,
         IMapper mapper,
         ILoggerService logger)
@@ -30,10 +31,11 @@ public class CreateImageHandler : IRequestHandler<CreateImageCommand, Result<Ima
 
     public async Task<Result<ImageDto>> Handle(CreateImageCommand request, CancellationToken cancellationToken)
     {
-        string hashBlobStorageName = _blobService.SaveFileInStorage(
+        string hashBlobStorageName = await _blobService.SaveFileInStorageAsync(
             request.Image.BaseFormat,
             request.Image.Title,
-            request.Image.Extension);
+            request.Image.Extension,
+            cancellationToken);
 
         var image = _mapper.Map<DAL.Entities.Media.Images.Image>(request.Image);
 
