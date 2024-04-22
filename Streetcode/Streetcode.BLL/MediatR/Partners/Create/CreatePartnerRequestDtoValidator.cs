@@ -20,10 +20,10 @@ public class CreatePartnerRequestDtoValidator : AbstractValidator<CreatePartnerR
             .GreaterThan(0);
 
         RuleFor(dto => dto.IsKeyPartner)
-              .NotEmpty();
+            .NotNull();
 
         RuleFor(dto => dto.IsVisibleEverywhere)
-            .NotEmpty();
+            .NotNull();
 
         RuleFor(dto => dto.TargetUrl)
             .MaximumLength(MAXTARGETURLLENGTH);
