@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.Partners;
 using Streetcode.BLL.DTO.Partners.Create;
+using Streetcode.BLL.DTO.Partners.Delete;
 using Streetcode.BLL.MediatR.Partners.Create;
+using Streetcode.BLL.MediatR.Partners.Delete;
 using Streetcode.BLL.MediatR.Partners.GetAll;
 using Streetcode.BLL.MediatR.Partners.GetAllPartnerShort;
 using Streetcode.BLL.MediatR.Partners.GetById;
@@ -44,11 +46,6 @@ public class PartnersController : BaseApiController
         return HandleResult(await Mediator.Send(new CreatePartnerCommand(partner)));
     }
 
-    // public async Task<IActionResult> Create([FromBody] CreatePartnerDto partner)
-    // {
-    //     return HandleResult(await Mediator.Send(new CreatePartnerQuery(partner)));
-    // }
-
     [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] CreatePartnerDto partner)
@@ -57,9 +54,9 @@ public class PartnersController : BaseApiController
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete([FromRoute] int id)
+    [HttpDelete]
+    public async Task<IActionResult> Delete([FromBody] DeletePartnerRequestDto partner)
     {
-        return HandleResult(await Mediator.Send(new BLL.MediatR.Partners.Delete.DeletePartnerQuery(id)));
+        return HandleResult(await Mediator.Send(new DeletePartnerCommand(partner)));
     }
 }
