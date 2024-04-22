@@ -18,9 +18,6 @@ public class StreetcodeProfile : Profile
         CreateMap<int, StreetcodeContent>()
            .ForMember(x => x.Id, conf => conf.MapFrom(i => i));
 
-        // CreateMap<StreetcodeContent, int>()
-        //    .ForMember(x => x, conf => conf.MapFrom(sc => sc.Id));
-
         CreateMap<StreetcodeContent, StreetcodeShortDto>().ReverseMap();
 
         CreateMap<StreetcodeContent, StreetcodeMainPageDto>()
