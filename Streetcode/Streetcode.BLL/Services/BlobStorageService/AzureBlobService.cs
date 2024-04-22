@@ -20,11 +20,13 @@ namespace Streetcode.BLL.Services.BlobStorageService
         private readonly ILoggerService _loggerService;
         private readonly IRepositoryWrapper? _repositoryWrapper;
 
-        public AzureBlobService(IConfiguration configuration, ILoggerService loggerService, IRepositoryWrapper? repositoryWrapper = null)
+        public AzureBlobService(
+            IConfiguration configuration,
+            ILoggerService loggerService,
+            IRepositoryWrapper? repositoryWrapper = null)
         {
             _connectionString = configuration.GetConnectionString(AzureStorageConnectionString)
-               ?? throw new InvalidOperationException($"Connection string '{AzureStorageConnectionString}' not found.");
-
+                ?? throw new InvalidOperationException($"Connection string '{AzureStorageConnectionString}' not found.");
             _containerName = configuration[AzureStorageContainerName] ?? DefaultContainerName;
 
             _loggerService = loggerService;
@@ -33,7 +35,7 @@ namespace Streetcode.BLL.Services.BlobStorageService
 
         public async Task CleanBlobStorageAsync(CancellationToken cancellationToken = default)
         {
-            if (_repositoryWrapper == null)
+            if (_repositoryWrapper is null)
             {
                 return;
             }
@@ -41,18 +43,22 @@ namespace Streetcode.BLL.Services.BlobStorageService
             var existingImagesInDatabase = await _repositoryWrapper.ImageRepository.GetAllAsync();
             var existingAudiosInDatabase = await _repositoryWrapper.AudioRepository.GetAllAsync();
 
-            var existingMedia = existingImagesInDatabase.Select(image => image.BlobName)
-                .Union(existingAudiosInDatabase.Select(audio => audio.BlobName));
+            var existingMedia = new List<string>();
+            existingMedia.AddRange(existingImagesInDatabase.Select(image => image.BlobName!));
+            existingMedia.AddRange(existingAudiosInDatabase.Select(audio => audio.BlobName!));
 
-            var blobServiceClient = new BlobServiceClient(_connectionString);
-            var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
+            var container = await GetOrCreateBlobContainerClientAsync(cancellationToken);
+            var blobs = container.GetBlobsAsync(cancellationToken: cancellationToken);
 
-            await foreach (BlobItem blobItem in containerClient.GetBlobsAsync(cancellationToken: cancellationToken))
+            var existingMediaSet = existingMedia.ToHashSet();
+
+            await foreach (var blob in blobs)
             {
-                if (!existingMedia.Contains(blobItem.Name))
+                var blobName = blob.Name;
+                if (existingMediaSet.Contains(blobName))
                 {
-                    _loggerService.LogInformation($"Deleting {blobItem.Name}...");
-                    await containerClient.DeleteBlobAsync(blobItem.Name, cancellationToken: cancellationToken);
+                    _loggerService.LogInformation($"Deleting {blobName}...");
+                    await container.DeleteBlobIfExistsAsync(blobName, cancellationToken: cancellationToken);
                 }
             }
         }
@@ -62,77 +68,93 @@ namespace Streetcode.BLL.Services.BlobStorageService
             var bytes = Convert.FromBase64String(base64);
             var blobName = GenerateBlobName(name);
 
-            var blobServiceClient = new BlobServiceClient(_connectionString);
-            var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
-
-            var blobClient = containerClient.GetBlobClient(blobName);
-
-            using (var stream = new MemoryStream(bytes))
+            var options = new BlobUploadOptions
             {
-                blobClient.Upload(stream);
-            }
+                HttpHeaders = new BlobHttpHeaders
+                {
+                    ContentType = mimeType
+                },
+            };
+
+            var container = GetOrCreateBlobContainerClient();
+
+            container.GetBlobClient(blobName).Upload(
+                content: new MemoryStream(bytes),
+                options: options);
 
             return blobName;
         }
 
-        public async Task<string> SaveFileInStorageAsync(string base64, string name, string mimeType, CancellationToken cancellationToken = default)
+        public async Task<string> SaveFileInStorageAsync(
+            string base64,
+            string name,
+            string mimeType,
+            CancellationToken cancellationToken = default)
         {
             var bytes = Convert.FromBase64String(base64);
             var blobName = GenerateBlobName(name);
 
-            var blobServiceClient = new BlobServiceClient(_connectionString);
-            var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
-
-            var blobClient = containerClient.GetBlobClient(blobName);
-
-            using (var stream = new MemoryStream(bytes))
+            var options = new BlobUploadOptions
             {
-                await blobClient.UploadAsync(stream, true, cancellationToken: cancellationToken);
-            }
+                HttpHeaders = new BlobHttpHeaders
+                {
+                    ContentType = mimeType
+                },
+            };
+
+            var container = await GetOrCreateBlobContainerClientAsync(cancellationToken);
+
+            var response = await container.GetBlobClient($"{blobName}.{mimeType}")
+                .UploadAsync(
+                    content: new MemoryStream(bytes),
+                    options: options,
+                    cancellationToken: cancellationToken);
 
             return blobName;
         }
 
         public void DeleteFileInStorage(string name)
         {
-            var blobServiceClient = new BlobServiceClient(_connectionString);
-            var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
-            var blobClient = containerClient.GetBlobClient(name);
-            blobClient.DeleteIfExists();
+            var container = GetOrCreateBlobContainerClient();
+            container.DeleteBlobIfExists(name);
         }
 
-        public async Task DeleteFileInStorageAsync(string name, CancellationToken cancellationToken = default)
+        public async Task DeleteFileInStorageAsync(
+            string name,
+            CancellationToken cancellationToken = default)
         {
-            var blobServiceClient = new BlobServiceClient(_connectionString);
-            var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
-            var blobClient = containerClient.GetBlobClient(name);
-            await blobClient.DeleteIfExistsAsync(cancellationToken: cancellationToken);
+            var container = await GetOrCreateBlobContainerClientAsync(cancellationToken);
+            await container.DeleteBlobIfExistsAsync(
+                blobName: name,
+                cancellationToken: cancellationToken);
         }
 
         public byte[] FindFileInStorageAsBytes(string name)
         {
-            var blobServiceClient = new BlobServiceClient(_connectionString);
-            var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
-            var blobClient = containerClient.GetBlobClient(name);
+            var container = GetOrCreateBlobContainerClient();
+            var blob = container.GetBlobClient(name);
 
-            using (var stream = new MemoryStream())
-            {
-                blobClient.DownloadTo(stream);
-                return stream.ToArray();
-            }
+            var response = blob.DownloadContent();
+
+            var bytes = response
+                .Value
+                .Content
+                .ToArray();
+
+            return bytes;
         }
 
-        public async Task<byte[]> FindFileInStorageAsBytesAsync(string name, CancellationToken cancellationToken = default)
+        public async Task<byte[]> FindFileInStorageAsBytesAsync(
+            string name,
+            CancellationToken cancellationToken = default)
         {
-            var blobServiceClient = new BlobServiceClient(_connectionString);
-            var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
-            var blobClient = containerClient.GetBlobClient(name);
+            var container = await GetOrCreateBlobContainerClientAsync(cancellationToken);
+            var blob = container.GetBlobClient(name);
 
-            using (var stream = new MemoryStream())
-            {
-                await blobClient.DownloadToAsync(stream, cancellationToken);
-                return stream.ToArray();
-            }
+            var response = await blob.DownloadContentAsync(cancellationToken: cancellationToken);
+            var bytes = response.Value.Content.ToArray();
+
+            return bytes;
         }
 
         public string FindFileInStorageAsBase64(string name)
@@ -158,6 +180,27 @@ namespace Streetcode.BLL.Services.BlobStorageService
             var guid = Guid.NewGuid().ToString();
             var extension = Path.GetExtension(fileName);
             return $"{guid}{extension}";
+        }
+
+        private BlobContainerClient GetOrCreateBlobContainerClient()
+        {
+            var blobServiceClient = new BlobServiceClient(_connectionString);
+            var container = blobServiceClient.GetBlobContainerClient(_containerName);
+
+            container.CreateIfNotExists();
+
+            return container;
+        }
+
+        private async Task<BlobContainerClient> GetOrCreateBlobContainerClientAsync(
+            CancellationToken cancellationToken = default)
+        {
+            var blobServiceClient = new BlobServiceClient(_connectionString);
+            var container = blobServiceClient.GetBlobContainerClient(_containerName);
+
+            await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
+
+            return container;
         }
     }
 }

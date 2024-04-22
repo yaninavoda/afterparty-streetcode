@@ -14,7 +14,7 @@ public class CreateImageHandler : IRequestHandler<CreateImageCommand, Result<Ima
 {
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
-    private readonly AzureBlobService _blobService;
+    private readonly IBlobService _blobService;
     private readonly ILoggerService _logger;
 
     public CreateImageHandler(
@@ -31,11 +31,10 @@ public class CreateImageHandler : IRequestHandler<CreateImageCommand, Result<Ima
 
     public async Task<Result<ImageDto>> Handle(CreateImageCommand request, CancellationToken cancellationToken)
     {
-        string hashBlobStorageName = await _blobService.SaveFileInStorageAsync(
+        string hashBlobStorageName = _blobService.SaveFileInStorage(
             request.Image.BaseFormat,
             request.Image.Title,
-            request.Image.Extension!,
-            cancellationToken);
+            request.Image.Extension);
 
         var image = _mapper.Map<DAL.Entities.Media.Images.Image>(request.Image);
 
