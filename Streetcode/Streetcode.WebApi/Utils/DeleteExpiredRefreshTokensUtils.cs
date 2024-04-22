@@ -26,7 +26,5 @@ public class DeleteExpiredRefreshTokensUtils
                 await _userManager.UpdateAsync(user);
             }
         }
-
-        return;
     }
 }
