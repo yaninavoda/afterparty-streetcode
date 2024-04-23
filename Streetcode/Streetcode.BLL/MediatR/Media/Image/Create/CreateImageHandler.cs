@@ -5,7 +5,6 @@ using Streetcode.BLL.Dto.Media.Images;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.BLL.Services.BlobStorageService;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Media.Image.Create;
