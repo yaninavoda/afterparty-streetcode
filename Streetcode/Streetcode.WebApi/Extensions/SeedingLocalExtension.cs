@@ -59,7 +59,7 @@ namespace Streetcode.WebApi.Extensions
                         string filePath = Path.Combine(blobPath, audio.BlobName);
                         if (!File.Exists(filePath))
                         {
-                            blobService.SaveFileInStorage(audio.Base64, audio.BlobName.Trim(), audio.BlobName.Split(".")[1]);
+                            blobService.SaveFileInStorage(audio.Base64, audio.BlobName.Split('.')[0], audio.BlobName.Split('.')[1]);
                         }
                     }
 
