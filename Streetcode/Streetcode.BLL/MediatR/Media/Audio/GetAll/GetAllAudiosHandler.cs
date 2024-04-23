@@ -39,6 +39,7 @@ public class GetAllAudiosHandler : IRequestHandler<GetAllAudiosQuery, Result<IEn
         }
 
         var audioDtos = _mapper.Map<IEnumerable<AudioDto>>(audios);
+
         foreach (var audio in audioDtos)
         {
             try
