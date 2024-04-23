@@ -12,9 +12,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Streetcode.BLL.Services.BackgroundServices;
-using Streetcode.BLL.Interfaces.BlobStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.ConfigureApplication();
