@@ -1,5 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using FluentResults;
+﻿using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Streetcode.BLL.Dto.Account;

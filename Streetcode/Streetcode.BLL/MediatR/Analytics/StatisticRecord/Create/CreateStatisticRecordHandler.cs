@@ -101,10 +101,10 @@ public class CreateStatisticRecordHandler :
 
     private async Task<bool> IsStreetcodeCoordinateUniqueAsync(int streetcodeCoordinateId)
     {
-        var streetcodeCoordinate = await _repositoryWrapper.StatisticRecordRepository
+        var statisticRecord = await _repositoryWrapper.StatisticRecordRepository
             .GetFirstOrDefaultAsync(sr => sr.StreetcodeCoordinateId == streetcodeCoordinateId);
 
-        return streetcodeCoordinate is null;
+        return statisticRecord is null;
     }
 
     private Result<CreateStatisticRecordResponseDto> StreetcodeCoordinateIsNotUniqueError(CreateStatisticRecordRequestDto request)

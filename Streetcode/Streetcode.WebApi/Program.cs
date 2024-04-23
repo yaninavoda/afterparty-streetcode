@@ -38,8 +38,6 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
  .AddRoleStore<RoleStore<ApplicationRole, StreetcodeDbContext, int>>()
  .AddDefaultTokenProviders();
 
-builder.Services.AddHostedService<DeleteExpiredRefreshTokensService>();
-
 builder.Services.AddControllers(options =>
 {
     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
@@ -109,6 +107,8 @@ if (app.Environment.EnvironmentName != "Local")
         wp => wp.ParseZipFileFromWebAsync(), Cron.Monthly);
     RecurringJob.AddOrUpdate<AzureBlobService>(
         b => b.CleanBlobStorageAsync(default), Cron.Monthly);
+    BackgroundJob.Schedule<DeleteExpiredRefreshTokensUtils>(
+        dt => dt.DeleteExpiredRefreshTokens(), TimeSpan.FromDays(10));
 }
 
 app.MapControllers();
