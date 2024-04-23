@@ -26,6 +26,11 @@ public class CreatePartnerHandler : IRequestHandler<CreatePartnerCommand, Result
     {
         var request = command.Request;
 
+        if (!await IsLogoUniqueAsync(request.LogoId))
+        {
+            return LogoIsNotUniqueError(request);
+        }
+
         using var transaction = _repositoryWrapper.BeginTransaction();
 
         var partnerToCreate = _mapper.Map<Partner>(request);
@@ -59,6 +64,24 @@ public class CreatePartnerHandler : IRequestHandler<CreatePartnerCommand, Result
         transaction.Complete();
 
         return Result.Ok(_mapper.Map<CreatePartnerResponseDto>(partnerToCreate));
+    }
+
+    private async Task<bool> IsLogoUniqueAsync(int logoId)
+    {
+        var partner = await _repositoryWrapper.PartnersRepository
+            .GetFirstOrDefaultAsync(sr => sr.LogoId == logoId);
+
+        return partner is null;
+    }
+
+    private Result<CreatePartnerResponseDto> LogoIsNotUniqueError(CreatePartnerRequestDto request)
+    {
+        string errorMsg = string.Format(
+            ErrorMessages.PotencialPrimaryKeyIsNotUnique,
+            "Logo",
+            request.LogoId);
+        _logger.LogError(request, errorMsg);
+        return Result.Fail(errorMsg);
     }
 
     private async Task<Result> ValidateLogoIdAsync(int logoId)

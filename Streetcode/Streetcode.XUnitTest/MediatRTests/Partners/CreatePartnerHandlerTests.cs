@@ -7,6 +7,7 @@ using Moq;
 using Streetcode.BLL.DTO.Partners.Create;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Partners.Create;
+using Streetcode.BLL.Resources.Errors;
 using Streetcode.DAL.Entities.Media.Images;
 using Streetcode.DAL.Entities.Partners;
 using Streetcode.DAL.Entities.Streetcode;
@@ -82,6 +83,37 @@ public class CreatePartnerHandlerTests
     }
 
     [Fact]
+    public async Task Handle_ShouldReturnSingleErrorWithCorrectMessage_IfCommandWithNotUniqueLogoId()
+    {
+        // Arrange
+        var request = new CreatePartnerRequestDto(
+                   LogoId: int.MaxValue,
+                   Title: new string('a', MINTITLELENGTH),
+                   IsKeyPartner: default,
+                   IsVisibleEverywhere: default,
+                   TargetUrl: new string('a', MAXTARGETURLLENGTH),
+                   UrlTitle: new string('a', URLTITLELENGTH),
+                   Description: new string('a', MAXDESCRIPTIONLENGTH),
+                   Streetcodes: new List<int>(),
+                   PartnerSourceLinks: new List<CreatePartnerSourceLinkRequestDto>());
+
+        var expectedErrorMessage = string.Format(
+            ErrorMessages.PotencialPrimaryKeyIsNotUnique,
+            "Logo",
+            request.LogoId);
+
+        SetupMock(request, SUCCESSFULSAVE, false);
+        var handler = CreateHandler();
+        var command = new CreatePartnerCommand(request);
+
+        // Act
+        var result = await handler.Handle(command, _cancellationToken);
+
+        // Assert
+        result.Errors.Should().ContainSingle(e => e.Message == expectedErrorMessage);
+    }
+
+    [Fact]
     public async Task Handle_ShouldReturnResultOfCorrectType_IfInputIsValid()
     {
         // Arrange
@@ -139,7 +171,7 @@ public class CreatePartnerHandlerTests
             _mockLogger.Object);
     }
 
-    private void SetupMock(CreatePartnerRequestDto request, int saveChangesAsyncResult, bool hasJpeg = true)
+    private void SetupMock(CreatePartnerRequestDto request, int saveChangesAsyncResult, bool IsLogoUnique = true)
     {
         var logo = request.LogoId switch
         {
@@ -154,13 +186,18 @@ public class CreatePartnerHandlerTests
 
         var partner = GetValidPartner();
 
+        _mockRepositoryWrapper
+          .Setup(r => r.PartnersRepository.GetFirstOrDefaultAsync(
+              It.IsAny<Expression<Func<Partner, bool>>>(), null))
+              .ReturnsAsync(IsLogoUnique ? null : partner);
+
         _mockRepositoryWrapper.Setup(x => x.BeginTransaction())
                .Returns(new System.Transactions.TransactionScope());
 
         _mockRepositoryWrapper
           .Setup(r => r.ImageRepository.GetSingleOrDefaultAsync(
               It.IsAny<Expression<Func<Image, bool>>>(), null))
-              .ReturnsAsync(hasJpeg ? logo : null);
+              .ReturnsAsync(logo);
 
         _mockRepositoryWrapper
             .Setup(r => r.StreetcodeRepository.GetAllAsync(

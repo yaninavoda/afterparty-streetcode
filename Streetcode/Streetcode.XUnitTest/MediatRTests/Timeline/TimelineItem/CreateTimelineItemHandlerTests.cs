@@ -35,7 +35,8 @@ public class CreateTimelineItemHandlerTests
         // Arrange
         var request = new CreateTimelineItemRequestDto()
         {
-            Date = DateTime.Now, DateViewPattern = 0,
+            Date = DateTime.Now,
+            DateViewPattern = 0,
             Title = "Valid",
             StreetcodeId = 1,
             Description = "Description",
