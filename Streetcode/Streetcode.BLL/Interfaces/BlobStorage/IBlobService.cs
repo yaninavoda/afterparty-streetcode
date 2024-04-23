@@ -2,7 +2,7 @@
 
 public interface IBlobService
 {
-    public string SaveFileInStorage(string base64, string name, string extension);
+    public string SaveFileInStorage(string base64, string name, string mimeType);
     public MemoryStream FindFileInStorageAsMemoryStream(string name);
     public string UpdateFileInStorage(
         string previousBlobName,

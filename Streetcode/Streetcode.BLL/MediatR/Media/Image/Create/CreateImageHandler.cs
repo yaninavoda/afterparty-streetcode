@@ -18,7 +18,7 @@ public class CreateImageHandler : IRequestHandler<CreateImageCommand, Result<Ima
     private readonly ILoggerService _logger;
 
     public CreateImageHandler(
-        AzureBlobService blobService,
+        IBlobService blobService,
         IRepositoryWrapper repositoryWrapper,
         IMapper mapper,
         ILoggerService logger)
@@ -34,11 +34,11 @@ public class CreateImageHandler : IRequestHandler<CreateImageCommand, Result<Ima
         string hashBlobStorageName = _blobService.SaveFileInStorage(
             request.Image.BaseFormat,
             request.Image.Title,
-            request.Image.Extension);
+            request.Image.Extension!);
 
         var image = _mapper.Map<DAL.Entities.Media.Images.Image>(request.Image);
 
-        image.BlobName = $"{hashBlobStorageName}.{request.Image.Extension}";
+        image.BlobName = hashBlobStorageName;
 
         _repositoryWrapper.ImageRepository.Create(image);
         var resultIsSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;

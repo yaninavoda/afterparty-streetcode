@@ -42,9 +42,21 @@ public class GetAllImagesHandler : IRequestHandler<GetAllImagesQuery, Result<IEn
 
         foreach (var image in imageDtos)
         {
-            image.Base64 = _blobService.FindFileInStorageAsBase64(image.BlobName);
+            try
+            {
+                image.Base64 = _blobService.FindFileInStorageAsBase64(image.BlobName);
+            }
+            catch (Azure.RequestFailedException ex)
+            {
+                if (ex.ErrorCode == "BlobNotFound")
+                {
+                    continue;
+                }
+
+                throw;
+            }
         }
 
-        return Result.Ok(imageDtos);
+        return Result.Ok(imageDtos.Where(x => !string.IsNullOrEmpty(x.Base64)).AsEnumerable());
     }
 }

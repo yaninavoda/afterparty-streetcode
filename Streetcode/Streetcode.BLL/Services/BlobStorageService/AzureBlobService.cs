@@ -27,7 +27,7 @@ namespace Streetcode.BLL.Services.BlobStorageService
         {
             _connectionString = configuration.GetConnectionString(AzureStorageConnectionString)
                 ?? throw new InvalidOperationException($"Connection string '{AzureStorageConnectionString}' not found.");
-            _containerName = configuration[AzureStorageContainerName] ?? DefaultContainerName;
+            _containerName = DefaultContainerName;
 
             _loggerService = loggerService;
             _repositoryWrapper = repositoryWrapper;
@@ -66,7 +66,7 @@ namespace Streetcode.BLL.Services.BlobStorageService
         public string SaveFileInStorage(string base64, string name, string mimeType)
         {
             var bytes = Convert.FromBase64String(base64);
-            var blobName = GenerateBlobName(name);
+            var blobName = GenerateBlobName(mimeType);
 
             var options = new BlobUploadOptions
             {
@@ -78,37 +78,9 @@ namespace Streetcode.BLL.Services.BlobStorageService
 
             var container = GetOrCreateBlobContainerClient();
 
-            container.GetBlobClient(blobName).Upload(
+            var response = container.GetBlobClient(blobName).Upload(
                 content: new MemoryStream(bytes),
                 options: options);
-
-            return blobName;
-        }
-
-        public async Task<string> SaveFileInStorageAsync(
-            string base64,
-            string name,
-            string mimeType,
-            CancellationToken cancellationToken = default)
-        {
-            var bytes = Convert.FromBase64String(base64);
-            var blobName = GenerateBlobName(name);
-
-            var options = new BlobUploadOptions
-            {
-                HttpHeaders = new BlobHttpHeaders
-                {
-                    ContentType = mimeType
-                },
-            };
-
-            var container = await GetOrCreateBlobContainerClientAsync(cancellationToken);
-
-            var response = await container.GetBlobClient($"{blobName}.{mimeType}")
-                .UploadAsync(
-                    content: new MemoryStream(bytes),
-                    options: options,
-                    cancellationToken: cancellationToken);
 
             return blobName;
         }
@@ -117,16 +89,6 @@ namespace Streetcode.BLL.Services.BlobStorageService
         {
             var container = GetOrCreateBlobContainerClient();
             container.DeleteBlobIfExists(name);
-        }
-
-        public async Task DeleteFileInStorageAsync(
-            string name,
-            CancellationToken cancellationToken = default)
-        {
-            var container = await GetOrCreateBlobContainerClientAsync(cancellationToken);
-            await container.DeleteBlobIfExistsAsync(
-                blobName: name,
-                cancellationToken: cancellationToken);
         }
 
         public byte[] FindFileInStorageAsBytes(string name)
@@ -175,11 +137,10 @@ namespace Streetcode.BLL.Services.BlobStorageService
             return SaveFileInStorage(base64Format, newBlobName, extension);
         }
 
-        private static string GenerateBlobName(string fileName)
+        private static string GenerateBlobName(string extension)
         {
             var guid = Guid.NewGuid().ToString();
-            var extension = Path.GetExtension(fileName);
-            return $"{guid}{extension}";
+            return $"{guid}.{extension}";
         }
 
         private BlobContainerClient GetOrCreateBlobContainerClient()
