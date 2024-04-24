@@ -151,7 +151,7 @@ namespace Streetcode.DAL.Persistence.Migrations
                     b.HasDiscriminator<string>("CoordinateType").HasValue("coordinate_base");
                 });
 
-            modelBuilder.Entity("Streetcode.DAL.Entities.AdditionalContent.Jwt.RefreshToken", b =>
+            modelBuilder.Entity("Streetcode.DAL.Entities.AdditionalContent.Jwt.RefreshTokenEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -162,18 +162,18 @@ namespace Streetcode.DAL.Persistence.Migrations
                     b.Property<int>("ApplicationUserId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("RefreshTokenExpirationDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Token")
+                    b.Property<string>("RefreshToken")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenExpirationDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("RefreshToken");
+                    b.ToTable("refresh_tokens", "account");
                 });
 
             modelBuilder.Entity("Streetcode.DAL.Entities.AdditionalContent.StreetcodeTagIndex", b =>
@@ -1320,7 +1320,7 @@ namespace Streetcode.DAL.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Streetcode.DAL.Entities.AdditionalContent.Jwt.RefreshToken", b =>
+            modelBuilder.Entity("Streetcode.DAL.Entities.AdditionalContent.Jwt.RefreshTokenEntity", b =>
                 {
                     b.HasOne("Streetcode.DAL.Entities.Users.ApplicationUser", "ApplicationUser")
                         .WithMany("RefreshTokens")

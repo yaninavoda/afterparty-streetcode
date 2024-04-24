@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Streetcode.DAL.Entities.AdditionalContent;
 using Streetcode.DAL.Entities.AdditionalContent.Coordinates.Types;
+using Streetcode.DAL.Entities.AdditionalContent.Jwt;
 using Streetcode.DAL.Entities.Analytics;
 using Streetcode.DAL.Entities.Feedback;
 using Streetcode.DAL.Entities.Media;
@@ -66,6 +67,7 @@ public class StreetcodeDbContext : IdentityDbContext<ApplicationUser, Applicatio
     public DbSet<HistoricalContextTimeline> HistoricalContextsTimelines { get; set; }
     public DbSet<StreetcodePartner> StreetcodePartners { get; set; }
     public DbSet<TeamMemberPositions> TeamMemberPosition { get; set; }
+    public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

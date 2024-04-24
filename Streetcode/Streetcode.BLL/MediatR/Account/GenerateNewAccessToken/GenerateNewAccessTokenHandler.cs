@@ -14,7 +14,7 @@ public sealed class GenerateNewAccessTokenHandler : IRequestHandler<GenerateNewA
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ITokenService _tokenService;
     private readonly ILoggerService _logger;
-    public GenerateNewAccessTokenHandler(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, ILoggerService logger)
+    public GenerateNewAccessTokenHandler(UserManager<ApplicationUser> userManager, ITokenService tokenService, ILoggerService logger)
     {
         _userManager = userManager;
         _tokenService = tokenService;
