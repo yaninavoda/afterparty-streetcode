@@ -54,9 +54,9 @@ public sealed class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<
 
         var response = _tokenService.GenerateJWTToken(user, claims);
 
-        user.RefreshToken = response.RefreshToken;
+        // user.RefreshToken = response.RefreshToken;
 
-        user.RefreshTokenExpirationDateTime = response.RefreshTokenExpirationDateTime;
+        // user.RefreshTokenExpirationDateTime = response.RefreshTokenExpirationDateTime;
 
         await _userManager.UpdateAsync(user);
 

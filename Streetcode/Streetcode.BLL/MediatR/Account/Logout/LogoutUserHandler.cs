@@ -29,9 +29,9 @@ public class LogoutUserHandler : IRequestHandler<LogoutUserCommand, Result<Logou
             return UserByEmailNotFound(request.Email);
         }
 
-        user.RefreshToken = null;
+        // user.RefreshToken = null;
 
-        user.RefreshTokenExpirationDateTime = null;
+        // user.RefreshTokenExpirationDateTime = null;
 
         var result = await _userManager.UpdateAsync(user);
 

@@ -104,9 +104,9 @@ if (app.Environment.EnvironmentName != "Local")
         wp => wp.ParseZipFileFromWebAsync(), Cron.Monthly);
     RecurringJob.AddOrUpdate<BlobService>(
         b => b.CleanBlobStorage(), Cron.Monthly);
-    BackgroundJob.Schedule<DeleteExpiredRefreshTokensUtils>(
+    /* BackgroundJob.Schedule<DeleteExpiredRefreshTokensUtils>(
         dt => dt.DeleteExpiredRefreshTokens(), TimeSpan.FromDays(10));
-}
+*/}
 
 app.MapControllers();
 

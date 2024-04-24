@@ -11,6 +11,7 @@ public class DeleteExpiredRefreshTokensUtils
         _userManager = userManager;
     }
 
+    /*
     public async Task DeleteExpiredRefreshTokens()
     {
         var users = _userManager.Users.Where(x => x.RefreshTokenExpirationDateTime <= DateTime.UtcNow).ToList();
@@ -26,5 +27,5 @@ public class DeleteExpiredRefreshTokensUtils
                 await _userManager.UpdateAsync(user);
             }
         }
-    }
+    }*/
 }
