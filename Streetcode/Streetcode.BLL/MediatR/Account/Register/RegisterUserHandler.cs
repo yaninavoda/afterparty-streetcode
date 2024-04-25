@@ -73,14 +73,7 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Result<A
 
         var response = _tokenService.GenerateJWTToken(user, claims);
 
-        var refreshToken = new RefreshTokenEntity
-        {
-            RefreshToken = response.RefreshToken!,
-            ApplicationUserId = user.Id,
-            RefreshTokenExpirationDateTime = response.RefreshTokenExpirationDateTime,
-        };
-
-        _repositoryWrapper.RefreshTokenRepository.Create(refreshToken);
+        _tokenService.CreateRefreshToken(user, response);
 
         if (await _repositoryWrapper.SaveChangesAsync() <= 0)
         {

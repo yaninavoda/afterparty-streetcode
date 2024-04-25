@@ -7,7 +7,6 @@ using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Interfaces.Users;
 using Streetcode.DAL.Entities.Users;
 using Streetcode.DAL.Repositories.Interfaces.Base;
-using Streetcode.DAL.Entities.AdditionalContent.Jwt;
 
 namespace Streetcode.BLL.MediatR.Account.GenerateNewAccessToken;
 
@@ -60,14 +59,7 @@ public sealed class GenerateNewAccessTokenHandler : IRequestHandler<GenerateNewA
 
         var response = _tokenService.GenerateJWTToken(user, claims);
 
-        var refreshToken = new RefreshTokenEntity
-        {
-            RefreshToken = response.RefreshToken!,
-            ApplicationUserId = user.Id,
-            RefreshTokenExpirationDateTime = response.RefreshTokenExpirationDateTime,
-        };
-
-        _repositoryWrapper.RefreshTokenRepository.Create(refreshToken);
+        _tokenService.CreateRefreshToken(user, response);
 
         if (await _repositoryWrapper.SaveChangesAsync() <= 0)
         {
