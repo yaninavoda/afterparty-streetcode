@@ -12,6 +12,7 @@ namespace Streetcode.WebApi.Controllers.Team
     [Authorize(Roles = "Admin")]
     public class TeamLinkController : BaseApiController
     {
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

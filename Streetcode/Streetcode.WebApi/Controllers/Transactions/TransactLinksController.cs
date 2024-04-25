@@ -7,7 +7,7 @@ using Streetcode.BLL.MediatR.Transactions.TransactionLink.GetByStreetcodeId;
 
 namespace Streetcode.WebApi.Controllers.Transactions;
 
-[Authorize(Roles = "Admin")]
+[AllowAnonymous]
 public class TransactLinksController : BaseApiController
 {
     [HttpGet]

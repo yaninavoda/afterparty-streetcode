@@ -13,22 +13,25 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Streetcode.WebApi.Controllers.Streetcode.TextContent;
 
-[AllowAnonymous]
+[Authorize(Roles = "Admin")]
 [ServiceFilter(typeof(AsyncValidateEntityExistsFilter<Fact>))]
 public class FactController : BaseApiController
 {
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         return HandleResult(await Mediator.Send(new GetAllFactsQuery()));
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         return HandleResult(await Mediator.Send(new GetFactByIdQuery(id)));
     }
 
+    [AllowAnonymous]
     [HttpGet("{streetcodeId:int}")]
     public async Task<IActionResult> GetByStreetcodeId([FromRoute] int streetcodeId)
     {

@@ -7,7 +7,7 @@ using Streetcode.BLL.MediatR.Team.Position.GetAll;
 using Streetcode.DAL.Entities.Instagram;
 
 namespace Streetcode.WebApi.Controllers.Instagram;
-[Authorize]
+[AllowAnonymous]
 public class InstagramController : BaseApiController
     {
         [HttpGet]

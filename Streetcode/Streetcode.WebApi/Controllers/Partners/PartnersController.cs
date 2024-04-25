@@ -12,48 +12,49 @@ using Streetcode.BLL.MediatR.Partners.GetByStreetcodeId;
 
 namespace Streetcode.WebApi.Controllers.Partners;
 
-[AllowAnonymous]
+[Authorize(Roles = "Admin")]
 public class PartnersController : BaseApiController
 {
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         return HandleResult(await Mediator.Send(new GetAllPartnersQuery()));
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAllShort()
     {
         return HandleResult(await Mediator.Send(new GetAllPartnersShortQuery()));
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         return HandleResult(await Mediator.Send(new GetPartnerByIdQuery(id)));
     }
 
+    [AllowAnonymous]
     [HttpGet("{streetcodeId:int}")]
     public async Task<IActionResult> GetByStreetcodeId([FromRoute] int streetcodeId)
     {
         return HandleResult(await Mediator.Send(new GetPartnersByStreetcodeIdQuery(streetcodeId)));
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreatePartnerRequestDto partner)
     {
         return HandleResult(await Mediator.Send(new CreatePartnerCommand(partner)));
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] CreatePartnerDto partner)
     {
         return HandleResult(await Mediator.Send(new BLL.MediatR.Partners.Update.UpdatePartnerQuery(partner)));
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpDelete]
     public async Task<IActionResult> Delete([FromBody] DeletePartnerRequestDto partner)
     {

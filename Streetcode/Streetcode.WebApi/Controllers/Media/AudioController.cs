@@ -10,41 +10,43 @@ using Streetcode.BLL.MediatR.Media.Audio.GetByStreetcodeId;
 
 namespace Streetcode.WebApi.Controllers.Media;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class AudioController : BaseApiController
 {
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         return HandleResult(await Mediator.Send(new GetAllAudiosQuery()));
     }
 
+    [AllowAnonymous]
     [HttpGet("{streetcodeId:int}")]
     public async Task<IActionResult> GetByStreetcodeId([FromRoute] int streetcodeId)
     {
         return HandleResult(await Mediator.Send(new GetAudioByStreetcodeIdQuery(streetcodeId)));
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         return HandleResult(await Mediator.Send(new GetAudioByIdQuery(id)));
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetBaseAudio([FromRoute] int id)
     {
         return HandleResult(await Mediator.Send(new GetBaseAudioQuery(id)));
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] AudioFileBaseCreateDto audio)
     {
         return HandleResult(await Mediator.Send(new CreateAudioCommand(audio)));
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
