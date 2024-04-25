@@ -138,9 +138,6 @@ namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
                 .Setup(m => m.Map<CreateStreetcodeRequestDto, StreetcodeEntity>(request))
                 .Returns(streetcode);
 
-            _mockRepositoryWrapper.Setup(x => x.BeginTransaction())
-                .Returns(new System.Transactions.TransactionScope());
-
             _mockRepositoryWrapper
                 .Setup(repo => repo.StreetcodeRepository.Create(streetcode));
 

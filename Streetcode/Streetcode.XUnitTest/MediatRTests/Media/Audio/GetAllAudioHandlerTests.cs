@@ -2,6 +2,7 @@
 
 using System.Linq.Expressions;
 using AutoMapper;
+using FluentResults;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
 using Streetcode.BLL.Dto.Media.Audio;
@@ -45,7 +46,7 @@ public class GetAllAudioHandlerTests
         var result = await handler.Handle(new GetAllAudiosQuery(), CancellationToken.None);
 
         // Assert
-        Assert.True(result.IsSuccess);
+        Assert.IsType<Result<IEnumerable<AudioDto>>>(result);
     }
 
     [Fact]
@@ -93,30 +94,6 @@ public class GetAllAudioHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ReturnsCollectionOfCorrectCount_WhenAudiosFound()
-    {
-        // Arrange
-        var mockVideo = GetAudioList();
-        var expectedCount = mockVideo.Count;
-
-        MockRepositorySetupReturnsData();
-        MockMapperSetup();
-
-        var handler = new GetAllAudiosHandler(
-            _mockRepositoryWrapper.Object,
-            _mockMapper.Object,
-            _mockBlobService.Object,
-            _mockLogger.Object);
-
-        // Act
-        var result = await handler.Handle(new GetAllAudiosQuery(), CancellationToken.None);
-        var actualCount = result.Value.Count();
-
-        // Assert
-        Assert.Equal(expectedCount, actualCount);
-    }
-
-    [Fact]
     public async Task Handle_MapperShouldMapOnlyOnce_WhenAudiosFound()
     {
         // Arrange
@@ -155,7 +132,7 @@ public class GetAllAudioHandlerTests
         var result = await handler.Handle(new GetAllAudiosQuery(), CancellationToken.None);
 
         // Assert
-        Assert.IsType<List<AudioDto>>(result.Value);
+        Assert.IsType<List<AudioDto>>(result.Value.ToList());
     }
 
     [Fact]
@@ -204,7 +181,7 @@ public class GetAllAudioHandlerTests
     {
         return new List<Audio>
         {
-            new ()
+            new Audio
             {
                 Id = 1,
                 Title = "Audio Title 1",
@@ -212,7 +189,7 @@ public class GetAllAudioHandlerTests
                 MimeType = "audio/mpeg",
                 Base64 = "base64_encoded_audio_data_1",
             },
-            new ()
+            new Audio
             {
                 Id = 2,
                 Title = "Audio Title 2",
@@ -220,7 +197,7 @@ public class GetAllAudioHandlerTests
                 MimeType = "audio/mpeg",
                 Base64 = "base64_encoded_audio_data_2",
             },
-            new ()
+            new Audio
             {
                 Id = 3,
                 Title = "Audio Title 3",

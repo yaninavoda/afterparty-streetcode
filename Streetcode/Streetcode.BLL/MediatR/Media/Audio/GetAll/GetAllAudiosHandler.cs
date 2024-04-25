@@ -2,7 +2,6 @@
 using FluentResults;
 using MediatR;
 using Streetcode.BLL.Dto.Media.Audio;
-using Streetcode.BLL.Dto.Media;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.DAL.Repositories.Interfaces.Base;
@@ -39,11 +38,24 @@ public class GetAllAudiosHandler : IRequestHandler<GetAllAudiosQuery, Result<IEn
         }
 
         var audioDtos = _mapper.Map<IEnumerable<AudioDto>>(audios);
+
         foreach (var audio in audioDtos)
         {
-            audio.Base64 = _blobService.FindFileInStorageAsBase64(audio.BlobName);
+            try
+            {
+                audio.Base64 = _blobService.FindFileInStorageAsBase64(audio.BlobName);
+            }
+            catch (Azure.RequestFailedException ex)
+            {
+                if (ex.ErrorCode == "BlobNotFound")
+                {
+                    continue;
+                }
+
+                throw;
+            }
         }
 
-        return Result.Ok(audioDtos);
+        return Result.Ok(audioDtos.Where(x => !string.IsNullOrEmpty(x.Base64)).AsEnumerable());
     }
 }

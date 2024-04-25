@@ -33,18 +33,18 @@ public class CreateImageHandler : IRequestHandler<CreateImageCommand, Result<Ima
         string hashBlobStorageName = _blobService.SaveFileInStorage(
             request.Image.BaseFormat,
             request.Image.Title,
-            request.Image.Extension);
+            request.Image.Extension!);
 
         var image = _mapper.Map<DAL.Entities.Media.Images.Image>(request.Image);
 
-        image.BlobName = $"{hashBlobStorageName}.{request.Image.Extension}";
+        image.BlobName = hashBlobStorageName;
 
         _repositoryWrapper.ImageRepository.Create(image);
         var resultIsSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
 
         var createdImage = _mapper.Map<ImageDto>(image);
 
-        createdImage.Base64 = _blobService.FindFileInStorageAsBase64(createdImage.BlobName);
+        createdImage.Base64 = _blobService.FindFileInStorageAsBase64(createdImage.BlobName!);
 
         if(resultIsSuccess)
         {
