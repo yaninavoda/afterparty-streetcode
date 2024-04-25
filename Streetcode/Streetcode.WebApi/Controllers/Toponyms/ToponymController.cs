@@ -7,7 +7,7 @@ using Streetcode.BLL.MediatR.Toponyms.GetByStreetcodeId;
 
 namespace Streetcode.WebApi.Controllers.Toponyms;
 
-[Authorize(Roles = "Admin, User")]
+[AllowAnonymous]
 public class ToponymController : BaseApiController
 {
     [HttpGet]

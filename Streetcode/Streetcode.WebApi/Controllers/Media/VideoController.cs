@@ -10,42 +10,42 @@ using Streetcode.BLL.MediatR.Media.Video.Update;
 
 namespace Streetcode.WebApi.Controllers.Media;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class VideoController : BaseApiController
 {
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         return HandleResult(await Mediator.Send(new GetAllVideosQuery()));
     }
 
+    [AllowAnonymous]
     [HttpGet("{streetcodeId:int}")]
     public async Task<IActionResult> GetByStreetcodeId([FromRoute] int streetcodeId)
     {
         return HandleResult(await Mediator.Send(new GetVideoByStreetcodeIdQuery(streetcodeId)));
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         return HandleResult(await Mediator.Send(new GetVideoByIdQuery(id)));
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateVideoRequestDto request)
     {
         return HandleResult(await Mediator.Send(new CreateVideoCommand(request)));
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateVideoRequestDto updateRequest)
     {
         return HandleResult(await Mediator.Send(new UpdateVideoCommand(updateRequest)));
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpDelete]
     public async Task<IActionResult> Delete([FromBody] DeleteVideoRequestDto deleteRequest)
     {

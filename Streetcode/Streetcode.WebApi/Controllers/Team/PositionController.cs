@@ -7,16 +7,16 @@ using Streetcode.BLL.MediatR.Team.Position.GetAll;
 
 namespace Streetcode.WebApi.Controllers.Team
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class PositionController : BaseApiController
     {
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             return HandleResult(await Mediator.Send(new GetAllPositionsQuery()));
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] PositionDto position)
         {

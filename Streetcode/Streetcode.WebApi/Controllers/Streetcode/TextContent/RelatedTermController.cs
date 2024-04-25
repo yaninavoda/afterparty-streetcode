@@ -8,30 +8,28 @@ using Streetcode.BLL.MediatR.Streetcode.RelatedTerm.Update;
 
 namespace Streetcode.WebApi.Controllers.Streetcode.TextContent
 {
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     public class RelatedTermController : BaseApiController
     {
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetByTermId([FromRoute] int id)
         {
             return HandleResult(await Mediator.Send(new GetAllRelatedTermsByTermIdQuery(id)));
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] RelatedTermDto relatedTerm)
         {
             return HandleResult(await Mediator.Send(new CreateRelatedTermCommand(relatedTerm)));
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] RelatedTermDto relatedTerm)
         {
             return HandleResult(await Mediator.Send(new UpdateRelatedTermCommand(id, relatedTerm)));
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpDelete("{word}")]
         public async Task<IActionResult> Delete([FromRoute] string word)
         {
