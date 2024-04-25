@@ -31,7 +31,7 @@ public sealed class GenerateNewAccessTokenHandler : IRequestHandler<GenerateNewA
 
         string accessToken = request.Token;
 
-        string refreshToken = request.RefreshToken;
+        string refreshTokenFromRequest = request.RefreshToken;
 
         ClaimsPrincipal principals = _tokenService.GetPrincipalFromJwtToken(accessToken)!;
 
@@ -46,36 +46,49 @@ public sealed class GenerateNewAccessTokenHandler : IRequestHandler<GenerateNewA
 
         // find refresh token in db
         var savedRefreshToken = await _repositoryWrapper.RefreshTokenRepository.GetFirstOrDefaultAsync(
-            rt => rt.RefreshToken == refreshToken && rt.ApplicationUserId == user.Id);
+            rt => rt.RefreshToken == refreshTokenFromRequest
+            && rt.ApplicationUserId == user.Id);
 
         if (user is null
             || savedRefreshToken is null
             || savedRefreshToken.RefreshTokenExpirationDateTime <= DateTime.UtcNow)
         {
-            return InvalidRefreshToken(refreshToken);
+            return InvalidRefreshToken(refreshTokenFromRequest);
         }
 
         var claims = await _tokenService.GetUserClaimsAsync(user);
 
         var response = _tokenService.GenerateJWTToken(user, claims);
 
-        user.RefreshTokens.Add(new RefreshTokenEntity
+        var refreshToken = new RefreshTokenEntity
         {
             RefreshToken = response.RefreshToken!,
             ApplicationUserId = user.Id,
             RefreshTokenExpirationDateTime = response.RefreshTokenExpirationDateTime,
-        });
+        };
 
-        await _userManager.UpdateAsync(user);
+        _repositoryWrapper.RefreshTokenRepository.Create(refreshToken);
+
+        if (await _repositoryWrapper.SaveChangesAsync() <= 0)
+        {
+            return FailedToSaveRefreshTokenError(response);
+        }
 
         return Result.Ok(response);
     }
 
+    private Result<AuthenticationResponseDto> FailedToSaveRefreshTokenError(AuthenticationResponseDto response)
+    {
+        var errorMessage = "Failed to save refresh token.";
+
+        _logger.LogError(response, errorMessage);
+
+        return Result.Fail(errorMessage);
+    }
+
     private Result<AuthenticationResponseDto> InvalidRefreshToken(string refreshToken)
     {
-        var errorMessage = string.Join(
-            Environment.NewLine,
-            "Invalid Refresh Token");
+        var errorMessage = "Invalid Refresh Token";
 
         _logger.LogError(refreshToken, errorMessage);
 
@@ -84,9 +97,7 @@ public sealed class GenerateNewAccessTokenHandler : IRequestHandler<GenerateNewA
 
     private Result<AuthenticationResponseDto> InvalidJwtToken(string jwtToken)
     {
-        var errorMessage = string.Join(
-            Environment.NewLine,
-            "Invalid Jwt Token");
+        var errorMessage = "Invalid Jwt Token";
 
         _logger.LogError(jwtToken, errorMessage);
 

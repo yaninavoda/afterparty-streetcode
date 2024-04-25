@@ -5,7 +5,9 @@ using Streetcode.BLL.Dto.Account;
 using Streetcode.BLL.DTO.Account;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Interfaces.Users;
+using Streetcode.DAL.Entities.AdditionalContent.Jwt;
 using Streetcode.DAL.Entities.Users;
+using Streetcode.DAL.Repositories.Interfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Account.Register;
 
@@ -15,13 +17,20 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Result<A
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ITokenService _tokenService;
     private readonly ILoggerService _logger;
+    private readonly IRepositoryWrapper _repositoryWrapper;
 
-    public RegisterUserHandler(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, ILoggerService logger)
+    public RegisterUserHandler(
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        ITokenService tokenService,
+        ILoggerService logger,
+        IRepositoryWrapper repositoryWrapper)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _tokenService = tokenService;
         _logger = logger;
+        _repositoryWrapper = repositoryWrapper;
     }
 
     public async Task<Result<AuthenticationResponseDto>> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
@@ -64,13 +73,30 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Result<A
 
         var response = _tokenService.GenerateJWTToken(user, claims);
 
-        // user.RefreshToken = response.RefreshToken;
+        var refreshToken = new RefreshTokenEntity
+        {
+            RefreshToken = response.RefreshToken!,
+            ApplicationUserId = user.Id,
+            RefreshTokenExpirationDateTime = response.RefreshTokenExpirationDateTime,
+        };
 
-        // user.RefreshTokenExpirationDateTime = response.RefreshTokenExpirationDateTime;
+        _repositoryWrapper.RefreshTokenRepository.Create(refreshToken);
 
-        await _userManager.UpdateAsync(user);
+        if (await _repositoryWrapper.SaveChangesAsync() <= 0)
+        {
+            return FailedToSaveRefreshTokenError(response);
+        }
 
         return Result.Ok(response);
+    }
+
+    private Result<AuthenticationResponseDto> FailedToSaveRefreshTokenError(AuthenticationResponseDto response)
+    {
+        var errorMessage = "Failed to save refresh token.";
+
+        _logger.LogError(response, errorMessage);
+
+        return Result.Fail(errorMessage);
     }
 
     private Result<AuthenticationResponseDto> EmailIsAlreadyRegistered(RegisterUserDto request)

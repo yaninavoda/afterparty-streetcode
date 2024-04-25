@@ -29,18 +29,7 @@ public class LogoutUserHandler : IRequestHandler<LogoutUserCommand, Result<Logou
             return UserByEmailNotFound(request.Email);
         }
 
-        // user.RefreshToken = null;
-
-        // user.RefreshTokenExpirationDateTime = null;
-
-        var result = await _userManager.UpdateAsync(user);
-
-        if (!result.Succeeded)
-        {
-            return FailedToLogout(user);
-        }
-
-        LogoutUserResponseDto response = new LogoutUserResponseDto()
+        LogoutUserResponseDto response = new ()
         {
             Email = request.Email,
             Text = string.Format("The user '{0}' is logged out successfully", request.Email)
@@ -56,15 +45,6 @@ public class LogoutUserHandler : IRequestHandler<LogoutUserCommand, Result<Logou
             email);
 
         _logger.LogError(email, errorMessage);
-
-        return Result.Fail(errorMessage);
-    }
-
-    private Result<LogoutUserResponseDto> FailedToLogout(ApplicationUser user)
-    {
-        string errorMessage = "Logout failed.";
-
-        _logger.LogError(user, errorMessage);
 
         return Result.Fail(errorMessage);
     }
