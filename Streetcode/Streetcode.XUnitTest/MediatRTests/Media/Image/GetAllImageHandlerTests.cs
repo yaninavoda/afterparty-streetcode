@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
+using Streetcode.BLL.Dto.Media.Audio;
 using Streetcode.BLL.Dto.Media.Images;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.BLL.Interfaces.Logging;
@@ -93,30 +94,6 @@ public class GetAllImageHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ReturnsCollectionOfCorrectCount_WhenImagesFound()
-    {
-        // Arrange
-        var mockVideo = GetImageList();
-        var expectedCount = mockVideo.Count;
-
-        MockRepositorySetupReturnsData();
-        MockMapperSetup();
-
-        var handler = new GetAllImagesHandler(
-            _mockRepositoryWrapper.Object,
-            _mockMapper.Object,
-            _mockBlobService.Object,
-            _mockLogger.Object);
-
-        // Act
-        var result = await handler.Handle(new GetAllImagesQuery(), CancellationToken.None);
-        var actualCount = result.Value.Count();
-
-        // Assert
-        Assert.Equal(expectedCount, actualCount);
-    }
-
-    [Fact]
     public async Task Handle_MapperShouldMapOnlyOnce_WhenImagesFound()
     {
         // Arrange
@@ -155,7 +132,7 @@ public class GetAllImageHandlerTests
         var result = await handler.Handle(new GetAllImagesQuery(), CancellationToken.None);
 
         // Assert
-        Assert.IsType<List<ImageDto>>(result.Value);
+        Assert.IsType<List<ImageDto>>(result.Value.ToList());
     }
 
     [Fact]

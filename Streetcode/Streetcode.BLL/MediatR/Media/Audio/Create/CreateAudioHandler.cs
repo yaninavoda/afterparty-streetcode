@@ -5,7 +5,6 @@ using Streetcode.BLL.Dto.Media.Audio;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Entities.Media;
 using Streetcode.DAL.Repositories.Interfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Media.Audio.Create;
@@ -38,7 +37,7 @@ public class CreateAudioHandler : IRequestHandler<CreateAudioCommand, Result<Aud
 
         var audio = _mapper.Map<DAL.Entities.Media.Audio>(request.Audio);
 
-        audio.BlobName = $"{hashBlobStorageName}.{request.Audio.Extension}";
+        audio.BlobName = hashBlobStorageName;
 
         _repositoryWrapper.AudioRepository.Create(audio);
 
