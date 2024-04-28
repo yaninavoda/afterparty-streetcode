@@ -1,12 +1,14 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using FluentResults;
+﻿using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Streetcode.BLL.DTO.Account;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Interfaces.Users;
 using Streetcode.BLL.Resources.Errors;
+using Streetcode.DAL.Entities.AdditionalContent.Jwt;
 using Streetcode.DAL.Entities.Users;
+using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.DAL.Repositories.Realizations.Base;
 
 namespace Streetcode.BLL.MediatR.Account.Login;
 
@@ -16,12 +18,19 @@ public sealed class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ITokenService _tokenService;
     private readonly ILoggerService _logger;
-    public LoginUserHandler(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, ILoggerService logger)
+    private readonly IRepositoryWrapper _repositoryWrapper;
+    public LoginUserHandler(
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        ITokenService tokenService,
+        ILoggerService logger,
+        IRepositoryWrapper repositoryWrapper)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _tokenService = tokenService;
         _logger = logger;
+        _repositoryWrapper = repositoryWrapper;
     }
 
     public async Task<Result<AuthenticationResponseDto>> Handle(LoginUserCommand command, CancellationToken cancellationToken)
@@ -54,13 +63,23 @@ public sealed class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<
 
         var response = _tokenService.GenerateJWTToken(user, claims);
 
-        user.RefreshToken = response.RefreshToken;
+        _tokenService.CreateRefreshToken(user, response);
 
-        user.RefreshTokenExpirationDateTime = response.RefreshTokenExpirationDateTime;
-
-        await _userManager.UpdateAsync(user);
+        if (await _repositoryWrapper.SaveChangesAsync() <= 0)
+        {
+            return FailedToSaveRefreshTokenError(response);
+        }
 
         return Result.Ok(response);
+    }
+
+    private Result<AuthenticationResponseDto> FailedToSaveRefreshTokenError(AuthenticationResponseDto response)
+    {
+        var errorMessage = "Failed to save refresh token.";
+
+        _logger.LogError(response, errorMessage);
+
+        return Result.Fail(errorMessage);
     }
 
     private Result<AuthenticationResponseDto> FailedToSign(SignInResult result)

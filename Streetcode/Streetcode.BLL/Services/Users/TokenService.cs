@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Streetcode.DAL.Entities.AdditionalContent.Jwt;
 using Streetcode.BLL.DTO.Account;
 using Microsoft.AspNetCore.Identity;
+using Streetcode.DAL.Repositories.Interfaces.Base;
 
 namespace Streetcode.BLL.Services.Users;
 
@@ -16,31 +17,38 @@ public class TokenService : ITokenService
     private readonly JwtConfiguration _jwtConfiguration;
     private readonly RefreshTokenConfiguration _refreshTokenConfiguration;
     private readonly UserManager<ApplicationUser> _userManager;
-    public TokenService(JwtConfiguration jwtConfiguration, RefreshTokenConfiguration refreshTokenConfiguration, UserManager<ApplicationUser> userManager)
+    private readonly IRepositoryWrapper _repositoryWrapper;
+
+    public TokenService(
+        JwtConfiguration jwtConfiguration,
+        RefreshTokenConfiguration refreshTokenConfiguration,
+        UserManager<ApplicationUser> userManager,
+        IRepositoryWrapper repositoryWrapper)
     {
         _jwtConfiguration = jwtConfiguration;
         _refreshTokenConfiguration = refreshTokenConfiguration;
         _userManager = userManager;
+        _repositoryWrapper = repositoryWrapper;
     }
 
     public AuthenticationResponseDto GenerateJWTToken(ApplicationUser user, List<Claim> claims)
     {
         DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_jwtConfiguration.ExpirationMinutes));
 
-        SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.Key!));
+        SymmetricSecurityKey securityKey = new (Encoding.UTF8.GetBytes(_jwtConfiguration.Key!));
 
-        SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+        SigningCredentials signingCredentials = new (securityKey, SecurityAlgorithms.HmacSha256);
 
-        JwtSecurityToken tokenGenerator = new JwtSecurityToken(
+        JwtSecurityToken tokenGenerator = new (
             claims: claims,
             expires: expiration,
             signingCredentials: signingCredentials);
 
-        JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+        JwtSecurityTokenHandler jwtSecurityTokenHandler = new ();
 
         var token = jwtSecurityTokenHandler.WriteToken(tokenGenerator);
 
-        AuthenticationResponseDto response = new AuthenticationResponseDto()
+        AuthenticationResponseDto response = new ()
         {
             UserName = user.UserName,
             Email = user.Email,
@@ -55,7 +63,7 @@ public class TokenService : ITokenService
 
     public async Task<List<Claim>> GetUserClaimsAsync(ApplicationUser user)
     {
-        List<Claim> claims = new List<Claim>
+        List<Claim> claims = new ()
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()), // Subject (user id)
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT unique ID
@@ -96,6 +104,18 @@ public class TokenService : ITokenService
         }
 
         return claims;
+    }
+
+    public void CreateRefreshToken(ApplicationUser user, AuthenticationResponseDto response)
+    {
+        var refreshToken = new RefreshTokenEntity
+        {
+            ApplicationUserId = user.Id,
+            RefreshToken = response.RefreshToken!,
+            RefreshTokenExpirationDateTime = response.RefreshTokenExpirationDateTime,
+        };
+
+        _repositoryWrapper.RefreshTokenRepository.Create(refreshToken);
     }
 
     private static string GenerateRefreshToken()

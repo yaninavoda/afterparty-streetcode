@@ -102,10 +102,9 @@ if (app.Environment.EnvironmentName != "Local")
     wp => wp.ParseZipFileFromWebAsync(), TimeSpan.FromMinutes(1));
     RecurringJob.AddOrUpdate<WebParsingUtils>(
         wp => wp.ParseZipFileFromWebAsync(), Cron.Monthly);
+    RecurringJob.AddOrUpdate<DeleteExpiredRefreshTokensUtils>("delete_expired_refresh_tokens", dt => dt.DeleteExpiredRefreshTokens(), "0 2 * * 1");
     RecurringJob.AddOrUpdate<AzureBlobService>(
         b => b.CleanBlobStorageAsync(default), Cron.Monthly);
-    BackgroundJob.Schedule<DeleteExpiredRefreshTokensUtils>(
-        dt => dt.DeleteExpiredRefreshTokens(), TimeSpan.FromDays(10));
 }
 
 app.MapControllers();

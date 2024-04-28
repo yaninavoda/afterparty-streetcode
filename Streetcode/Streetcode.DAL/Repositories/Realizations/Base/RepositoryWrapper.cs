@@ -102,6 +102,8 @@ public class RepositoryWrapper : IRepositoryWrapper
 
     private IStreetcodeImageRepository _streetcodeImageRepository;
 
+    private IRefreshTokenRepository _refreshTokenRepository;
+
     public RepositoryWrapper(StreetcodeDbContext streetcodeDbContext)
     {
         _streetcodeDbContext = streetcodeDbContext;
@@ -537,6 +539,16 @@ public class RepositoryWrapper : IRepositoryWrapper
 			return _streetcodeImageRepository;
 		}
 	}
+
+    public IRefreshTokenRepository RefreshTokenRepository
+    {
+        get
+        {
+            _refreshTokenRepository ??= new RefreshTokenRepository(_streetcodeDbContext);
+
+            return _refreshTokenRepository;
+        }
+    }
 
     public async Task<int> SaveChangesAsync()
     {

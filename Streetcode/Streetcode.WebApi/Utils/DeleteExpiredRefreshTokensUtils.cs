@@ -1,30 +1,26 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Streetcode.DAL.Entities.Users;
+using Streetcode.DAL.Repositories.Interfaces.Base;
 
 namespace Streetcode.WebApi.Utils;
 
 public class DeleteExpiredRefreshTokensUtils
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    public DeleteExpiredRefreshTokensUtils(UserManager<ApplicationUser> userManager)
+    private readonly IRepositoryWrapper _repositoryWrapper;
+    public DeleteExpiredRefreshTokensUtils(IRepositoryWrapper repositoryWrapper)
     {
-        _userManager = userManager;
+        _repositoryWrapper = repositoryWrapper;
     }
 
     public async Task DeleteExpiredRefreshTokens()
     {
-        var users = _userManager.Users.Where(x => x.RefreshTokenExpirationDateTime <= DateTime.UtcNow).ToList();
+        var refreshTokens = await _repositoryWrapper.RefreshTokenRepository
+            .GetAllAsync(rt => rt.RefreshTokenExpirationDateTime <= DateTime.UtcNow);
 
-        if (users.Count > 0)
+        if (refreshTokens is not null)
         {
-            foreach (var user in users)
-            {
-                user.RefreshToken = null;
-
-                user.RefreshTokenExpirationDateTime = null;
-
-                await _userManager.UpdateAsync(user);
-            }
+            _repositoryWrapper.RefreshTokenRepository.DeleteRange(refreshTokens);
+            await _repositoryWrapper.SaveChangesAsync();
         }
     }
 }

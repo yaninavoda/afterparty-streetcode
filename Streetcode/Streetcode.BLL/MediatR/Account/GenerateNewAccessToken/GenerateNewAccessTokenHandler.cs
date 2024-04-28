@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Interfaces.Users;
 using Streetcode.DAL.Entities.Users;
+using Streetcode.DAL.Repositories.Interfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Account.GenerateNewAccessToken;
 
@@ -14,11 +15,13 @@ public sealed class GenerateNewAccessTokenHandler : IRequestHandler<GenerateNewA
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ITokenService _tokenService;
     private readonly ILoggerService _logger;
-    public GenerateNewAccessTokenHandler(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, ILoggerService logger)
+    private readonly IRepositoryWrapper _repositoryWrapper;
+    public GenerateNewAccessTokenHandler(UserManager<ApplicationUser> userManager, ITokenService tokenService, ILoggerService logger, IRepositoryWrapper repositoryWrapper)
     {
         _userManager = userManager;
         _tokenService = tokenService;
         _logger = logger;
+        _repositoryWrapper = repositoryWrapper;
     }
 
     public async Task<Result<AuthenticationResponseDto>> Handle(GenerateNewAccessTokenCommand command, CancellationToken cancellationToken)
@@ -27,7 +30,7 @@ public sealed class GenerateNewAccessTokenHandler : IRequestHandler<GenerateNewA
 
         string accessToken = request.Token;
 
-        string refreshToken = request.RefreshToken;
+        string refreshTokenFromRequest = request.RefreshToken;
 
         ClaimsPrincipal principals = _tokenService.GetPrincipalFromJwtToken(accessToken)!;
 
@@ -40,29 +43,44 @@ public sealed class GenerateNewAccessTokenHandler : IRequestHandler<GenerateNewA
 
         var user = await _userManager.FindByEmailAsync(email);
 
-        if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpirationDateTime <= DateTime.UtcNow)
+        // find refresh token in db
+        var savedRefreshToken = await _repositoryWrapper.RefreshTokenRepository.GetFirstOrDefaultAsync(
+            rt => rt.RefreshToken == refreshTokenFromRequest
+            && rt.ApplicationUserId == user.Id);
+
+        if (user is null
+            || savedRefreshToken is null
+            || savedRefreshToken.RefreshTokenExpirationDateTime <= DateTime.UtcNow)
         {
-            return InvalidRefreshToken(refreshToken);
+            return InvalidRefreshToken(refreshTokenFromRequest);
         }
 
         var claims = await _tokenService.GetUserClaimsAsync(user);
 
         var response = _tokenService.GenerateJWTToken(user, claims);
 
-        user.RefreshToken = response.RefreshToken;
+        _tokenService.CreateRefreshToken(user, response);
 
-        user.RefreshTokenExpirationDateTime = response.RefreshTokenExpirationDateTime;
-
-        await _userManager.UpdateAsync(user);
+        if (await _repositoryWrapper.SaveChangesAsync() <= 0)
+        {
+            return FailedToSaveRefreshTokenError(response);
+        }
 
         return Result.Ok(response);
     }
 
+    private Result<AuthenticationResponseDto> FailedToSaveRefreshTokenError(AuthenticationResponseDto response)
+    {
+        var errorMessage = "Failed to save refresh token.";
+
+        _logger.LogError(response, errorMessage);
+
+        return Result.Fail(errorMessage);
+    }
+
     private Result<AuthenticationResponseDto> InvalidRefreshToken(string refreshToken)
     {
-        var errorMessage = string.Join(
-            Environment.NewLine,
-            "Invalid Refresh Token");
+        var errorMessage = "Invalid Refresh Token";
 
         _logger.LogError(refreshToken, errorMessage);
 
@@ -71,9 +89,7 @@ public sealed class GenerateNewAccessTokenHandler : IRequestHandler<GenerateNewA
 
     private Result<AuthenticationResponseDto> InvalidJwtToken(string jwtToken)
     {
-        var errorMessage = string.Join(
-            Environment.NewLine,
-            "Invalid Jwt Token");
+        var errorMessage = "Invalid Jwt Token";
 
         _logger.LogError(jwtToken, errorMessage);
 
