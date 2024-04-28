@@ -98,10 +98,13 @@ app.UseHangfireDashboard("/dash");
 
 if (app.Environment.EnvironmentName != "Local")
 {
+    var serviceProvider = app.Services;
+    var httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>();
+
     BackgroundJob.Schedule<WebParsingUtils>(
-    wp => wp.ParseZipFileFromWebAsync(), TimeSpan.FromMinutes(1));
+    wp => wp.ParseZipFileFromWebAsync(httpClient), TimeSpan.FromMinutes(1));
     RecurringJob.AddOrUpdate<WebParsingUtils>(
-        wp => wp.ParseZipFileFromWebAsync(), Cron.Monthly);
+        wp => wp.ParseZipFileFromWebAsync(httpClient), Cron.Monthly);
     RecurringJob.AddOrUpdate<DeleteExpiredRefreshTokensUtils>("delete_expired_refresh_tokens", dt => dt.DeleteExpiredRefreshTokens(), "0 2 * * 1");
     RecurringJob.AddOrUpdate<BlobService>(
         b => b.CleanBlobStorage(), Cron.Monthly);
