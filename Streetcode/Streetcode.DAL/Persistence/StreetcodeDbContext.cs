@@ -77,10 +77,4 @@ public class StreetcodeDbContext : IdentityDbContext<ApplicationUser, Applicatio
 
         builder.ApplyConfigurationsFromAssembly(typeof(NewsEntityTypeConfiguration).Assembly);
     }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        base.OnConfiguring(optionsBuilder);
-        optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=StreetcodeDb1;Integrated Security=True;Connect Timeout=5");
-    }
 }
