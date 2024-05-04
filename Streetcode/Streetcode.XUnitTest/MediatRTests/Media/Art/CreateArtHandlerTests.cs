@@ -143,12 +143,14 @@ public class CreateArtHandlerTests
             StreetcodeId = 1,
             ArtId = 1,
         };
-        var responseDto = new CreateArtResponseDto(
-            Id: 1,
-            Description: request.Description,
-            Title: request.Title,
-            ImageId: request.ImageId,
-            StreetcodeId: request.StreetcodeId);
+        var responseDto = new CreateArtResponseDto
+        {
+            Id = 1,
+            Description = request.Description,
+            Title = request.Title,
+            ImageId = request.ImageId,
+            StreetcodeId = request.StreetcodeId
+        };
 
         _mockRepositoryWrapper.Setup(repo => repo.StreetcodeArtRepository.GetFirstOrDefaultAsync(
             AnyEntityPredicate<StreetcodeArtEntity>(),
