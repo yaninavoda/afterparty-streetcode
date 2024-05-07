@@ -42,7 +42,7 @@ public class ArtController : BaseApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateArts([FromBody] IEnumerable<CreateArtRequestDto> arts)
+    public async Task<IActionResult> CreateArts([FromBody] CreateArtsRequestDto arts)
     {
         return HandleResult(await Mediator.Send(new CreateArtsCommand(arts)));
     }

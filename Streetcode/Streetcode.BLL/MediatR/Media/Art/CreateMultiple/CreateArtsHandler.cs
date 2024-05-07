@@ -31,7 +31,7 @@ public class CreateArtsHandler : IRequestHandler<CreateArtsCommand, Result<IEnum
     {
         using var transactionScope = _repositoryWrapper.BeginTransaction();
 
-        var request = command.Arts;
+        var request = command.Arts.Arts;
         var newArts = new List<ArtEntity>();
 
         foreach (var art in request)
