@@ -33,6 +33,7 @@ public class CreateArtsHandler : IRequestHandler<CreateArtsCommand, Result<IEnum
 
         var request = command.Arts.Arts;
         var newArts = new List<ArtEntity>();
+        var imageIds = new List<int>();
 
         foreach (var art in request)
         {
@@ -50,6 +51,13 @@ public class CreateArtsHandler : IRequestHandler<CreateArtsCommand, Result<IEnum
             {
                 return StreetcodeNotFoundError(art);
             }
+
+            if (imageIds.Contains(art.ImageId))
+            {
+                return CannotAddArtWithTheSameImageIdError(art);
+            }
+
+            imageIds.Add(art.ImageId);
 
             ArtEntity newArt = _mapper.Map<ArtEntity>(art);
             newArts.Add(newArt);
@@ -86,6 +94,14 @@ public class CreateArtsHandler : IRequestHandler<CreateArtsCommand, Result<IEnum
         transactionScope.Complete();
 
         return Result.Ok(response.AsEnumerable());
+    }
+
+    private Result<IEnumerable<CreateArtResponseDto>> CannotAddArtWithTheSameImageIdError(CreateArtRequestDto art)
+    {
+        var errorMessage = $"Cannot add art with image id {art.ImageId} because it was added already.";
+        _logger.LogError(art, errorMessage);
+
+        return Result.Fail(errorMessage);
     }
 
     private async Task<int> CalculateMaxIndexAsync(int streetcodeId)
