@@ -1,4 +1,4 @@
-﻿using Streetcode.DAL.Enums;
+﻿using Streetcode.BLL.Enums;
 
 namespace Streetcode.BLL.DTO.Streetcode
 {

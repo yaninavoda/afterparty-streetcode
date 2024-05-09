@@ -1,5 +1,6 @@
-﻿using Streetcode.DAL.Enums;
+﻿using Streetcode.BLL.Enums;
 
-namespace Streetcode.BLL.DTO.Partners.Create;
-
-public sealed record CreatePartnerSourceLinkResponseDto(int id, LogoType LogoType, string? TargetUrl, int PartnerId);
+namespace Streetcode.BLL.DTO.Partners.Create
+{
+    public sealed record CreatePartnerSourceLinkResponseDto(int id, LogoType LogoType, string? TargetUrl, int PartnerId);
+}

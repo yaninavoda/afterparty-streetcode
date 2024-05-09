@@ -3,7 +3,7 @@ using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Configuration;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
 namespace Streetcode.BLL.Services.BlobStorageService
 {

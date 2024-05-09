@@ -1,142 +1,122 @@
-﻿namespace Streetcode.XUnitTest.MediatRTests.Partners;
-
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using AutoMapper;
-using Moq;
-using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.DAL.Repositories.Interfaces.Base;
-using Microsoft.EntityFrameworkCore.Query;
-using Streetcode.BLL.Dto.Partners;
-using Streetcode.BLL.MediatR.Partners.GetAll;
-using Streetcode.DAL.Entities.Partners;
-using Xunit;
-
-public class GetAllPartnersTest
+﻿namespace Streetcode.XUnitTest.MediatRTests.Partners
 {
-    private readonly Mock<IRepositoryWrapper> _mockRepositoryWrapper;
-    private readonly Mock<IMapper> _mockMapper;
-    private readonly Mock<ILoggerService> _mockLogger;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+    using AutoMapper;
+    using Moq;
+    using Streetcode.BLL.Interfaces.Logging;
+    using Streetcode.BLL.RepositoryInterfaces.Base;
+    using Microsoft.EntityFrameworkCore.Query;
+    using Streetcode.BLL.Dto.Partners;
+    using Streetcode.BLL.MediatR.Partners.GetAll;
+    using Xunit;
+    using Streetcode.BLL.Entities.Partners;
 
-    public GetAllPartnersTest()
+    public class GetAllPartnersTest
     {
-        _mockRepositoryWrapper = new Mock<IRepositoryWrapper>();
-        _mockMapper = new Mock<IMapper>();
-        _mockLogger = new Mock<ILoggerService>();
-    }
+        private readonly Mock<IRepositoryWrapper> _mockRepositoryWrapper;
+        private readonly Mock<IMapper> _mockMapper;
+        private readonly Mock<ILoggerService> _mockLogger;
 
-    [Fact]
-    public async Task GetAllPartners_ShouldReturnOk_WhenPartnerExist()
-    {
-        // Arrange
-        MockRepositorySetupReturnsData();
-        MockMapperSetup();
+        public GetAllPartnersTest()
+        {
+            _mockRepositoryWrapper = new Mock<IRepositoryWrapper>();
+            _mockMapper = new Mock<IMapper>();
+            _mockLogger = new Mock<ILoggerService>();
+        }
 
-        var handler = new GetAllPartnersHandler(
-            _mockRepositoryWrapper.Object,
-            _mockMapper.Object,
-            _mockLogger.Object);
+        [Fact]
+        public async Task GetAllPartners_ShouldReturnOk_WhenPartnerExist()
+        {
+            // Arrange
+            MockRepositorySetupReturnsData();
+            MockMapperSetup();
 
-        // Act
-        var result = await handler.Handle(new GetAllPartnersQuery(), CancellationToken.None);
+            var handler = new GetAllPartnersHandler(
+                _mockRepositoryWrapper.Object,
+                _mockMapper.Object,
+                _mockLogger.Object);
 
-        // Assert
-        Assert.True(result.IsSuccess);
-    }
+            // Act
+            var result = await handler.Handle(new GetAllPartnersQuery(), CancellationToken.None);
 
-    [Fact]
-    public async Task GetAllPartners_ShouldReturnCollectionOfCorrectCount_WhenPartnersExist()
-    {
-        // Arrange
-        var mockFacts = GetPartnerList();
-        var expectedCount = mockFacts.Count;
+            // Assert
+            Assert.True(result.IsSuccess);
+        }
 
-        MockRepositorySetupReturnsData();
-        MockMapperSetup();
+        [Fact]
+        public async Task GetAllPartners_ShouldReturnCollectionOfCorrectCount_WhenPartnersExist()
+        {
+            // Arrange
+            var mockFacts = GetPartnerList();
+            var expectedCount = mockFacts.Count;
 
-        var handler = new GetAllPartnersHandler(
-            _mockRepositoryWrapper.Object,
-            _mockMapper.Object,
-            _mockLogger.Object);
+            MockRepositorySetupReturnsData();
+            MockMapperSetup();
 
-        // Act
-        var result = await handler.Handle(new GetAllPartnersQuery(), CancellationToken.None);
-        var actualCount = result.Value.Count();
+            var handler = new GetAllPartnersHandler(
+                _mockRepositoryWrapper.Object,
+                _mockMapper.Object,
+                _mockLogger.Object);
 
-        // Assert
-        Assert.Equal(expectedCount, actualCount);
-    }
+            // Act
+            var result = await handler.Handle(new GetAllPartnersQuery(), CancellationToken.None);
+            var actualCount = result.Value.Count();
 
-    [Fact]
-    public async Task GetAllPartners_ShouldLogCorrectErrorMessage_WhenPartnersAreNull()
-    {
-        // Arrange
-        MockRepositorySetupReturnsNull();
+            // Assert
+            Assert.Equal(expectedCount, actualCount);
+        }
 
-        var handler = new GetAllPartnersHandler(
-            _mockRepositoryWrapper.Object,
-            _mockMapper.Object,
-            _mockLogger.Object);
+        [Fact]
+        public async Task GetAllPartners_ShouldLogCorrectErrorMessage_WhenPartnersAreNull()
+        {
+            // Arrange
+            MockRepositorySetupReturnsNull();
 
-        var expectedError = "Cannot find any partners";
+            var handler = new GetAllPartnersHandler(
+                _mockRepositoryWrapper.Object,
+                _mockMapper.Object,
+                _mockLogger.Object);
 
-        // Act
-        var result = await handler.Handle(new GetAllPartnersQuery(), CancellationToken.None);
+            var expectedError = "Cannot find any partners";
 
-        // Assert
-        Assert.Equal(expectedError, result.Errors[0].Message);
-    }
+            // Act
+            var result = await handler.Handle(new GetAllPartnersQuery(), CancellationToken.None);
 
-    [Fact]
-    public async Task GetAllPartners_MapperShouldMapOnlyOnce_WhenFactsExist()
-    {
-        // Arrange
-        MockRepositorySetupReturnsData();
-        MockMapperSetup();
+            // Assert
+            Assert.Equal(expectedError, result.Errors[0].Message);
+        }
 
-        var handler = new GetAllPartnersHandler(
-            _mockRepositoryWrapper.Object,
-            _mockMapper.Object,
-            _mockLogger.Object);
+        [Fact]
+        public async Task GetAllPartners_MapperShouldMapOnlyOnce_WhenFactsExist()
+        {
+            // Arrange
+            MockRepositorySetupReturnsData();
+            MockMapperSetup();
 
-        // Act
-        await handler.Handle(new GetAllPartnersQuery(), CancellationToken.None);
+            var handler = new GetAllPartnersHandler(
+                _mockRepositoryWrapper.Object,
+                _mockMapper.Object,
+                _mockLogger.Object);
 
-        // Assert
-        _mockMapper.Verify(
-            mapper =>
-            mapper.Map<IEnumerable<PartnerDto>>(It.IsAny<IEnumerable<Partner>>()), Times.Once);
-    }
+            // Act
+            await handler.Handle(new GetAllPartnersQuery(), CancellationToken.None);
 
-    private static List<Partner> GetPartnerList()
-    {
-        return new List<Partner>
-{
-    new ()
-    {
-        Id = 1
-    },
-    new ()
-    {
-        Id = 2
-    },
-    new ()
-    {
-        Id = 3
-    },
-};
-    }
+            // Assert
+            _mockMapper.Verify(
+                mapper =>
+                mapper.Map<IEnumerable<PartnerDto>>(It.IsAny<IEnumerable<Partner>>()), Times.Once);
+        }
 
-    private static List<PartnerDto> GetPartnerDtoList()
-    {
-        return new List<PartnerDto>
+        private static List<Partner> GetPartnerList()
+        {
+            return new List<Partner>
     {
         new ()
         {
             Id = 1
         },
-
         new ()
         {
             Id = 2
@@ -146,32 +126,53 @@ public class GetAllPartnersTest
             Id = 3
         },
     };
-    }
+        }
 
-    private void MockMapperSetup()
-    {
-        _mockMapper.Setup(x => x
-            .Map<IEnumerable<PartnerDto>>(It.IsAny<IEnumerable<Partner>>()))
-            .Returns(GetPartnerDtoList());
-    }
+        private static List<PartnerDto> GetPartnerDtoList()
+        {
+            return new List<PartnerDto>
+        {
+            new ()
+            {
+                Id = 1
+            },
 
-    private void MockRepositorySetupReturnsData()
-    {
-        _mockRepositoryWrapper.Setup(x => x.PartnersRepository
-            .GetAllAsync(
-                It.IsAny<Expression<Func<Partner, bool>>>(),
-                It.IsAny<Func<IQueryable<Partner>,
-            IIncludableQueryable<Partner, object>>>()))
-            .ReturnsAsync(GetPartnerList());
-    }
+            new ()
+            {
+                Id = 2
+            },
+            new ()
+            {
+                Id = 3
+            },
+        };
+        }
 
-    private void MockRepositorySetupReturnsNull()
-    {
-        _mockRepositoryWrapper.Setup(x => x.PartnersRepository
-            .GetAllAsync(
-                It.IsAny<Expression<Func<Partner, bool>>>(),
-                It.IsAny<Func<IQueryable<Partner>,
-            IIncludableQueryable<Partner, object>>>()))
-            .ReturnsAsync((IEnumerable<Partner>?)null);
+        private void MockMapperSetup()
+        {
+            _mockMapper.Setup(x => x
+                .Map<IEnumerable<PartnerDto>>(It.IsAny<IEnumerable<Partner>>()))
+                .Returns(GetPartnerDtoList());
+        }
+
+        private void MockRepositorySetupReturnsData()
+        {
+            _mockRepositoryWrapper.Setup(x => x.PartnersRepository
+                .GetAllAsync(
+                    It.IsAny<Expression<Func<Partner, bool>>>(),
+                    It.IsAny<Func<IQueryable<Partner>,
+                IIncludableQueryable<Partner, object>>>()))
+                .ReturnsAsync(GetPartnerList());
+        }
+
+        private void MockRepositorySetupReturnsNull()
+        {
+            _mockRepositoryWrapper.Setup(x => x.PartnersRepository
+                .GetAllAsync(
+                    It.IsAny<Expression<Func<Partner, bool>>>(),
+                    It.IsAny<Func<IQueryable<Partner>,
+                IIncludableQueryable<Partner, object>>>()))
+                .ReturnsAsync((IEnumerable<Partner>?)null);
+        }
     }
 }

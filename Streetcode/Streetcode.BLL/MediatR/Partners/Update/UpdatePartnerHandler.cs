@@ -2,9 +2,9 @@
 using FluentResults;
 using MediatR;
 using Streetcode.BLL.Dto.Partners;
+using Streetcode.BLL.Entities.Partners;
 using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.DAL.Entities.Partners;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Partners.Update
 {

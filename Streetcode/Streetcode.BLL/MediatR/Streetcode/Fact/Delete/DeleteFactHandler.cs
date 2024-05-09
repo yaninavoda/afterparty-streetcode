@@ -2,57 +2,58 @@
 using MediatR;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Repositories.Interfaces.Base;
-using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
+using Streetcode.BLL.RepositoryInterfaces.Base;
+using FactEntity = Streetcode.BLL.Entities.Streetcode.TextContent.Fact;
 
-namespace Streetcode.BLL.MediatR.Streetcode.Fact.Delete;
-
-public class DeleteFactHandler : IRequestHandler<DeleteFactCommand, Result<Unit>>
+namespace Streetcode.BLL.MediatR.Streetcode.Fact.Delete
 {
-    private readonly IRepositoryWrapper _repositoryWrapper;
-    private readonly ILoggerService _logger;
-
-    public DeleteFactHandler(IRepositoryWrapper repositoryWrapper, ILoggerService logger)
+    public class DeleteFactHandler : IRequestHandler<DeleteFactCommand, Result<Unit>>
     {
-        _repositoryWrapper = repositoryWrapper;
-        _logger = logger;
-    }
+        private readonly IRepositoryWrapper _repositoryWrapper;
+        private readonly ILoggerService _logger;
 
-    public async Task<Result<Unit>> Handle(DeleteFactCommand request, CancellationToken cancellationToken)
-    {
-        int id = request.Id;
-        var fact = await _repositoryWrapper.FactRepository.GetFirstOrDefaultAsync(x => x.Id == id);
-
-        if (fact is null)
+        public DeleteFactHandler(IRepositoryWrapper repositoryWrapper, ILoggerService logger)
         {
-            string errorMsg = string.Format(
-                ErrorMessages.EntityByIdNotFound,
-                typeof(FactEntity).Name,
-                request.Id);
-
-            _logger.LogError(request, errorMsg);
-
-            return Result.Fail(errorMsg);
+            _repositoryWrapper = repositoryWrapper;
+            _logger = logger;
         }
 
-        _repositoryWrapper.FactRepository.Delete(fact);
-
-        var resultIsSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
-
-        if (resultIsSuccess)
+        public async Task<Result<Unit>> Handle(DeleteFactCommand request, CancellationToken cancellationToken)
         {
-            return Result.Ok(Unit.Value);
-        }
-        else
-        {
-            string errorMsg = string.Format(
-                ErrorMessages.DeleteFailed,
-                typeof(FactEntity).Name,
-                request.Id);
+            int id = request.Id;
+            var fact = await _repositoryWrapper.FactRepository.GetFirstOrDefaultAsync(x => x.Id == id);
 
-            _logger.LogError(request, errorMsg);
+            if (fact is null)
+            {
+                string errorMsg = string.Format(
+                    ErrorMessages.EntityByIdNotFound,
+                    typeof(FactEntity).Name,
+                    request.Id);
 
-            return Result.Fail(new Error(errorMsg));
+                _logger.LogError(request, errorMsg);
+
+                return Result.Fail(errorMsg);
+            }
+
+            _repositoryWrapper.FactRepository.Delete(fact);
+
+            var resultIsSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
+
+            if (resultIsSuccess)
+            {
+                return Result.Ok(Unit.Value);
+            }
+            else
+            {
+                string errorMsg = string.Format(
+                    ErrorMessages.DeleteFailed,
+                    typeof(FactEntity).Name,
+                    request.Id);
+
+                _logger.LogError(request, errorMsg);
+
+                return Result.Fail(new Error(errorMsg));
+            }
         }
     }
 }

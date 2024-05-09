@@ -2,7 +2,7 @@
 using FluentResults;
 using MediatR;
 using Streetcode.BLL.Interfaces.BlobStorage;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 using Microsoft.EntityFrameworkCore;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Dto.Media.Art;

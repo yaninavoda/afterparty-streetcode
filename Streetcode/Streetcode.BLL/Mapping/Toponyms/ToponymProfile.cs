@@ -1,13 +1,14 @@
 using AutoMapper;
 using Streetcode.BLL.Dto.Toponyms;
-using Streetcode.DAL.Entities.Toponyms;
+using Streetcode.BLL.Entities.Toponyms;
 
-namespace Streetcode.BLL.Mapping.Toponyms;
-
-public class ToponymProfile : Profile
+namespace Streetcode.BLL.Mapping.Toponyms
 {
-    public ToponymProfile()
+    public class ToponymProfile : Profile
     {
-        CreateMap<Toponym, ToponymDto>().ReverseMap();
-	}
+        public ToponymProfile()
+        {
+            CreateMap<Toponym, ToponymDto>().ReverseMap();
+    	}
+    }
 }

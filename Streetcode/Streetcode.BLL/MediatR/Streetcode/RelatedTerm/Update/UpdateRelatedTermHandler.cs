@@ -2,7 +2,7 @@
 using FluentResults;
 using MediatR;
 using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Streetcode.RelatedTerm.Update
 {

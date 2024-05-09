@@ -2,9 +2,9 @@ using System.Net.Mime;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Streetcode.BLL.Entities.Payment;
 using Streetcode.BLL.Interfaces.Payment;
 using Streetcode.BLL.Services.Payment.Exceptions;
-using Streetcode.DAL.Entities.Payment;
 
 namespace Streetcode.BLL.Services.Payment
 {

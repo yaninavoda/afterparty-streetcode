@@ -4,9 +4,9 @@ using MediatR;
 using Streetcode.BLL.Dto.Streetcode.TextContent;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
-using TermEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Term;
+using TermEntity = Streetcode.BLL.Entities.Streetcode.TextContent.Term;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Term.GetAll
 {

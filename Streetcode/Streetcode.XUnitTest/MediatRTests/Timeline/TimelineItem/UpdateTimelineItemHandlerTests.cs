@@ -1,17 +1,16 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using FluentAssertions;
-using FluentResults;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
 using Streetcode.BLL.Dto.Timeline;
+using Streetcode.BLL.Entities.Timeline;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Timeline.TimelineItem.Update;
-using Streetcode.DAL.Entities.Timeline;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 using Xunit;
 
-using TimelineItemEntity = Streetcode.DAL.Entities.Timeline.TimelineItem;
+using TimelineItemEntity = Streetcode.BLL.Entities.Timeline.TimelineItem;
 
 namespace Streetcode.XUnitTest.MediatRTests.Timeline.TimelineItem;
 
@@ -159,7 +158,7 @@ public class UpdateTimelineItemHandlerTests
             Title: "Title",
             Description: "Description",
             Date: new DateTime(2024, 4, 11, 0, 0, 0, DateTimeKind.Utc),
-            DateViewPattern: DAL.Enums.DateViewPattern.DateMonthYear,
+            DateViewPattern: BLL.Enums.DateViewPattern.DateMonthYear,
             HistoricalContext: context);
     }
 
@@ -169,7 +168,7 @@ public class UpdateTimelineItemHandlerTests
         {
             Id = 1,
             Date = new DateTime(2024, 4, 11, 0, 0, 0, DateTimeKind.Utc),
-            DateViewPattern = DAL.Enums.DateViewPattern.DateMonthYear,
+            DateViewPattern = BLL.Enums.DateViewPattern.DateMonthYear,
             Title = "Title",
             Description = "Description",
             HistoricalContexts = new[]
@@ -188,7 +187,7 @@ public class UpdateTimelineItemHandlerTests
         {
             Id = 1,
             Date = DateTime.UtcNow,
-            DateViewPattern = DAL.Enums.DateViewPattern.DateMonthYear,
+            DateViewPattern = BLL.Enums.DateViewPattern.DateMonthYear,
             Title = "Title",
             Description = "Description",
             HistoricalContextTimelines = new List<HistoricalContextTimeline>

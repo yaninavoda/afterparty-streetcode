@@ -2,50 +2,51 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Streetcode.BLL.DTO.Account;
+using Streetcode.BLL.Entities.Users;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Entities.Users;
 
-namespace Streetcode.BLL.MediatR.Account.Logout;
-
-public class LogoutUserHandler : IRequestHandler<LogoutUserCommand, Result<LogoutUserResponseDto>>
+namespace Streetcode.BLL.MediatR.Account.Logout
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly ILoggerService _logger;
-    public LogoutUserHandler(UserManager<ApplicationUser> userManager, ILoggerService loggerService)
+    public class LogoutUserHandler : IRequestHandler<LogoutUserCommand, Result<LogoutUserResponseDto>>
     {
-        _userManager = userManager;
-        _logger = loggerService;
-    }
-
-    public async Task<Result<LogoutUserResponseDto>> Handle(LogoutUserCommand command, CancellationToken cancellationToken)
-    {
-        var request = command.LogoutUserDto;
-
-        var user = await _userManager.FindByEmailAsync(request.Email);
-
-        if (user is null)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILoggerService _logger;
+        public LogoutUserHandler(UserManager<ApplicationUser> userManager, ILoggerService loggerService)
         {
-            return UserByEmailNotFound(request.Email);
+            _userManager = userManager;
+            _logger = loggerService;
         }
 
-        LogoutUserResponseDto response = new ()
+        public async Task<Result<LogoutUserResponseDto>> Handle(LogoutUserCommand command, CancellationToken cancellationToken)
         {
-            Email = request.Email,
-            Text = string.Format("The user '{0}' is logged out successfully", request.Email)
-        };
+            var request = command.LogoutUserDto;
 
-        return Result.Ok(response);
-    }
+            var user = await _userManager.FindByEmailAsync(request.Email);
 
-    private Result<LogoutUserResponseDto> UserByEmailNotFound(string email)
-    {
-        string errorMessage = string.Format(
-            ErrorMessages.EntityByPrimaryKeyNotFound,
-            email);
+            if (user is null)
+            {
+                return UserByEmailNotFound(request.Email);
+            }
 
-        _logger.LogError(email, errorMessage);
+            LogoutUserResponseDto response = new ()
+            {
+                Email = request.Email,
+                Text = string.Format("The user '{0}' is logged out successfully", request.Email)
+            };
 
-        return Result.Fail(errorMessage);
+            return Result.Ok(response);
+        }
+
+        private Result<LogoutUserResponseDto> UserByEmailNotFound(string email)
+        {
+            string errorMessage = string.Format(
+                ErrorMessages.EntityByPrimaryKeyNotFound,
+                email);
+
+            _logger.LogError(email, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
     }
 }

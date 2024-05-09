@@ -1,13 +1,14 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.DTO.Streetcode.TextContent.Term;
 
-namespace Streetcode.BLL.MediatR.Streetcode.Term.Delete;
-
-public class DeleteTermRequestDtoValidator : AbstractValidator<DeleteTermRequestDto>
+namespace Streetcode.BLL.MediatR.Streetcode.Term.Delete
 {
-    public DeleteTermRequestDtoValidator()
+    public class DeleteTermRequestDtoValidator : AbstractValidator<DeleteTermRequestDto>
     {
-        RuleFor(dto => dto.Id)
-            .GreaterThan(0);
+        public DeleteTermRequestDtoValidator()
+        {
+            RuleFor(dto => dto.Id)
+                .GreaterThan(0);
+        }
     }
 }

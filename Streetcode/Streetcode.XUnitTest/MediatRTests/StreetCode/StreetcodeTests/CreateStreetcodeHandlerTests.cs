@@ -1,20 +1,17 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
 using FluentAssertions;
-using FluentResults;
-using Microsoft.EntityFrameworkCore.Query;
 using Moq;
 using Streetcode.BLL.DTO.Streetcode;
+using Streetcode.BLL.Enums;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Streetcode.Streetcode.Create;
-using Streetcode.DAL.Entities.Media;
-using Streetcode.DAL.Enums;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 using Xunit;
 
-using AudioEntity = Streetcode.DAL.Entities.Media.Audio;
-using ImageEntity = Streetcode.DAL.Entities.Media.Images.Image;
-using StreetcodeEntity = Streetcode.DAL.Entities.Streetcode.StreetcodeContent;
+using AudioEntity = Streetcode.BLL.Entities.Media.Audio;
+using ImageEntity = Streetcode.BLL.Entities.Media.Images.Image;
+using StreetcodeEntity = Streetcode.BLL.Entities.Streetcode.StreetcodeContent;
 
 namespace Streetcode.XUnitTest.MediatRTests.StreetCode.StreetcodeTests
 {

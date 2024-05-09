@@ -1,16 +1,17 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.DTO.StreetcodeToponym;
 
-namespace Streetcode.BLL.MediatR.StreetcodeToponym.Delete;
-
-public class DeleteStreetcodeToponymRequestDtoValidator : AbstractValidator<DeleteStreetcodeToponymRequestDto>
+namespace Streetcode.BLL.MediatR.StreetcodeToponym.Delete
 {
-    public DeleteStreetcodeToponymRequestDtoValidator()
+    public class DeleteStreetcodeToponymRequestDtoValidator : AbstractValidator<DeleteStreetcodeToponymRequestDto>
     {
-        RuleFor(dto => dto.StreetcodeId)
-            .GreaterThan(0);
+        public DeleteStreetcodeToponymRequestDtoValidator()
+        {
+            RuleFor(dto => dto.StreetcodeId)
+                .GreaterThan(0);
 
-        RuleFor(dto => dto.ToponymId)
-            .GreaterThan(0);
+            RuleFor(dto => dto.ToponymId)
+                .GreaterThan(0);
+        }
     }
 }

@@ -3,113 +3,115 @@ using FluentResults;
 using MediatR;
 using Streetcode.BLL.Dto.Sources;
 using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.DAL.Repositories.Interfaces.Base;
-using Streetcode.DAL.Entities.Sources;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Entities.Media.Images;
-using Streetcode.DAL.Entities.Streetcode;
+using Streetcode.BLL.Entities.Media.Images;
+using Streetcode.BLL.Entities.Streetcode;
+using Streetcode.BLL.Entities.Sources;
+using SourceLinkCategoryEntity = Streetcode.BLL.Entities.Sources.SourceLinkCategory;
 
-namespace Streetcode.BLL.MediatR.Sources.SourceLinkCategory.Create;
-
-public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, Result<SourceLinkCategoryDto>>
+namespace Streetcode.BLL.MediatR.Sources.SourceLinkCategory.Create
 {
-    private readonly IRepositoryWrapper _repositoryWrapper;
-    private readonly IMapper _mapper;
-    private readonly ILoggerService _logger;
-
-    public CreateCategoryHandler(IRepositoryWrapper repositoryWrapper, IMapper mapper, ILoggerService logger)
+    public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, Result<SourceLinkCategoryDto>>
     {
-        _repositoryWrapper = repositoryWrapper;
-        _mapper = mapper;
-        _logger = logger;
-    }
+        private readonly IRepositoryWrapper _repositoryWrapper;
+        private readonly IMapper _mapper;
+        private readonly ILoggerService _logger;
 
-    public async Task<Result<SourceLinkCategoryDto>> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
-    {
-        var request = command.Category;
-
-        if (!await ImageExistsAsync(request.ImageId))
+        public CreateCategoryHandler(IRepositoryWrapper repositoryWrapper, IMapper mapper, ILoggerService logger)
         {
-            return ImageNotFoundError(request);
+            _repositoryWrapper = repositoryWrapper;
+            _mapper = mapper;
+            _logger = logger;
         }
 
-        if (!await StreetcodeExistsAsync(request.StreetcodeId))
+        public async Task<Result<SourceLinkCategoryDto>> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
         {
-            return StreetcodeNotFoundError(request);
+            var request = command.Category;
+
+            if (!await ImageExistsAsync(request.ImageId))
+            {
+                return ImageNotFoundError(request);
+            }
+
+            if (!await StreetcodeExistsAsync(request.StreetcodeId))
+            {
+                return StreetcodeNotFoundError(request);
+            }
+
+            var newCategory = _mapper.Map<SourceLinkCategoryEntity>(request);
+
+            _repositoryWrapper.SourceCategoryRepository.Create(newCategory);
+
+            await _repositoryWrapper.SaveChangesAsync();
+
+            var streetcodeCategoryContent = new StreetcodeCategoryContent()
+            {
+                StreetcodeId = request.StreetcodeId,
+                SourceLinkCategoryId = newCategory.Id,
+                Text = request.Text
+            };
+
+            newCategory.StreetcodeCategoryContents.Add(streetcodeCategoryContent);
+
+            var isSuccessful = await _repositoryWrapper.SaveChangesAsync() > 0;
+
+            if (isSuccessful)
+            {
+                var categoryDto = _mapper.Map<SourceLinkCategoryDto>(newCategory);
+
+                return Result.Ok(categoryDto);
+            }
+            else
+            {
+                return FailedToCreateCategoryError(request);
+            }
         }
 
-        var newCategory = _mapper.Map<DAL.Entities.Sources.SourceLinkCategory>(request);
-
-        _repositoryWrapper.SourceCategoryRepository.Create(newCategory);
-
-        await _repositoryWrapper.SaveChangesAsync();
-
-        var streetcodeCategoryContent = new StreetcodeCategoryContent()
+        private Result<SourceLinkCategoryDto> FailedToCreateCategoryError(CreateCategoryRequestDto request)
         {
-            StreetcodeId = request.StreetcodeId,
-            SourceLinkCategoryId = newCategory.Id,
-            Text = request.Text
-        };
+            string errorMsg = string.Format(
+                    ErrorMessages.CreateFailed,
+                    nameof(SourceLinkCategory));
+            _logger.LogError(request, errorMsg);
 
-        newCategory.StreetcodeCategoryContents.Add(streetcodeCategoryContent);
-
-        var isSuccessful = await _repositoryWrapper.SaveChangesAsync() > 0;
-
-        if (isSuccessful)
-        {
-            var categoryDto = _mapper.Map<SourceLinkCategoryDto>(newCategory);
-
-            return Result.Ok(categoryDto);
+            return Result.Fail(errorMsg);
         }
-        else
+
+        private async Task<bool> StreetcodeExistsAsync(int streetcodeId)
         {
-            return FailedToCreateCategoryError(request);
+            var streetcode = await _repositoryWrapper.StreetcodeRepository
+                .GetFirstOrDefaultAsync(s => s.Id == streetcodeId);
+
+            return streetcode is not null;
         }
-    }
 
-    private Result<SourceLinkCategoryDto> FailedToCreateCategoryError(CreateCategoryRequestDto request)
-    {
-        string errorMsg = string.Format(
-                ErrorMessages.CreateFailed,
-                nameof(SourceLinkCategory));
-        _logger.LogError(request, errorMsg);
+        private async Task<bool> ImageExistsAsync(int imageId)
+        {
+            var image = await _repositoryWrapper.ImageRepository
+                .GetFirstOrDefaultAsync(i => i.Id == imageId);
 
-        return Result.Fail(errorMsg);
-    }
+            return image is not null;
+        }
 
-    private async Task<bool> StreetcodeExistsAsync(int streetcodeId)
-    {
-        var streetcode = await _repositoryWrapper.StreetcodeRepository
-            .GetFirstOrDefaultAsync(s => s.Id == streetcodeId);
+        private Result<SourceLinkCategoryDto> ImageNotFoundError(CreateCategoryRequestDto request)
+        {
+            string errorMsg = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                nameof(Image),
+                request.ImageId);
+            _logger.LogError(request, errorMsg);
+            return Result.Fail(errorMsg);
+        }
 
-        return streetcode is not null;
-    }
-
-    private async Task<bool> ImageExistsAsync(int imageId)
-    {
-        var image = await _repositoryWrapper.ImageRepository
-            .GetFirstOrDefaultAsync(i => i.Id == imageId);
-
-        return image is not null;
-    }
-
-    private Result<SourceLinkCategoryDto> ImageNotFoundError(CreateCategoryRequestDto request)
-    {
-        string errorMsg = string.Format(
-            ErrorMessages.EntityByIdNotFound,
-            nameof(Image),
-            request.ImageId);
-        _logger.LogError(request, errorMsg);
-        return Result.Fail(errorMsg);
-    }
-
-    private Result<SourceLinkCategoryDto> StreetcodeNotFoundError(CreateCategoryRequestDto request)
-    {
-        string errorMsg = string.Format(
-            ErrorMessages.EntityByIdNotFound,
-            nameof(StreetcodeContent),
-            request.StreetcodeId);
-        _logger.LogError(request, errorMsg);
-        return Result.Fail(errorMsg);
+        private Result<SourceLinkCategoryDto> StreetcodeNotFoundError(CreateCategoryRequestDto request)
+        {
+            string errorMsg = string.Format(
+                ErrorMessages.EntityByIdNotFound,
+                nameof(StreetcodeContent),
+                request.StreetcodeId);
+            _logger.LogError(request, errorMsg);
+            return Result.Fail(errorMsg);
+        }
     }
 }

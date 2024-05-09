@@ -4,20 +4,21 @@ using Streetcode.BLL.DTO.AdditionalContent.Coordinates.Types;
 using Streetcode.BLL.MediatR.AdditionalContent.StreetcodeCoordinate.Create;
 using Streetcode.BLL.MediatR.AdditionalContent.StreetcodeCoordinate.Delete;
 
-namespace Streetcode.WebApi.Controllers.AdditionalContent;
-
-[Authorize(Roles = "Admin")]
-public class StreetcodeCoordinateController : BaseApiController
+namespace Streetcode.WebApi.Controllers.AdditionalContent
 {
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateStreetcodeCoordinateRequestDto createRequest)
+    [Authorize(Roles = "Admin")]
+    public class StreetcodeCoordinateController : BaseApiController
     {
-        return HandleResult(await Mediator.Send(new CreateStreetcodeCoordinateCommand(createRequest)));
-    }
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateStreetcodeCoordinateRequestDto createRequest)
+        {
+            return HandleResult(await Mediator.Send(new CreateStreetcodeCoordinateCommand(createRequest)));
+        }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete([FromBody] DeleteStreetcodeCoordinateRequestDto deleteRequest)
-    {
-        return HandleResult(await Mediator.Send(new DeleteStreetcodeCoordinateCommand(deleteRequest)));
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromBody] DeleteStreetcodeCoordinateRequestDto deleteRequest)
+        {
+            return HandleResult(await Mediator.Send(new DeleteStreetcodeCoordinateCommand(deleteRequest)));
+        }
     }
 }

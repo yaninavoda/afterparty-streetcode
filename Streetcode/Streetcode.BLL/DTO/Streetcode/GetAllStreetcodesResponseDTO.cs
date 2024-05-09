@@ -1,7 +1,8 @@
-﻿namespace Streetcode.BLL.Dto.Streetcode;
-
-public class GetAllStreetcodesResponseDto
+﻿namespace Streetcode.BLL.Dto.Streetcode
 {
-    public int Pages { get; set; }
-    public IEnumerable<StreetcodeDto> Streetcodes { get; set; }
+    public class GetAllStreetcodesResponseDto
+    {
+        public int Pages { get; set; }
+        public IEnumerable<StreetcodeDto> Streetcodes { get; set; }
+    }
 }

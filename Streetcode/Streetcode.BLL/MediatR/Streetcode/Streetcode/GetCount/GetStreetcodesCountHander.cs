@@ -9,7 +9,7 @@ using MediatR;
 using Streetcode.BLL.Dto.Streetcode;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Streetcode.Streetcode.GetAllShort;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.GetCount
 {

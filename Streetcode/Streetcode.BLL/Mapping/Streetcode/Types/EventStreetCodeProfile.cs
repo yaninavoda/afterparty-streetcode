@@ -1,16 +1,17 @@
 using AutoMapper;
 using Streetcode.BLL.Dto.Streetcode;
 using Streetcode.BLL.Dto.Streetcode.Types;
-using Streetcode.DAL.Entities.Streetcode;
-using Streetcode.DAL.Entities.Streetcode.Types;
+using Streetcode.BLL.Entities.Streetcode;
+using Streetcode.BLL.Entities.Streetcode.Types;
 
-namespace Streetcode.BLL.Mapping.Streetcode.Types;
-
-public class EventStreetcodeProfile : Profile
+namespace Streetcode.BLL.Mapping.Streetcode.Types
 {
-    public EventStreetcodeProfile()
+    public class EventStreetcodeProfile : Profile
     {
-        CreateMap<EventStreetcode, EventStreetcodeDto>()
-            .IncludeBase<StreetcodeContent, StreetcodeDto>().ReverseMap();
-  }
+        public EventStreetcodeProfile()
+        {
+            CreateMap<EventStreetcode, EventStreetcodeDto>()
+                .IncludeBase<StreetcodeContent, StreetcodeDto>().ReverseMap();
+      }
+    }
 }

@@ -3,44 +3,45 @@ using Streetcode.BLL.DTO.Streetcode.TextContent.Term;
 using Streetcode.BLL.MediatR.Streetcode.Term.Delete;
 using Xunit;
 
-namespace Streetcode.XUnitTest.ValidationTests.Streetcode.Term;
-
-public class DeleteTermRequestDtoValidatorTests
+namespace Streetcode.XUnitTest.ValidationTests.Streetcode.Term
 {
-    private const int MINID = 1;
-
-    private readonly DeleteTermRequestDtoValidator _validator;
-
-    public DeleteTermRequestDtoValidatorTests()
+    public class DeleteTermRequestDtoValidatorTests
     {
-        _validator = new DeleteTermRequestDtoValidator();
-    }
+        private const int MINID = 1;
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(MINID - 10000)]
-    public void ShouldHaveError_WhenIdIsZeroOrNegative(int id)
-    {
-        // Arrange
-        var dto = new DeleteTermRequestDto(Id: id);
+        private readonly DeleteTermRequestDtoValidator _validator;
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+        public DeleteTermRequestDtoValidatorTests()
+        {
+            _validator = new DeleteTermRequestDtoValidator();
+        }
 
-        // Assert
-        validationResult.ShouldHaveValidationErrorFor(x => x.Id);
-    }
+        [Theory]
+        [InlineData(0)]
+        [InlineData(MINID - 10000)]
+        public void ShouldHaveError_WhenIdIsZeroOrNegative(int id)
+        {
+            // Arrange
+            var dto = new DeleteTermRequestDto(Id: id);
 
-    [Fact]
-    public void ShouldNotHaveError_WhenDtoIsValid()
-    {
-        // Arrange
-        var dto = new DeleteTermRequestDto(Id: MINID);
+            // Act
+            var validationResult = _validator.TestValidate(dto);
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+            // Assert
+            validationResult.ShouldHaveValidationErrorFor(x => x.Id);
+        }
 
-        // Assert
-        validationResult.ShouldNotHaveValidationErrorFor(x => x.Id);
+        [Fact]
+        public void ShouldNotHaveError_WhenDtoIsValid()
+        {
+            // Arrange
+            var dto = new DeleteTermRequestDto(Id: MINID);
+
+            // Act
+            var validationResult = _validator.TestValidate(dto);
+
+            // Assert
+            validationResult.ShouldNotHaveValidationErrorFor(x => x.Id);
+        }
     }
 }

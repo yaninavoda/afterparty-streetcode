@@ -3,35 +3,36 @@ using FluentResults;
 using MediatR;
 using Streetcode.BLL.Dto.AdditionalContent.Subtitles;
 using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
-namespace Streetcode.BLL.MediatR.AdditionalContent.Subtitle.GetAll;
-
-public class GetAllSubtitlesHandler : IRequestHandler<GetAllSubtitlesQuery, Result<IEnumerable<SubtitleDto>>>
+namespace Streetcode.BLL.MediatR.AdditionalContent.Subtitle.GetAll
 {
-    private readonly IMapper _mapper;
-    private readonly IRepositoryWrapper _repositoryWrapper;
-    private readonly ILoggerService _logger;
-
-    public GetAllSubtitlesHandler(IRepositoryWrapper repositoryWrapper, IMapper mapper, ILoggerService logger)
+    public class GetAllSubtitlesHandler : IRequestHandler<GetAllSubtitlesQuery, Result<IEnumerable<SubtitleDto>>>
     {
-        _repositoryWrapper = repositoryWrapper;
-        _mapper = mapper;
-        _logger = logger;
-    }
+        private readonly IMapper _mapper;
+        private readonly IRepositoryWrapper _repositoryWrapper;
+        private readonly ILoggerService _logger;
 
-    public async Task<Result<IEnumerable<SubtitleDto>>> Handle(GetAllSubtitlesQuery request, CancellationToken cancellationToken)
-    {
-        var subtitles = await _repositoryWrapper.SubtitleRepository.GetAllAsync();
-
-        if (subtitles is null)
+        public GetAllSubtitlesHandler(IRepositoryWrapper repositoryWrapper, IMapper mapper, ILoggerService logger)
         {
-            const string errorMsg = $"Cannot find any subtitles";
-
-            _logger.LogError(request, errorMsg);
-            return Result.Fail(new Error(errorMsg));
+            _repositoryWrapper = repositoryWrapper;
+            _mapper = mapper;
+            _logger = logger;
         }
 
-        return Result.Ok(_mapper.Map<IEnumerable<SubtitleDto>>(subtitles));
+        public async Task<Result<IEnumerable<SubtitleDto>>> Handle(GetAllSubtitlesQuery request, CancellationToken cancellationToken)
+        {
+            var subtitles = await _repositoryWrapper.SubtitleRepository.GetAllAsync();
+
+            if (subtitles is null)
+            {
+                const string errorMsg = $"Cannot find any subtitles";
+
+                _logger.LogError(request, errorMsg);
+                return Result.Fail(new Error(errorMsg));
+            }
+
+            return Result.Ok(_mapper.Map<IEnumerable<SubtitleDto>>(subtitles));
+        }
     }
 }

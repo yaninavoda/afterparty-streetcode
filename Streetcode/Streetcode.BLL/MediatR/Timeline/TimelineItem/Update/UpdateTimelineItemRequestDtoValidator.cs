@@ -1,28 +1,29 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.Dto.Timeline;
 
-namespace Streetcode.BLL.MediatR.Timeline.TimelineItem.Update;
-
-public class UpdateTimelineItemRequestDtoValidator : AbstractValidator<UpdateTimelineItemRequestDto>
+namespace Streetcode.BLL.MediatR.Timeline.TimelineItem.Update
 {
-    private const int MAXTITLELENGTH = 26;
-    private const int MAXDESCRIPTIONLENGTH = 400;
-    private const int MAXCONTEXTLENGTH = 50;
-
-    public UpdateTimelineItemRequestDtoValidator()
+    public class UpdateTimelineItemRequestDtoValidator : AbstractValidator<UpdateTimelineItemRequestDto>
     {
-        RuleFor(dto => dto.Title)
-            .NotEmpty()
-            .MaximumLength(MAXTITLELENGTH);
+        private const int MAXTITLELENGTH = 26;
+        private const int MAXDESCRIPTIONLENGTH = 400;
+        private const int MAXCONTEXTLENGTH = 50;
 
-        RuleFor(dto => dto.Description)
-            .NotEmpty()
-            .MaximumLength(MAXDESCRIPTIONLENGTH);
+        public UpdateTimelineItemRequestDtoValidator()
+        {
+            RuleFor(dto => dto.Title)
+                .NotEmpty()
+                .MaximumLength(MAXTITLELENGTH);
 
-        RuleFor(dto => dto.HistoricalContext)
-            .MaximumLength(MAXCONTEXTLENGTH);
+            RuleFor(dto => dto.Description)
+                .NotEmpty()
+                .MaximumLength(MAXDESCRIPTIONLENGTH);
 
-        RuleFor(dto => dto.DateViewPattern)
-            .IsInEnum();
+            RuleFor(dto => dto.HistoricalContext)
+                .MaximumLength(MAXCONTEXTLENGTH);
+
+            RuleFor(dto => dto.DateViewPattern)
+                .IsInEnum();
+        }
     }
 }

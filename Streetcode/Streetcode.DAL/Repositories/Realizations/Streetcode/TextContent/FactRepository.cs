@@ -1,24 +1,25 @@
 using Microsoft.EntityFrameworkCore;
-using Streetcode.DAL.Entities.Streetcode.TextContent;
+using Streetcode.BLL.Entities.Streetcode.TextContent;
 using Streetcode.DAL.Persistence;
-using Streetcode.DAL.Repositories.Interfaces.Streetcode.TextContent;
+using Streetcode.BLL.RepositoryInterfaces.Streetcode.TextContent;
 using Streetcode.DAL.Repositories.Realizations.Base;
 
-namespace Streetcode.DAL.Repositories.Realizations.Streetcode.TextContent;
-
-public class FactRepository : RepositoryBase<Fact>, IFactRepository
+namespace Streetcode.DAL.Repositories.Realizations.Streetcode.TextContent
 {
-    private readonly StreetcodeDbContext _context;
-    public FactRepository(StreetcodeDbContext streetcodeDbContext)
-        : base(streetcodeDbContext)
+    public class FactRepository : RepositoryBase<Fact>, IFactRepository
     {
-        _context = streetcodeDbContext;
-    }
+        private readonly StreetcodeDbContext _context;
+        public FactRepository(StreetcodeDbContext streetcodeDbContext)
+            : base(streetcodeDbContext)
+        {
+            _context = streetcodeDbContext;
+        }
 
-    public Task<int> GetMaxNumberAsync(int streetcodeId)
-    {
-        return _context.Facts
-            .Where(f => f.StreetcodeId == streetcodeId)
-            .MaxAsync(f => f.Number);
+        public Task<int> GetMaxNumberAsync(int streetcodeId)
+        {
+            return _context.Facts
+                .Where(f => f.StreetcodeId == streetcodeId)
+                .MaxAsync(f => f.Number);
+        }
     }
 }

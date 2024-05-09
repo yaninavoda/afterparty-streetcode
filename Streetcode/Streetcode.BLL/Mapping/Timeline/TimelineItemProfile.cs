@@ -1,17 +1,18 @@
 using AutoMapper;
 using Streetcode.BLL.Dto.Timeline;
 using Streetcode.BLL.DTO.Timeline;
-using Streetcode.DAL.Entities.Timeline;
+using Streetcode.BLL.Entities.Timeline;
 
-namespace Streetcode.BLL.Mapping.Timeline;
-
-public class TimelineItemProfile : Profile
+namespace Streetcode.BLL.Mapping.Timeline
 {
-    public TimelineItemProfile()
+    public class TimelineItemProfile : Profile
     {
-        CreateMap<TimelineItem, TimelineItemDto>().ReverseMap();
-        CreateMap<UpdateTimelineItemRequestDto, TimelineItem>();
-        CreateMap<CreateHistoricalContextRequestDto, TimelineItem>();
-        CreateMap<CreateTimelineItemRequestDto, TimelineItem>();
+        public TimelineItemProfile()
+        {
+            CreateMap<TimelineItem, TimelineItemDto>().ReverseMap();
+            CreateMap<UpdateTimelineItemRequestDto, TimelineItem>();
+            CreateMap<CreateHistoricalContextRequestDto, TimelineItem>();
+            CreateMap<CreateTimelineItemRequestDto, TimelineItem>();
+        }
     }
 }

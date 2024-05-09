@@ -1,6 +1,6 @@
-﻿using Streetcode.DAL.Entities.News;
+﻿using Streetcode.BLL.Entities.News;
 using Streetcode.DAL.Persistence;
-using Streetcode.DAL.Repositories.Interfaces.Newss;
+using Streetcode.BLL.RepositoryInterfaces.Newss;
 using Streetcode.DAL.Repositories.Realizations.Base;
 
 namespace Streetcode.DAL.Repositories.Realizations.Newss

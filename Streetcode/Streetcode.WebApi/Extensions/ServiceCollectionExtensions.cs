@@ -6,11 +6,10 @@ using Microsoft.OpenApi.Models;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Services.Logging;
 using Streetcode.DAL.Persistence;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 using Streetcode.DAL.Repositories.Realizations.Base;
 using Streetcode.BLL.Interfaces.Email;
 using Streetcode.BLL.Services.Email;
-using Streetcode.DAL.Entities.AdditionalContent.Email;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.BLL.Services.BlobStorageService;
 using Streetcode.BLL.Interfaces.Users;
@@ -25,159 +24,161 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using Streetcode.BLL.ActionFilters;
 using Streetcode.BLL.MediatR.Streetcode.Fact.Create;
-using Streetcode.DAL.Entities.Streetcode.TextContent;
-using Streetcode.DAL.Entities.AdditionalContent.Jwt;
 using Streetcode.BLL.Services.Users;
+using Streetcode.BLL.Entities.AdditionalContent.Jwt;
+using Streetcode.BLL.Entities.Streetcode.TextContent;
+using Streetcode.BLL.Entities.AdditionalContent.Email;
 
-namespace Streetcode.WebApi.Extensions;
-
-public static class ServiceCollectionExtensions
+namespace Streetcode.WebApi.Extensions
 {
-    public static void AddRepositoryServices(this IServiceCollection services)
+    public static class ServiceCollectionExtensions
     {
-        services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
-        services.AddScoped<IEntityRepositoryBase<Fact>, EntityRepositoryBase<Fact>>();
-    }
-
-    public static void AddCustomServices(this IServiceCollection services)
-    {
-        services.AddRepositoryServices();
-        services.AddFeatureManagement();
-        var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-        services.AddAutoMapper(currentAssemblies);
-        services.AddMediatR(currentAssemblies);
-
-        services.AddScoped<IBlobService, BlobService>();
-        services.AddScoped<ILoggerService, LoggerService>();
-        services.AddScoped<IEmailService, EmailService>();
-        services.AddScoped<IPaymentService, PaymentService>();
-        services.AddScoped<IInstagramService, InstagramService>();
-        services.AddScoped<ITextService, AddTermsToTextService>();
-        services.AddScoped<ITokenService, TokenService>();
-    }
-
-    public static void AddApplicationServices(this IServiceCollection services, ConfigurationManager configuration)
-    {
-        string connectionString;
-        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Local";
-        if (environment == "IntegrationTests" || environment == "Local")
+        public static void AddRepositoryServices(this IServiceCollection services)
         {
-            var connection = configuration.GetSection(environment).GetConnectionString("DefaultConnection");
-            connectionString = connection ?? throw new InvalidOperationException($"'DefaultConnection' is null or not found for the '{environment}' environment.");
-        }
-        else
-        {
-            var connection = configuration.GetConnectionString("DefaultConnection");
-            connectionString = connection ?? throw new InvalidOperationException("'DefaultConnection' is null or not found");
+            services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+            services.AddScoped<IEntityRepositoryBase<Fact>, EntityRepositoryBase<Fact>>();
         }
 
-        var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
-
-        if (emailConfig is not null)
+        public static void AddCustomServices(this IServiceCollection services)
         {
-            services.AddSingleton(emailConfig);
+            services.AddRepositoryServices();
+            services.AddFeatureManagement();
+            var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+            services.AddAutoMapper(currentAssemblies);
+            services.AddMediatR(currentAssemblies);
+
+            services.AddScoped<IBlobService, BlobService>();
+            services.AddScoped<ILoggerService, LoggerService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IInstagramService, InstagramService>();
+            services.AddScoped<ITextService, AddTermsToTextService>();
+            services.AddScoped<ITokenService, TokenService>();
         }
 
-        var jwtConfig = configuration.GetSection("Jwt").Get<JwtConfiguration>();
-
-        if (jwtConfig is not null)
+        public static void AddApplicationServices(this IServiceCollection services, ConfigurationManager configuration)
         {
-            services.AddSingleton(jwtConfig);
-        }
-
-        var refreshTokenConfig = configuration.GetSection("RefreshToken").Get<RefreshTokenConfiguration>();
-
-        if (refreshTokenConfig is not null)
-        {
-            services.AddSingleton(refreshTokenConfig);
-        }
-
-        services.AddDbContext<StreetcodeDbContext>(options =>
-        {
-            options.UseSqlServer(connectionString, opt =>
+            string connectionString;
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Local";
+            if (environment == "IntegrationTests" || environment == "Local")
             {
-                opt.MigrationsAssembly(typeof(StreetcodeDbContext).Assembly.GetName().Name);
-                opt.MigrationsHistoryTable("__EFMigrationsHistory", schema: "entity_framework");
-            });
-        });
-
-        services.AddHangfire(config =>
-        {
-            config.UseSqlServerStorage(connectionString);
-        });
-
-        services.AddHangfireServer();
-
-        var corsConfig = configuration.GetSection("CORS").Get<CorsConfiguration>();
-        services.AddCors(opt =>
-        {
-            opt.AddDefaultPolicy(policy =>
+                var connection = configuration.GetSection(environment).GetConnectionString("DefaultConnection");
+                connectionString = connection ?? throw new InvalidOperationException($"'DefaultConnection' is null or not found for the '{environment}' environment.");
+            }
+            else
             {
-                policy.AllowAnyOrigin()
-                      .AllowAnyHeader()
-                      .AllowAnyMethod();
-            });
-        });
+                var connection = configuration.GetConnectionString("DefaultConnection");
+                connectionString = connection ?? throw new InvalidOperationException("'DefaultConnection' is null or not found");
+            }
 
-        services.AddHsts(opt =>
-        {
-            opt.Preload = true;
-            opt.IncludeSubDomains = true;
-            opt.MaxAge = TimeSpan.FromDays(30);
-        });
+            var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
 
-        services.AddScoped<ModelStateFilter>();
-        services.AddScoped<AsyncValidateEntityExistsFilter<Fact>>();
-        services.AddLogging();
-        services.AddControllers(options =>
-        {
-            options.Filters.Add<ModelStateFilter>();
-        });
-        services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
-        services.AddValidatorsFromAssemblyContaining<CreateFactDtoValidator>();
-    }
-
-    public static void AddSwaggerServices(this IServiceCollection services)
-    {
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(opt =>
-        {
-            opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyApi", Version = "v1" });
-
-            opt.CustomSchemaIds(x => x.FullName);
-
-            opt.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+            if (emailConfig is not null)
             {
-                Name = "Authorization",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = JwtBearerDefaults.AuthenticationScheme
-            });
+                services.AddSingleton(emailConfig);
+            }
 
-            opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+            var jwtConfig = configuration.GetSection("Jwt").Get<JwtConfiguration>();
+
+            if (jwtConfig is not null)
             {
+                services.AddSingleton(jwtConfig);
+            }
+
+            var refreshTokenConfig = configuration.GetSection("RefreshToken").Get<RefreshTokenConfiguration>();
+
+            if (refreshTokenConfig is not null)
+            {
+                services.AddSingleton(refreshTokenConfig);
+            }
+
+            services.AddDbContext<StreetcodeDbContext>(options =>
+            {
+                options.UseSqlServer(connectionString, opt =>
                 {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = JwtBearerDefaults.AuthenticationScheme,
-                        },
-                        Scheme = JwtBearerDefaults.AuthenticationScheme,
-                        In = ParameterLocation.Header
-                    },
-                    new List<string>()
-                }
+                    opt.MigrationsAssembly(typeof(StreetcodeDbContext).Assembly.GetName().Name);
+                    opt.MigrationsHistoryTable("__EFMigrationsHistory", schema: "entity_framework");
+                });
             });
-        });
-    }
 
-    public class CorsConfiguration
-    {
-        public List<string> AllowedOrigins { get; set; }
-        public List<string> AllowedHeaders { get; set; }
-        public List<string> AllowedMethods { get; set; }
-        public int PreflightMaxAge { get; set; }
+            services.AddHangfire(config =>
+            {
+                config.UseSqlServerStorage(connectionString);
+            });
+
+            services.AddHangfireServer();
+
+            var corsConfig = configuration.GetSection("CORS").Get<CorsConfiguration>();
+            services.AddCors(opt =>
+            {
+                opt.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
+            services.AddHsts(opt =>
+            {
+                opt.Preload = true;
+                opt.IncludeSubDomains = true;
+                opt.MaxAge = TimeSpan.FromDays(30);
+            });
+
+            services.AddScoped<ModelStateFilter>();
+            services.AddScoped<AsyncValidateEntityExistsFilter<Fact>>();
+            services.AddLogging();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<ModelStateFilter>();
+            });
+            services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+            services.AddValidatorsFromAssemblyContaining<CreateFactDtoValidator>();
+        }
+
+        public static void AddSwaggerServices(this IServiceCollection services)
+        {
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen(opt =>
+            {
+                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyApi", Version = "v1" });
+
+                opt.CustomSchemaIds(x => x.FullName);
+
+                opt.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme
+                });
+
+                opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = JwtBearerDefaults.AuthenticationScheme,
+                            },
+                            Scheme = JwtBearerDefaults.AuthenticationScheme,
+                            In = ParameterLocation.Header
+                        },
+                        new List<string>()
+                    }
+                });
+            });
+        }
+
+        public class CorsConfiguration
+        {
+            public List<string> AllowedOrigins { get; set; }
+            public List<string> AllowedHeaders { get; set; }
+            public List<string> AllowedMethods { get; set; }
+            public int PreflightMaxAge { get; set; }
+        }
     }
 }

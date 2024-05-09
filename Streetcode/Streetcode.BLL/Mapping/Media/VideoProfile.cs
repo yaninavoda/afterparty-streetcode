@@ -1,17 +1,18 @@
 using AutoMapper;
 using Streetcode.BLL.Dto.Media.Video;
 using Streetcode.BLL.DTO.Media.Video;
-using Streetcode.DAL.Entities.Media;
+using Streetcode.BLL.Entities.Media;
 
-namespace Streetcode.BLL.Mapping.Media;
-
-public class VideoProfile : Profile
+namespace Streetcode.BLL.Mapping.Media
 {
-    public VideoProfile()
+    public class VideoProfile : Profile
     {
-        CreateMap<Video, VideoDto>().ReverseMap();
-        CreateMap<CreateVideoRequestDto, Video>().ReverseMap();
-        CreateMap<UpdateVideoRequestDto, Video>();
-        CreateMap<Video, UpdateVideoResponseDto>();
+        public VideoProfile()
+        {
+            CreateMap<Video, VideoDto>().ReverseMap();
+            CreateMap<CreateVideoRequestDto, Video>().ReverseMap();
+            CreateMap<UpdateVideoRequestDto, Video>();
+            CreateMap<Video, UpdateVideoResponseDto>();
+        }
     }
 }

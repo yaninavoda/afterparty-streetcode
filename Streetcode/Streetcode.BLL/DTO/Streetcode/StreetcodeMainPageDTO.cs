@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Streetcode.DAL.Entities.Media.Images;
-using Streetcode.DAL.Entities.Streetcode.TextContent;
+using Streetcode.BLL.Entities.Media.Images;
+using Streetcode.BLL.Entities.Streetcode.TextContent;
 
 namespace Streetcode.BLL.Dto.Streetcode
 {

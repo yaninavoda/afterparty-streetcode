@@ -1,17 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Streetcode.DAL.Entities.Users;
+using Streetcode.BLL.Entities.Users;
 
-namespace Streetcode.DAL.Persistence.Configurations;
-
-public class ApplicationUserEntityTypeConfiguration : IEntityTypeConfiguration<ApplicationUser>
+namespace Streetcode.DAL.Persistence.Configurations
 {
-    public void Configure(EntityTypeBuilder<ApplicationUser> builder)
+    public class ApplicationUserEntityTypeConfiguration : IEntityTypeConfiguration<ApplicationUser>
     {
-        builder
-            .HasMany(user => user.RefreshTokens)
-            .WithOne(rt => rt.ApplicationUser)
-            .HasForeignKey(rt => rt.ApplicationUserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        public void Configure(EntityTypeBuilder<ApplicationUser> builder)
+        {
+            builder
+                .HasMany(user => user.RefreshTokens)
+                .WithOne(rt => rt.ApplicationUser)
+                .HasForeignKey(rt => rt.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

@@ -4,8 +4,8 @@ using MediatR;
 using Streetcode.BLL.Dto.Timeline;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Repositories.Interfaces.Base;
-using HistoricalContextEntity = Streetcode.DAL.Entities.Timeline.HistoricalContext;
+using Streetcode.BLL.RepositoryInterfaces.Base;
+using HistoricalContextEntity = Streetcode.BLL.Entities.Timeline.HistoricalContext;
 
 namespace Streetcode.BLL.MediatR.Timeline.HistoricalContext.GetAll
 {

@@ -1,60 +1,61 @@
 ﻿using Ardalis.Specification;
 using FluentAssertions;
 using Xunit;
-using static Streetcode.DAL.Specifications.TimelineSpecifications.HistoricalContextSpecs;
-using static Streetcode.DAL.Specifications.TimelineSpecifications.TimelineItemSpecs;
+using static Streetcode.BLL.Specifications.TimelineSpecifications.HistoricalContextSpecs;
+using static Streetcode.BLL.Specifications.TimelineSpecifications.TimelineItemSpecs;
 
-namespace Streetcode.XUnitTest.SpecificationTests;
-
-public class SpecificationBuilderExtensions_IncludeTests
+namespace Streetcode.XUnitTest.SpecificationTests
 {
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("test")]
-    public void ShouldAddSingleIncludeExpressionInfoToList_GivenIncludeExpression(string contextName)
+    public class SpecificationBuilderExtensions_IncludeTests
     {
-        // Act
-        var spec = new GetByTitleWithHistoricalContextTimelines(contextName);
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("test")]
+        public void ShouldAddSingleIncludeExpressionInfoToList_GivenIncludeExpression(string contextName)
+        {
+            // Act
+            var spec = new GetByTitleWithHistoricalContextTimelines(contextName);
 
-        // Assert
-        spec.IncludeExpressions.Should().ContainSingle();
-    }
+            // Assert
+            spec.IncludeExpressions.Should().ContainSingle();
+        }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("test")]
-    public void ShouldAddIncludeExpressionInfoToListWithTypeInclude_GivenIncludeExpression(string contextName)
-    {
-        // Act
-        var spec = new GetByTitleWithHistoricalContextTimelines(contextName);
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("test")]
+        public void ShouldAddIncludeExpressionInfoToListWithTypeInclude_GivenIncludeExpression(string contextName)
+        {
+            // Act
+            var spec = new GetByTitleWithHistoricalContextTimelines(contextName);
 
-        // Assert
-        spec.IncludeExpressions.Single().Type.Should().Be(IncludeTypeEnum.Include);
-    }
+            // Assert
+            spec.IncludeExpressions.Single().Type.Should().Be(IncludeTypeEnum.Include);
+        }
 
-    [Fact]
-    public void ShouldAppendIncludeExpressionInfoToList_GivenThenIncludeExpression()
-    {
-        // Act
-        var spec = new GetByIdWithHistoricalContextTimelinesAndHistoricalContext(1);
+        [Fact]
+        public void ShouldAppendIncludeExpressionInfoToList_GivenThenIncludeExpression()
+        {
+            // Act
+            var spec = new GetByIdWithHistoricalContextTimelinesAndHistoricalContext(1);
 
-        var includeExpressions = spec.IncludeExpressions.ToList();
+            var includeExpressions = spec.IncludeExpressions.ToList();
 
-        // Assert
-        includeExpressions.Should().HaveCount(2);
-    }
+            // Assert
+            includeExpressions.Should().HaveCount(2);
+        }
 
-    [Fact]
-    public void ShouldAppendIncludeExpressionInfoToListWithTypeThenInclude_GivenThenIncludeExpression()
-    {
-        // Act
-        var spec = new GetAllWithHistoricalContextTimelinesAndHistoricalContext();
+        [Fact]
+        public void ShouldAppendIncludeExpressionInfoToListWithTypeThenInclude_GivenThenIncludeExpression()
+        {
+            // Act
+            var spec = new GetAllWithHistoricalContextTimelinesAndHistoricalContext();
 
-        var includeExpressions = spec.IncludeExpressions.ToList();
+            var includeExpressions = spec.IncludeExpressions.ToList();
 
-        // Assert
-        includeExpressions[1].Type.Should().Be(IncludeTypeEnum.ThenInclude);
+            // Assert
+            includeExpressions[1].Type.Should().Be(IncludeTypeEnum.ThenInclude);
+        }
     }
 }

@@ -1,18 +1,19 @@
 using AutoMapper;
-using Streetcode.BLL.Dto.AdditionalContent;
 using Streetcode.BLL.Dto.AdditionalContent.Tag;
-using Streetcode.DAL.Entities.AdditionalContent;
+using Streetcode.BLL.DTO.AdditionalContent.Tag;
+using Streetcode.BLL.Entities.AdditionalContent;
 
-namespace Streetcode.BLL.Mapping.AdditionalContent;
-
-public class TagProfile : Profile
+namespace Streetcode.BLL.Mapping.AdditionalContent
 {
-    public TagProfile()
+    public class TagProfile : Profile
     {
-        CreateMap<Tag, TagDto>().ForMember(x => x.Streetcodes, conf => conf.Ignore());
-        CreateMap<Tag, StreetcodeTagDto>().ReverseMap();
-        CreateMap<StreetcodeTagIndex, StreetcodeTagDto>()
-            .ForMember(x => x.Id, conf => conf.MapFrom(ti => ti.TagId))
-            .ForMember(x => x.Title, conf => conf.MapFrom(ti => ti.Tag.Title ?? ""));
+        public TagProfile()
+        {
+            CreateMap<Tag, TagDto>().ForMember(x => x.Streetcodes, conf => conf.Ignore());
+            CreateMap<Tag, StreetcodeTagDto>().ReverseMap();
+            CreateMap<StreetcodeTagIndex, StreetcodeTagDto>()
+                .ForMember(x => x.Id, conf => conf.MapFrom(ti => ti.TagId))
+                .ForMember(x => x.Title, conf => conf.MapFrom(ti => ti.Tag.Title ?? ""));
+        }
     }
 }

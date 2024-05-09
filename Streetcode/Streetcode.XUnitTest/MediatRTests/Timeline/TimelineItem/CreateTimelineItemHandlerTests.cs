@@ -1,19 +1,18 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
-using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.DAL.Entities.Streetcode;
-using Streetcode.DAL.Repositories.Interfaces.Base;
-using Streetcode.BLL.DTO.Timeline;
 using Streetcode.BLL.Dto.Timeline;
-using Streetcode.DAL.Entities.Timeline;
-using Xunit;
+using Streetcode.BLL.DTO.Timeline;
+using Streetcode.BLL.Entities.Streetcode;
+using Streetcode.BLL.Entities.Timeline;
+using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Timeline.TimelineItem.Create;
-using FluentAssertions;
-
-using HistoricalContextEntity = Streetcode.DAL.Entities.Timeline.HistoricalContext;
-using TimelineItemEntity = Streetcode.DAL.Entities.Timeline.TimelineItem;
+using Streetcode.BLL.RepositoryInterfaces.Base;
+using Xunit;
+using HistoricalContextEntity = Streetcode.BLL.Entities.Timeline.HistoricalContext;
+using TimelineItemEntity = Streetcode.BLL.Entities.Timeline.TimelineItem;
 
 namespace Streetcode.XUnitTest.MediatRTests.Timeline.TimelineItem;
 

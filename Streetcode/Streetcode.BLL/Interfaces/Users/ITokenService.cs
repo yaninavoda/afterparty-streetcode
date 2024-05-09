@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using Streetcode.BLL.DTO.Account;
-using Streetcode.DAL.Entities.Users;
+using Streetcode.BLL.Entities.Users;
 
 namespace Streetcode.BLL.Interfaces.Users
 {

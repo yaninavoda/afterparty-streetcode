@@ -1,16 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Streetcode.DAL.Entities.Analytics;
+using Streetcode.BLL.Entities.Analytics;
 
-namespace Streetcode.DAL.Persistence.Configurations;
-
-public class StatisticRecordEntityTypeConfiguration : IEntityTypeConfiguration<StatisticRecord>
+namespace Streetcode.DAL.Persistence.Configurations
 {
-    public void Configure(EntityTypeBuilder<StatisticRecord> builder)
+    public class StatisticRecordEntityTypeConfiguration : IEntityTypeConfiguration<StatisticRecord>
     {
-        builder
-          .HasOne(x => x.StreetcodeCoordinate)
-          .WithOne(x => x.StatisticRecord)
-          .HasForeignKey<StatisticRecord>(x => x.StreetcodeCoordinateId);
+        public void Configure(EntityTypeBuilder<StatisticRecord> builder)
+        {
+            builder
+              .HasOne(x => x.StreetcodeCoordinate)
+              .WithOne(x => x.StatisticRecord)
+              .HasForeignKey<StatisticRecord>(x => x.StreetcodeCoordinateId);
+        }
     }
 }

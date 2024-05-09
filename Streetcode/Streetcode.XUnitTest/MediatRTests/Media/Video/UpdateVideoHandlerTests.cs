@@ -3,16 +3,16 @@ using Moq;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Media.Video.Update;
 using Streetcode.BLL.DTO.Media.Video;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 using Xunit;
 using AutoMapper;
 using FluentAssertions;
 using FluentResults;
 using Microsoft.EntityFrameworkCore.Query;
 
-using VideoEntity = Streetcode.DAL.Entities.Media.Video;
+using VideoEntity = Streetcode.BLL.Entities.Media.Video;
 
-namespace Streetcode.XUnitTest.MediatRTests.Media.Video.Update
+namespace Streetcode.XUnitTest.MediatRTests.Media.Video
 {
     public class UpdateVideoHandlerTests
     {
@@ -117,7 +117,7 @@ namespace Streetcode.XUnitTest.MediatRTests.Media.Video.Update
             };
 
             _mockRepositoryWrapper.Setup(repo => repo.VideoRepository.GetFirstOrDefaultAsync(
-                    It.IsAny<Expression<System.Func<VideoEntity, bool>>>(),
+                    It.IsAny<Expression<Func<VideoEntity, bool>>>(),
                     It.IsAny<Func<IQueryable<VideoEntity>, IIncludableQueryable<VideoEntity, object>>>()))
                 .ReturnsAsync(video);
 

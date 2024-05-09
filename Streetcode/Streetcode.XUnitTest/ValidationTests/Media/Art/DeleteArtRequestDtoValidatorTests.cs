@@ -3,44 +3,45 @@ using Streetcode.BLL.DTO.Media.Art;
 using Streetcode.BLL.MediatR.Media.Art.Delete;
 using Xunit;
 
-namespace Streetcode.XUnitTest.ValidationTests.Media.Art;
-
-public class DeleteArtRequestDtoValidatorTests
+namespace Streetcode.XUnitTest.ValidationTests.Media.Art
 {
-    private const int MINARTID = 1;
-
-    private readonly DeleteArtRequestDtoValidator _validator;
-
-    public DeleteArtRequestDtoValidatorTests()
+    public class DeleteArtRequestDtoValidatorTests
     {
-        _validator = new DeleteArtRequestDtoValidator();
-    }
+        private const int MINARTID = 1;
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(MINARTID - 10000)]
-    public void ShouldHaveError_WhenArtIdIsZeroOrNegative(int id)
-    {
-        // Arrange
-        var dto = new DeleteArtRequestDto(Id: id);
+        private readonly DeleteArtRequestDtoValidator _validator;
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+        public DeleteArtRequestDtoValidatorTests()
+        {
+            _validator = new DeleteArtRequestDtoValidator();
+        }
 
-        // Assert
-        validationResult.ShouldHaveValidationErrorFor(x => x.Id);
-    }
+        [Theory]
+        [InlineData(0)]
+        [InlineData(MINARTID - 10000)]
+        public void ShouldHaveError_WhenArtIdIsZeroOrNegative(int id)
+        {
+            // Arrange
+            var dto = new DeleteArtRequestDto(Id: id);
 
-    [Fact]
-    public void ShouldNotHaveError_WhenDtoIsValid()
-    {
-        // Arrange
-        var dto = new DeleteArtRequestDto(Id: MINARTID);
+            // Act
+            var validationResult = _validator.TestValidate(dto);
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+            // Assert
+            validationResult.ShouldHaveValidationErrorFor(x => x.Id);
+        }
 
-        // Assert
-        validationResult.ShouldNotHaveValidationErrorFor(x => x.Id);
+        [Fact]
+        public void ShouldNotHaveError_WhenDtoIsValid()
+        {
+            // Arrange
+            var dto = new DeleteArtRequestDto(Id: MINARTID);
+
+            // Act
+            var validationResult = _validator.TestValidate(dto);
+
+            // Assert
+            validationResult.ShouldNotHaveValidationErrorFor(x => x.Id);
+        }
     }
 }

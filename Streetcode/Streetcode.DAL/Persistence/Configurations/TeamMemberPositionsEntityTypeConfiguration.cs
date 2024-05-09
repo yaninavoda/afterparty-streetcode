@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Streetcode.DAL.Entities.Team;
+using Streetcode.BLL.Entities.Team;
 
-namespace Streetcode.DAL.Persistence.Configurations;
-
-public class TeamMemberPositionsEntityTypeConfiguration : IEntityTypeConfiguration<TeamMemberPositions>
+namespace Streetcode.DAL.Persistence.Configurations
 {
-    public void Configure(EntityTypeBuilder<TeamMemberPositions> builder)
+    public class TeamMemberPositionsEntityTypeConfiguration : IEntityTypeConfiguration<TeamMemberPositions>
     {
-        builder
-            .HasKey(nameof(TeamMemberPositions.TeamMemberId), nameof(TeamMemberPositions.PositionsId));
+        public void Configure(EntityTypeBuilder<TeamMemberPositions> builder)
+        {
+            builder
+                .HasKey(nameof(TeamMemberPositions.TeamMemberId), nameof(TeamMemberPositions.PositionsId));
+        }
     }
 }

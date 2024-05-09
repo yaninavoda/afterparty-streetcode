@@ -2,16 +2,16 @@
 using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Streetcode.BLL.Dto.AdditionalContent.Subtitles;
 using Streetcode.BLL.Dto.Media.Art;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
+using ArtEntity = Streetcode.BLL.Entities.Media.Images.Art;
 
 namespace Streetcode.BLL.MediatR.Media.StreetcodeArt.GetByStreetcodeId
 {
-  public class GetStreetcodeArtByStreetcodeIdHandler : IRequestHandler<GetStreetcodeArtByStreetcodeIdQuery, Result<IEnumerable<StreetcodeArtDto>>>
+    public class GetStreetcodeArtByStreetcodeIdHandler : IRequestHandler<GetStreetcodeArtByStreetcodeIdQuery, Result<IEnumerable<StreetcodeArtDto>>>
     {
         private readonly IMapper _mapper;
         private readonly IRepositoryWrapper _repositoryWrapper;
@@ -32,14 +32,6 @@ namespace Streetcode.BLL.MediatR.Media.StreetcodeArt.GetByStreetcodeId
 
         public async Task<Result<IEnumerable<StreetcodeArtDto>>> Handle(GetStreetcodeArtByStreetcodeIdQuery request, CancellationToken cancellationToken)
         {
-            /*
-            if ((await _repositoryWrapper.StreetcodeRepository.GetFirstOrDefaultAsync(s => s.Id == request.StreetcodeId)) is null)
-            {
-                return Result.Fail(
-                    new Error($"Cannot find a streetcode arts by a streetcode id: {request.StreetcodeId}, because such streetcode doesn`t exist"));
-            }
-            */
-
             var art = await _repositoryWrapper
             .StreetcodeArtRepository
             .GetAllAsync(
@@ -52,7 +44,7 @@ namespace Streetcode.BLL.MediatR.Media.StreetcodeArt.GetByStreetcodeId
             {
                 string errorMsg = string.Format(
                ErrorMessages.EntityByStreetCodeIdNotFound,
-               nameof(DAL.Entities.Media.Images.Art),
+               typeof(ArtEntity).Name,
                request.StreetcodeId);
                 _logger.LogError(request, errorMsg);
                 return Result.Fail(new Error(errorMsg));

@@ -4,7 +4,7 @@ using MediatR;
 using Streetcode.BLL.Dto.AdditionalContent.Subtitles;
 using Streetcode.BLL.Dto.Sources;
 using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Sources.SourceLinkCategory.GetAll
 {

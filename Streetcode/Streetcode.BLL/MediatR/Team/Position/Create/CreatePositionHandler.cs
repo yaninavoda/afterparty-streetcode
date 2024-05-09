@@ -3,10 +3,10 @@ using FluentResults;
 using MediatR;
 using Streetcode.BLL.Dto.Team;
 using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.DAL.Entities.Team;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.Entities.Team;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
-namespace Streetcode.BLL.MediatR.Team.Create
+namespace Streetcode.BLL.MediatR.Team.Position.Create
 {
     public class CreatePositionHandler : IRequestHandler<CreatePositionQuery, Result<PositionDto>>
     {

@@ -1,7 +1,8 @@
-﻿namespace Streetcode.BLL.Services.BlobStorageService;
-
-public class BlobEnvironmentVariables
+﻿namespace Streetcode.BLL.Services.BlobStorageService
 {
-    public string BlobStoreKey { get; set; }
-    public string BlobStorePath { get; set; }
+    public class BlobEnvironmentVariables
+    {
+        public string BlobStoreKey { get; set; }
+        public string BlobStorePath { get; set; }
+    }
 }

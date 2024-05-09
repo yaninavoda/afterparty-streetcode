@@ -3,55 +3,56 @@ using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Streetcode.BLL.Dto.Media.Audio;
-using Streetcode.BLL.Dto.Transactions;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.BLL.MediatR.ResultVariations;
 using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 using Streetcode.BLL.Resources.Errors;
+using AudioEntity = Streetcode.BLL.Entities.Media.Audio;
 
-namespace Streetcode.BLL.MediatR.Media.Audio.GetByStreetcodeId;
-
-public class GetAudioByStreetcodeIdQueryHandler : IRequestHandler<GetAudioByStreetcodeIdQuery, Result<AudioDto>>
+namespace Streetcode.BLL.MediatR.Media.Audio.GetByStreetcodeId
 {
-    private readonly IMapper _mapper;
-    private readonly IRepositoryWrapper _repositoryWrapper;
-    private readonly IBlobService _blobService;
-    private readonly ILoggerService _logger;
-
-    public GetAudioByStreetcodeIdQueryHandler(IRepositoryWrapper repositoryWrapper, IMapper mapper, IBlobService blobService, ILoggerService logger)
+    public class GetAudioByStreetcodeIdQueryHandler : IRequestHandler<GetAudioByStreetcodeIdQuery, Result<AudioDto>>
     {
-        _repositoryWrapper = repositoryWrapper;
-        _mapper = mapper;
-        _blobService = blobService;
-        _logger = logger;
-    }
+        private readonly IMapper _mapper;
+        private readonly IRepositoryWrapper _repositoryWrapper;
+        private readonly IBlobService _blobService;
+        private readonly ILoggerService _logger;
 
-    public async Task<Result<AudioDto>> Handle(GetAudioByStreetcodeIdQuery request, CancellationToken cancellationToken)
-    {
-        var streetcode = await _repositoryWrapper.StreetcodeRepository.GetFirstOrDefaultAsync(
-            s => s.Id == request.StreetcodeId,
-            include: q => q.Include(s => s.Audio) !);
-        if (streetcode == null)
+        public GetAudioByStreetcodeIdQueryHandler(IRepositoryWrapper repositoryWrapper, IMapper mapper, IBlobService blobService, ILoggerService logger)
         {
-            string errorMsg = string.Format(
-               ErrorMessages.EntityByStreetCodeIdNotFound,
-               nameof(DAL.Entities.Media.Audio),
-               request.StreetcodeId);
-            _logger.LogError(request, errorMsg);
-            return Result.Fail(new Error(errorMsg));
+            _repositoryWrapper = repositoryWrapper;
+            _mapper = mapper;
+            _blobService = blobService;
+            _logger = logger;
         }
 
-        NullResult<AudioDto> result = new NullResult<AudioDto>();
-
-        if (streetcode.Audio != null)
+        public async Task<Result<AudioDto>> Handle(GetAudioByStreetcodeIdQuery request, CancellationToken cancellationToken)
         {
-            AudioDto audioDto = _mapper.Map<AudioDto>(streetcode.Audio);
-            audioDto = _mapper.Map<AudioDto>(streetcode.Audio);
-            audioDto.Base64 = _blobService.FindFileInStorageAsBase64(audioDto.BlobName);
-            result.WithValue(audioDto);
-        }
+            var streetcode = await _repositoryWrapper.StreetcodeRepository.GetFirstOrDefaultAsync(
+                s => s.Id == request.StreetcodeId,
+                include: q => q.Include(s => s.Audio) !);
+            if (streetcode == null)
+            {
+                string errorMsg = string.Format(
+                   ErrorMessages.EntityByStreetCodeIdNotFound,
+                   typeof(AudioEntity).Name,
+                   request.StreetcodeId);
+                _logger.LogError(request, errorMsg);
+                return Result.Fail(new Error(errorMsg));
+            }
 
-        return result;
+            NullResult<AudioDto> result = new NullResult<AudioDto>();
+
+            if (streetcode.Audio != null)
+            {
+                AudioDto audioDto = _mapper.Map<AudioDto>(streetcode.Audio);
+                audioDto = _mapper.Map<AudioDto>(streetcode.Audio);
+                audioDto.Base64 = _blobService.FindFileInStorageAsBase64(audioDto.BlobName);
+                result.WithValue(audioDto);
+            }
+
+            return result;
+        }
     }
 }

@@ -10,60 +10,61 @@ using Streetcode.BLL.MediatR.Streetcode.Text.GetParsed;
 using Streetcode.BLL.MediatR.Streetcode.Text.Preview;
 using Streetcode.BLL.MediatR.Streetcode.Text.Update;
 
-namespace Streetcode.WebApi.Controllers.Streetcode.TextContent;
-
-[Authorize(Roles = "Admin")]
-public class TextController : BaseApiController
+namespace Streetcode.WebApi.Controllers.Streetcode.TextContent
 {
-    [AllowAnonymous]
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
+    [Authorize(Roles = "Admin")]
+    public class TextController : BaseApiController
     {
-        return HandleResult(await Mediator.Send(new GetAllTextsQuery()));
-    }
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            return HandleResult(await Mediator.Send(new GetAllTextsQuery()));
+        }
 
-    [AllowAnonymous]
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById([FromRoute] int id)
-    {
-        return HandleResult(await Mediator.Send(new GetTextByIdQuery(id)));
-    }
+        [AllowAnonymous]
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            return HandleResult(await Mediator.Send(new GetTextByIdQuery(id)));
+        }
 
-    [AllowAnonymous]
-    [HttpGet("{streetcodeId:int}")]
-    public async Task<IActionResult> GetByStreetcodeId([FromRoute] int streetcodeId)
-    {
-        return HandleResult(await Mediator.Send(new GetTextByStreetcodeIdQuery(streetcodeId)));
-    }
+        [AllowAnonymous]
+        [HttpGet("{streetcodeId:int}")]
+        public async Task<IActionResult> GetByStreetcodeId([FromRoute] int streetcodeId)
+        {
+            return HandleResult(await Mediator.Send(new GetTextByStreetcodeIdQuery(streetcodeId)));
+        }
 
-    [AllowAnonymous]
-    [HttpGet]
-    public async Task<IActionResult> GetParsedText([FromQuery] string text)
-    {
-        return HandleResult(await Mediator.Send(new GetParsedTextForAdminPreviewCommand(text)));
-    }
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetParsedText([FromQuery] string text)
+        {
+            return HandleResult(await Mediator.Send(new GetParsedTextForAdminPreviewCommand(text)));
+        }
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateTextRequestDto createRequest)
-    {
-        return HandleResult(await Mediator.Send(new CreateTextCommand(createRequest)));
-    }
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateTextRequestDto createRequest)
+        {
+            return HandleResult(await Mediator.Send(new CreateTextCommand(createRequest)));
+        }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateTextRequestDto updateRequest)
-    {
-        return HandleResult(await Mediator.Send(new UpdateTextCommand(updateRequest)));
-    }
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UpdateTextRequestDto updateRequest)
+        {
+            return HandleResult(await Mediator.Send(new UpdateTextCommand(updateRequest)));
+        }
 
-    [HttpPut]
-    public async Task<IActionResult> Preview([FromBody] PreviewTextRequestDto previewRequest)
-    {
-        return HandleResult(await Mediator.Send(new PreviewTextQuery(previewRequest)));
-    }
+        [HttpPut]
+        public async Task<IActionResult> Preview([FromBody] PreviewTextRequestDto previewRequest)
+        {
+            return HandleResult(await Mediator.Send(new PreviewTextQuery(previewRequest)));
+        }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete([FromBody] DeleteTextRequestDto deleteRequest)
-    {
-        return HandleResult(await Mediator.Send(new DeleteTextCommand(deleteRequest)));
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromBody] DeleteTextRequestDto deleteRequest)
+        {
+            return HandleResult(await Mediator.Send(new DeleteTextCommand(deleteRequest)));
+        }
     }
 }

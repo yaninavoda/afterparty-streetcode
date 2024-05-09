@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Streetcode.BLL.Dto.Team;
 using Streetcode.BLL.MediatR.Team.GetAll;
+using Streetcode.BLL.MediatR.Team.GetAllMain;
 using Streetcode.BLL.MediatR.Team.GetById;
 
 namespace Streetcode.WebApi.Controllers.Team

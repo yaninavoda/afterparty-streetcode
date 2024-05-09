@@ -1,4 +1,4 @@
-﻿using Streetcode.DAL.Entities.Team;
+﻿using Streetcode.BLL.Entities.Team;
 
 namespace Streetcode.BLL.Dto.Team
 {

@@ -3,12 +3,12 @@ using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Streetcode.BLL.Dto.Team;
+using Streetcode.BLL.Entities.Team;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Entities.Team;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
-namespace Streetcode.BLL.MediatR.Team.GetAll
+namespace Streetcode.BLL.MediatR.Team.GetAllMain
 {
     public class GetAllMainTeamHandler : IRequestHandler<GetAllMainTeamQuery, Result<IEnumerable<TeamMemberDto>>>
     {

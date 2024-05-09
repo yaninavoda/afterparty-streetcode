@@ -3,44 +3,45 @@ using Streetcode.BLL.DTO.Analytics.StatisticRecord;
 using Streetcode.BLL.MediatR.Analytics.StatisticRecord.Delete;
 using Xunit;
 
-namespace Streetcode.XUnitTest.ValidationTests.Analytics.StatisticRecord;
-
-public class DeleteStatisticRecordRequestDtoValidatorTests
+namespace Streetcode.XUnitTest.ValidationTests.Analytics.StatisticRecord
 {
-    private const int MINID = 1;
-
-    private readonly DeleteStatisticRecordRequestDtoValidator _validator;
-
-    public DeleteStatisticRecordRequestDtoValidatorTests()
+    public class DeleteStatisticRecordRequestDtoValidatorTests
     {
-        _validator = new DeleteStatisticRecordRequestDtoValidator();
-    }
+        private const int MINID = 1;
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(MINID - 10000)]
-    public void ShouldHaveError_WhenIdIsZeroOrNegative(int id)
-    {
-        // Arrange
-        var dto = new DeleteStatisticRecordRequestDto(Id: id);
+        private readonly DeleteStatisticRecordRequestDtoValidator _validator;
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+        public DeleteStatisticRecordRequestDtoValidatorTests()
+        {
+            _validator = new DeleteStatisticRecordRequestDtoValidator();
+        }
 
-        // Assert
-        validationResult.ShouldHaveValidationErrorFor(x => x.Id);
-    }
+        [Theory]
+        [InlineData(0)]
+        [InlineData(MINID - 10000)]
+        public void ShouldHaveError_WhenIdIsZeroOrNegative(int id)
+        {
+            // Arrange
+            var dto = new DeleteStatisticRecordRequestDto(Id: id);
 
-    [Fact]
-    public void ShouldNotHaveError_WhenDtoIsValid()
-    {
-        // Arrange
-        var dto = new DeleteStatisticRecordRequestDto(Id: MINID);
+            // Act
+            var validationResult = _validator.TestValidate(dto);
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+            // Assert
+            validationResult.ShouldHaveValidationErrorFor(x => x.Id);
+        }
 
-        // Assert
-        validationResult.ShouldNotHaveValidationErrorFor(x => x.Id);
+        [Fact]
+        public void ShouldNotHaveError_WhenDtoIsValid()
+        {
+            // Arrange
+            var dto = new DeleteStatisticRecordRequestDto(Id: MINID);
+
+            // Act
+            var validationResult = _validator.TestValidate(dto);
+
+            // Assert
+            validationResult.ShouldNotHaveValidationErrorFor(x => x.Id);
+        }
     }
 }
