@@ -10,6 +10,7 @@ namespace Streetcode.BLL.Mapping.Media.Images
         {
             CreateMap<Art, ArtDto>().ReverseMap();
             CreateMap<CreateArtRequestDto, Art>();
+            CreateMap<Art, CreateArtResponseDto>();
         }
     }
 }
