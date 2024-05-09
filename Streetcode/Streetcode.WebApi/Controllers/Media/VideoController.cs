@@ -8,47 +8,48 @@ using Streetcode.BLL.MediatR.Media.Video.GetById;
 using Streetcode.BLL.MediatR.Media.Video.GetByStreetcodeId;
 using Streetcode.BLL.MediatR.Media.Video.Update;
 
-namespace Streetcode.WebApi.Controllers.Media;
-
-[Authorize(Roles = "Admin")]
-public class VideoController : BaseApiController
+namespace Streetcode.WebApi.Controllers.Media
 {
-    [AllowAnonymous]
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
+    [Authorize(Roles = "Admin")]
+    public class VideoController : BaseApiController
     {
-        return HandleResult(await Mediator.Send(new GetAllVideosQuery()));
-    }
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            return HandleResult(await Mediator.Send(new GetAllVideosQuery()));
+        }
 
-    [AllowAnonymous]
-    [HttpGet("{streetcodeId:int}")]
-    public async Task<IActionResult> GetByStreetcodeId([FromRoute] int streetcodeId)
-    {
-        return HandleResult(await Mediator.Send(new GetVideoByStreetcodeIdQuery(streetcodeId)));
-    }
+        [AllowAnonymous]
+        [HttpGet("{streetcodeId:int}")]
+        public async Task<IActionResult> GetByStreetcodeId([FromRoute] int streetcodeId)
+        {
+            return HandleResult(await Mediator.Send(new GetVideoByStreetcodeIdQuery(streetcodeId)));
+        }
 
-    [AllowAnonymous]
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById([FromRoute] int id)
-    {
-        return HandleResult(await Mediator.Send(new GetVideoByIdQuery(id)));
-    }
+        [AllowAnonymous]
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            return HandleResult(await Mediator.Send(new GetVideoByIdQuery(id)));
+        }
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateVideoRequestDto request)
-    {
-        return HandleResult(await Mediator.Send(new CreateVideoCommand(request)));
-    }
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateVideoRequestDto request)
+        {
+            return HandleResult(await Mediator.Send(new CreateVideoCommand(request)));
+        }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateVideoRequestDto updateRequest)
-    {
-        return HandleResult(await Mediator.Send(new UpdateVideoCommand(updateRequest)));
-    }
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UpdateVideoRequestDto updateRequest)
+        {
+            return HandleResult(await Mediator.Send(new UpdateVideoCommand(updateRequest)));
+        }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete([FromBody] DeleteVideoRequestDto deleteRequest)
-    {
-        return HandleResult(await Mediator.Send(new DeleteVideoCommand(deleteRequest)));
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromBody] DeleteVideoRequestDto deleteRequest)
+        {
+            return HandleResult(await Mediator.Send(new DeleteVideoCommand(deleteRequest)));
+        }
     }
 }

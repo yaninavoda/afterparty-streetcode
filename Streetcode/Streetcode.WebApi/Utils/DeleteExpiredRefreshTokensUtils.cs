@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Streetcode.DAL.Entities.Users;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+﻿using Streetcode.BLL.RepositoryInterfaces.Base;
 
 namespace Streetcode.WebApi.Utils;
 

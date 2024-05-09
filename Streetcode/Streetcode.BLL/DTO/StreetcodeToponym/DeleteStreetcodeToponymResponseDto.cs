@@ -1,3 +1,4 @@
-﻿namespace Streetcode.BLL.DTO.StreetcodeToponym;
-
-public sealed record DeleteStreetcodeToponymResponseDto(bool IsDeleted);
+﻿namespace Streetcode.BLL.DTO.StreetcodeToponym
+{
+    public sealed record DeleteStreetcodeToponymResponseDto(bool IsDeleted);
+}

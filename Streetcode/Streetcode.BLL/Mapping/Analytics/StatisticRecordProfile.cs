@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
 using Streetcode.BLL.DTO.Analytics.StatisticRecord;
-using Streetcode.DAL.Entities.Analytics;
+using Streetcode.BLL.Entities.Analytics;
 
-namespace Streetcode.BLL.Mapping.Analytics;
-
-public class StatisticRecordProfile : Profile
+namespace Streetcode.BLL.Mapping.Analytics
 {
-    public StatisticRecordProfile()
+    public class StatisticRecordProfile : Profile
     {
-        CreateMap<CreateStatisticRecordRequestDto, StatisticRecord>();
-        CreateMap<StatisticRecord, CreateStatisticRecordResponseDto>();
+        public StatisticRecordProfile()
+        {
+            CreateMap<CreateStatisticRecordRequestDto, StatisticRecord>();
+            CreateMap<StatisticRecord, CreateStatisticRecordResponseDto>();
+        }
     }
 }

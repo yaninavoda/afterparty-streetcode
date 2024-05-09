@@ -8,41 +8,42 @@ using Streetcode.BLL.MediatR.Media.Art.GetAll;
 using Streetcode.BLL.MediatR.Media.Art.GetById;
 using Streetcode.BLL.MediatR.Media.Art.GetByStreetcodeId;
 
-namespace Streetcode.WebApi.Controllers.Media.Images;
-
-[Authorize(Roles = "Admin")]
-public class ArtController : BaseApiController
+namespace Streetcode.WebApi.Controllers.Media.Images
 {
-    [AllowAnonymous]
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
+    [Authorize(Roles = "Admin")]
+    public class ArtController : BaseApiController
     {
-        return HandleResult(await Mediator.Send(new GetAllArtsQuery()));
-    }
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            return HandleResult(await Mediator.Send(new GetAllArtsQuery()));
+        }
 
-    [AllowAnonymous]
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById([FromRoute] int id)
-    {
-        return HandleResult(await Mediator.Send(new GetArtByIdQuery(id)));
-    }
+        [AllowAnonymous]
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            return HandleResult(await Mediator.Send(new GetArtByIdQuery(id)));
+        }
 
-    [AllowAnonymous]
-    [HttpGet("{streetcodeId:int}")]
-    public async Task<IActionResult> GetByStreetcodeId([FromRoute] int streetcodeId)
-    {
-        return HandleResult(await Mediator.Send(new GetArtsByStreetcodeIdQuery(streetcodeId)));
-    }
+        [AllowAnonymous]
+        [HttpGet("{streetcodeId:int}")]
+        public async Task<IActionResult> GetByStreetcodeId([FromRoute] int streetcodeId)
+        {
+            return HandleResult(await Mediator.Send(new GetArtsByStreetcodeIdQuery(streetcodeId)));
+        }
 
-    [HttpPost]
-    public async Task<IActionResult> CreateArt([FromBody] CreateArtRequestDto art)
-    {
-        return HandleResult(await Mediator.Send(new CreateArtCommand(art)));
-    }
+        [HttpPost]
+        public async Task<IActionResult> CreateArt([FromBody] CreateArtRequestDto art)
+        {
+            return HandleResult(await Mediator.Send(new CreateArtCommand(art)));
+        }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete([FromBody] DeleteArtRequestDto deleteArtRequestDto)
-    {
-        return HandleResult(await Mediator.Send(new DeleteArtCommand(deleteArtRequestDto)));
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromBody] DeleteArtRequestDto deleteArtRequestDto)
+        {
+            return HandleResult(await Mediator.Send(new DeleteArtCommand(deleteArtRequestDto)));
+        }
     }
 }

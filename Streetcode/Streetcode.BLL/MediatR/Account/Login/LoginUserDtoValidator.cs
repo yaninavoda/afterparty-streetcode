@@ -1,18 +1,19 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.DTO.Account;
-namespace Streetcode.BLL.MediatR.Account.Login;
-
-public class LoginUserDtoValidator : AbstractValidator<LoginUserDto>
+namespace Streetcode.BLL.MediatR.Account.Login
 {
-    public const int MINPASSLENGTH = 6;
-    public LoginUserDtoValidator()
+    public class LoginUserDtoValidator : AbstractValidator<LoginUserDto>
     {
-        RuleFor(dto => dto.Email)
-            .NotEmpty()
-            .EmailAddress();
-        RuleFor(dto => dto.Password)
-            .NotEmpty()
-            .MinimumLength(MINPASSLENGTH)
-            .Matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$");
+        public const int MINPASSLENGTH = 6;
+        public LoginUserDtoValidator()
+        {
+            RuleFor(dto => dto.Email)
+                .NotEmpty()
+                .EmailAddress();
+            RuleFor(dto => dto.Password)
+                .NotEmpty()
+                .MinimumLength(MINPASSLENGTH)
+                .Matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$");
+        }
     }
 }

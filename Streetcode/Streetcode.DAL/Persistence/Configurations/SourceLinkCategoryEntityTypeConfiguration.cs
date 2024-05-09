@@ -1,17 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Streetcode.DAL.Entities.Sources;
+using Streetcode.BLL.Entities.Sources;
 
-namespace Streetcode.DAL.Persistence.Configurations;
-
-public class SourceLinkCategoryEntityTypeConfiguration : IEntityTypeConfiguration<SourceLinkCategory>
+namespace Streetcode.DAL.Persistence.Configurations
 {
-    public void Configure(EntityTypeBuilder<SourceLinkCategory> builder)
+    public class SourceLinkCategoryEntityTypeConfiguration : IEntityTypeConfiguration<SourceLinkCategory>
     {
-        builder
-            .HasMany(d => d.StreetcodeCategoryContents)
-            .WithOne(p => p.SourceLinkCategory)
-            .HasForeignKey(d => d.SourceLinkCategoryId)
-            .OnDelete(DeleteBehavior.Cascade);
+        public void Configure(EntityTypeBuilder<SourceLinkCategory> builder)
+        {
+            builder
+                .HasMany(d => d.StreetcodeCategoryContents)
+                .WithOne(p => p.SourceLinkCategory)
+                .HasForeignKey(d => d.SourceLinkCategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

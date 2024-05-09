@@ -2,76 +2,77 @@
 using Streetcode.BLL.MediatR.Streetcode.Text.Preview;
 using Xunit;
 
-namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Text;
-
-public class PreviewTextHandlerTests
+namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Text
 {
-    private const string PREFILLEDTEXT = "Текст підготовлений спільно з ";
-
-    private readonly CancellationToken _cancellationToken = CancellationToken.None;
-
-    [Fact]
-    public async Task Handle_ShouldReturnStringWithPREFILLEDTEXT_IfAdditionalTextIsNotNullOrEmpty()
+    public class PreviewTextHandlerTests
     {
-        // Arrange
-        var request = new PreviewTextRequestDto(
-            Title: "title",
-            TextContent: "text content",
-            AdditionalText: "additional text");
+        private const string PREFILLEDTEXT = "Текст підготовлений спільно з ";
 
-        var handler = CreateHandler();
-        var query = new PreviewTextQuery(request);
-        string expextedAdditionalText = PREFILLEDTEXT + request.AdditionalText;
+        private readonly CancellationToken _cancellationToken = CancellationToken.None;
 
-        // Act
-        var result = await handler.Handle(query, _cancellationToken);
+        [Fact]
+        public async Task Handle_ShouldReturnStringWithPREFILLEDTEXT_IfAdditionalTextIsNotNullOrEmpty()
+        {
+            // Arrange
+            var request = new PreviewTextRequestDto(
+                Title: "title",
+                TextContent: "text content",
+                AdditionalText: "additional text");
 
-        // Assert
-        Assert.Equal(expextedAdditionalText, result.Value.AdditionalText);
-    }
+            var handler = CreateHandler();
+            var query = new PreviewTextQuery(request);
+            string expextedAdditionalText = PREFILLEDTEXT + request.AdditionalText;
 
-    [Fact]
-    public async Task Handle_ShouldReturnNull_IfAdditionalTextIsNull()
-    {
-        // Arrange
-        var request = new PreviewTextRequestDto(
-            Title: "title",
-            TextContent: "text content",
-            AdditionalText: null);
+            // Act
+            var result = await handler.Handle(query, _cancellationToken);
 
-        var handler = CreateHandler();
-        var query = new PreviewTextQuery(request);
-        string? expextedAdditionalText = null;
+            // Assert
+            Assert.Equal(expextedAdditionalText, result.Value.AdditionalText);
+        }
 
-        // Act
-        var result = await handler.Handle(query, _cancellationToken);
+        [Fact]
+        public async Task Handle_ShouldReturnNull_IfAdditionalTextIsNull()
+        {
+            // Arrange
+            var request = new PreviewTextRequestDto(
+                Title: "title",
+                TextContent: "text content",
+                AdditionalText: null);
 
-        // Assert
-        Assert.Equal(expextedAdditionalText, result.Value.AdditionalText);
-    }
+            var handler = CreateHandler();
+            var query = new PreviewTextQuery(request);
+            string? expextedAdditionalText = null;
 
-    [Fact]
-    public async Task Handle_ShouldNull_IfAdditionalTextIsEmpty()
-    {
-        // Arrange
-        var request = new PreviewTextRequestDto(
-            Title: "title",
-            TextContent: "text content",
-            AdditionalText: string.Empty);
+            // Act
+            var result = await handler.Handle(query, _cancellationToken);
 
-        var handler = CreateHandler();
-        var query = new PreviewTextQuery(request);
-        string? expextedAdditionalText = null;
+            // Assert
+            Assert.Equal(expextedAdditionalText, result.Value.AdditionalText);
+        }
 
-        // Act
-        var result = await handler.Handle(query, _cancellationToken);
+        [Fact]
+        public async Task Handle_ShouldNull_IfAdditionalTextIsEmpty()
+        {
+            // Arrange
+            var request = new PreviewTextRequestDto(
+                Title: "title",
+                TextContent: "text content",
+                AdditionalText: string.Empty);
 
-        // Assert
-        Assert.Equal(expextedAdditionalText, result.Value.AdditionalText);
-    }
+            var handler = CreateHandler();
+            var query = new PreviewTextQuery(request);
+            string? expextedAdditionalText = null;
 
-    private static PreviewTextHandler CreateHandler()
-    {
-        return new PreviewTextHandler();
+            // Act
+            var result = await handler.Handle(query, _cancellationToken);
+
+            // Assert
+            Assert.Equal(expextedAdditionalText, result.Value.AdditionalText);
+        }
+
+        private static PreviewTextHandler CreateHandler()
+        {
+            return new PreviewTextHandler();
+        }
     }
 }

@@ -4,9 +4,9 @@ using FluentResults;
 using MediatR;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
-using VideoEntity = Streetcode.DAL.Entities.Media.Video;
+using VideoEntity = Streetcode.BLL.Entities.Media.Video;
 
 namespace Streetcode.BLL.MediatR.Media.Video.Create
 {

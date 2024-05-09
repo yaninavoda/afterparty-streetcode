@@ -1,8 +1,8 @@
-﻿using Streetcode.DAL.Entities.AdditionalContent;
-using Streetcode.DAL.Entities.Team;
+﻿using Streetcode.BLL.Entities.AdditionalContent;
+using Streetcode.BLL.Entities.Team;
 using Streetcode.DAL.Persistence;
-using Streetcode.DAL.Repositories.Interfaces.AdditionalContent;
-using Streetcode.DAL.Repositories.Interfaces.Team;
+using Streetcode.BLL.RepositoryInterfaces.AdditionalContent;
+using Streetcode.BLL.RepositoryInterfaces.Team;
 using Streetcode.DAL.Repositories.Realizations.Base;
 
 namespace Streetcode.DAL.Repositories.Realizations.Team

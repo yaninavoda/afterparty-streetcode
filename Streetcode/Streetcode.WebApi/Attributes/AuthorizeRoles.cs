@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Streetcode.DAL.Enums;
+using Streetcode.BLL.Enums;
+
 namespace Streetcode.WebApi.Attributes
 {
     public class AuthorizeRoles : AuthorizeAttribute

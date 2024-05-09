@@ -4,75 +4,76 @@ using MediatR;
 using Streetcode.BLL.DTO.Streetcode.TextContent.Term;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Repositories.Interfaces.Base;
-using TermEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Term;
+using Streetcode.BLL.RepositoryInterfaces.Base;
+using TermEntity = Streetcode.BLL.Entities.Streetcode.TextContent.Term;
 
-namespace Streetcode.BLL.MediatR.Streetcode.Term.Create;
-
-public class CreateTermHandler :
-    IRequestHandler<CreateTermCommand, Result<CreateTermResponseDto>>
+namespace Streetcode.BLL.MediatR.Streetcode.Term.Create
 {
-    private readonly IRepositoryWrapper _repositoryWrapper;
-    private readonly IMapper _mapper;
-    private readonly ILoggerService _logger;
-
-    public CreateTermHandler(IRepositoryWrapper repository, IMapper mapper, ILoggerService logger)
+    public class CreateTermHandler :
+        IRequestHandler<CreateTermCommand, Result<CreateTermResponseDto>>
     {
-        _repositoryWrapper = repository;
-        _mapper = mapper;
-        _logger = logger;
-    }
+        private readonly IRepositoryWrapper _repositoryWrapper;
+        private readonly IMapper _mapper;
+        private readonly ILoggerService _logger;
 
-    public async Task<Result<CreateTermResponseDto>> Handle(CreateTermCommand command, CancellationToken cancellationToken)
-    {
-        var request = command.Request;
-
-        if (!await IsTermTitleUniqueAsync(request.Title))
+        public CreateTermHandler(IRepositoryWrapper repository, IMapper mapper, ILoggerService logger)
         {
-            return TermTitleIsNotUniqueError(request);
+            _repositoryWrapper = repository;
+            _mapper = mapper;
+            _logger = logger;
         }
 
-        var termToCreate = _mapper.Map<TermEntity>(request);
-
-        var term = _repositoryWrapper.TermRepository.Create(termToCreate);
-
-        bool resultIsSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
-
-        if (!resultIsSuccess)
+        public async Task<Result<CreateTermResponseDto>> Handle(CreateTermCommand command, CancellationToken cancellationToken)
         {
-            return FailedToCreateTermError(request);
+            var request = command.Request;
+
+            if (!await IsTermTitleUniqueAsync(request.Title))
+            {
+                return TermTitleIsNotUniqueError(request);
+            }
+
+            var termToCreate = _mapper.Map<TermEntity>(request);
+
+            var term = _repositoryWrapper.TermRepository.Create(termToCreate);
+
+            bool resultIsSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
+
+            if (!resultIsSuccess)
+            {
+                return FailedToCreateTermError(request);
+            }
+
+            var responseDto = _mapper.Map<CreateTermResponseDto>(term);
+
+            return Result.Ok(responseDto);
         }
 
-        var responseDto = _mapper.Map<CreateTermResponseDto>(term);
+        private Result<CreateTermResponseDto> FailedToCreateTermError(CreateTermRequestDto request)
+        {
+            string errorMsg = string.Format(
+                ErrorMessages.CreateFailed,
+                typeof(TermEntity).Name);
+            _logger.LogError(request, errorMsg);
+            return Result.Fail(errorMsg);
+        }
 
-        return Result.Ok(responseDto);
-    }
+        private async Task<bool> IsTermTitleUniqueAsync(string? title)
+        {
+            var term = await _repositoryWrapper.TermRepository
+                .GetFirstOrDefaultAsync(term => term.Title == title);
 
-    private Result<CreateTermResponseDto> FailedToCreateTermError(CreateTermRequestDto request)
-    {
-        string errorMsg = string.Format(
-            ErrorMessages.CreateFailed,
-            typeof(TermEntity).Name);
-        _logger.LogError(request, errorMsg);
-        return Result.Fail(errorMsg);
-    }
+            return term is null;
+        }
 
-    private async Task<bool> IsTermTitleUniqueAsync(string? title)
-    {
-        var term = await _repositoryWrapper.TermRepository
-            .GetFirstOrDefaultAsync(term => term.Title == title);
-
-        return term is null;
-    }
-
-    private Result<CreateTermResponseDto> TermTitleIsNotUniqueError(CreateTermRequestDto request)
-    {
-        string errorMsg = string.Format(
-            ErrorMessages.PropertyMustBeUnique,
-            nameof(request.Title),
-            request.Title,
-            typeof(TermEntity).Name);
-        _logger.LogError(request, errorMsg);
-        return Result.Fail(errorMsg);
+        private Result<CreateTermResponseDto> TermTitleIsNotUniqueError(CreateTermRequestDto request)
+        {
+            string errorMsg = string.Format(
+                ErrorMessages.PropertyMustBeUnique,
+                nameof(request.Title),
+                request.Title,
+                typeof(TermEntity).Name);
+            _logger.LogError(request, errorMsg);
+            return Result.Fail(errorMsg);
+        }
     }
 }

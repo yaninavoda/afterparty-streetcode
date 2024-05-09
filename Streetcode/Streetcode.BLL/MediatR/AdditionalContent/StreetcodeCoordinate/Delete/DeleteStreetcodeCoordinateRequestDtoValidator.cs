@@ -1,13 +1,14 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.DTO.AdditionalContent.Coordinates.Types;
 
-namespace Streetcode.BLL.MediatR.AdditionalContent.StreetcodeCoordinate.Delete;
-
-public class DeleteStreetcodeCoordinateRequestDtoValidator : AbstractValidator<DeleteStreetcodeCoordinateRequestDto>
+namespace Streetcode.BLL.MediatR.AdditionalContent.StreetcodeCoordinate.Delete
 {
-    public DeleteStreetcodeCoordinateRequestDtoValidator()
+    public class DeleteStreetcodeCoordinateRequestDtoValidator : AbstractValidator<DeleteStreetcodeCoordinateRequestDto>
     {
-        RuleFor(dto => dto.Id)
-            .GreaterThan(0);
+        public DeleteStreetcodeCoordinateRequestDtoValidator()
+        {
+            RuleFor(dto => dto.Id)
+                .GreaterThan(0);
+        }
     }
 }

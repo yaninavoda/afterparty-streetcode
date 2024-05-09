@@ -1,13 +1,14 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.DTO.Analytics.StatisticRecord;
 
-namespace Streetcode.BLL.MediatR.Analytics.StatisticRecord.Delete;
-
-public class DeleteStatisticRecordRequestDtoValidator : AbstractValidator<DeleteStatisticRecordRequestDto>
+namespace Streetcode.BLL.MediatR.Analytics.StatisticRecord.Delete
 {
-    public DeleteStatisticRecordRequestDtoValidator()
+    public class DeleteStatisticRecordRequestDtoValidator : AbstractValidator<DeleteStatisticRecordRequestDto>
     {
-        RuleFor(dto => dto.Id)
-            .GreaterThan(0);
+        public DeleteStatisticRecordRequestDtoValidator()
+        {
+            RuleFor(dto => dto.Id)
+                .GreaterThan(0);
+        }
     }
 }

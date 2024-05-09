@@ -3,7 +3,7 @@ using FluentValidation.TestHelper;
 using Streetcode.BLL.DTO.Media.Video;
 using Streetcode.BLL.MediatR.Media.Video.Update;
 
-namespace Streetcode.XUnitTest.ValidationTests.Media.Video.Create
+namespace Streetcode.XUnitTest.ValidationTests.Media.Video
 {
     public class UpdateVideoRequestDtoValidatorTests
     {

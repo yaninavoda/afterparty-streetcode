@@ -2,9 +2,9 @@
 using MediatR;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
-using TimelineEntity = Streetcode.DAL.Entities.Timeline.TimelineItem;
+using TimelineEntity = Streetcode.BLL.Entities.Timeline.TimelineItem;
 
 namespace Streetcode.BLL.MediatR.Timeline.TimelineItem.Delete
 {

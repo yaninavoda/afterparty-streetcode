@@ -1,7 +1,8 @@
-﻿namespace Streetcode.BLL.DTO.Account;
-
-public class TokenModelDto
+﻿namespace Streetcode.BLL.DTO.Account
 {
-    public string Token { get; set; } = string.Empty;
-    public string RefreshToken { get; set; } = string.Empty;
+    public class TokenModelDto
+    {
+        public string Token { get; set; } = string.Empty;
+        public string RefreshToken { get; set; } = string.Empty;
+    }
 }

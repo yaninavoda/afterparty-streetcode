@@ -3,67 +3,68 @@ using Streetcode.BLL.DTO.StreetcodeToponym;
 using Streetcode.BLL.MediatR.StreetcodeToponym.Delete;
 using Xunit;
 
-namespace Streetcode.XUnitTest.ValidationTests.StreetcodeToponym;
-
-public class DeleteStreetcodeToponymRequestDtoValidatorTests
+namespace Streetcode.XUnitTest.ValidationTests.StreetcodeToponym
 {
-    private const int MINSTREETCODEID = 1;
-    private const int MINTOPONYMID = 1;
-
-    private readonly DeleteStreetcodeToponymRequestDtoValidator _validator;
-
-    public DeleteStreetcodeToponymRequestDtoValidatorTests()
+    public class DeleteStreetcodeToponymRequestDtoValidatorTests
     {
-        _validator = new DeleteStreetcodeToponymRequestDtoValidator();
-    }
+        private const int MINSTREETCODEID = 1;
+        private const int MINTOPONYMID = 1;
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(MINTOPONYMID - 10000)]
-    public void ShouldHaveError_WhenToponymIdIsZeroOrNegative(int id)
-    {
-        // Arrange
-        var dto = new DeleteStreetcodeToponymRequestDto(
-                    StreetcodeId: MINSTREETCODEID,
-                    ToponymId: id);
+        private readonly DeleteStreetcodeToponymRequestDtoValidator _validator;
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+        public DeleteStreetcodeToponymRequestDtoValidatorTests()
+        {
+            _validator = new DeleteStreetcodeToponymRequestDtoValidator();
+        }
 
-        // Assert
-        validationResult.ShouldHaveValidationErrorFor(x => x.ToponymId);
-    }
+        [Theory]
+        [InlineData(0)]
+        [InlineData(MINTOPONYMID - 10000)]
+        public void ShouldHaveError_WhenToponymIdIsZeroOrNegative(int id)
+        {
+            // Arrange
+            var dto = new DeleteStreetcodeToponymRequestDto(
+                        StreetcodeId: MINSTREETCODEID,
+                        ToponymId: id);
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(MINSTREETCODEID - 10000)]
-    public void ShouldHaveError_WhenStreetcodeIdIsZeroOrNegative(int id)
-    {
-        // Arrange
-        var dto = new DeleteStreetcodeToponymRequestDto(
-                    StreetcodeId: id,
-                    ToponymId: MINSTREETCODEID);
+            // Act
+            var validationResult = _validator.TestValidate(dto);
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+            // Assert
+            validationResult.ShouldHaveValidationErrorFor(x => x.ToponymId);
+        }
 
-        // Assert
-        validationResult.ShouldHaveValidationErrorFor(x => x.StreetcodeId);
-    }
+        [Theory]
+        [InlineData(0)]
+        [InlineData(MINSTREETCODEID - 10000)]
+        public void ShouldHaveError_WhenStreetcodeIdIsZeroOrNegative(int id)
+        {
+            // Arrange
+            var dto = new DeleteStreetcodeToponymRequestDto(
+                        StreetcodeId: id,
+                        ToponymId: MINSTREETCODEID);
 
-    [Fact]
-    public void ShouldNotHaveError_WhenDtoIsValid()
-    {
-        // Arrange
-        var dto = new DeleteStreetcodeToponymRequestDto(
-            ToponymId: MINTOPONYMID,
-            StreetcodeId: MINSTREETCODEID);
+            // Act
+            var validationResult = _validator.TestValidate(dto);
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+            // Assert
+            validationResult.ShouldHaveValidationErrorFor(x => x.StreetcodeId);
+        }
 
-        // Assert
-        validationResult.ShouldNotHaveValidationErrorFor(x => x.StreetcodeId);
-        validationResult.ShouldNotHaveValidationErrorFor(x => x.ToponymId);
+        [Fact]
+        public void ShouldNotHaveError_WhenDtoIsValid()
+        {
+            // Arrange
+            var dto = new DeleteStreetcodeToponymRequestDto(
+                ToponymId: MINTOPONYMID,
+                StreetcodeId: MINSTREETCODEID);
+
+            // Act
+            var validationResult = _validator.TestValidate(dto);
+
+            // Assert
+            validationResult.ShouldNotHaveValidationErrorFor(x => x.StreetcodeId);
+            validationResult.ShouldNotHaveValidationErrorFor(x => x.ToponymId);
+        }
     }
 }

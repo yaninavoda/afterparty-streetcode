@@ -1,15 +1,16 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.DTO.Account;
 
-namespace Streetcode.BLL.MediatR.Account.GenerateNewAccessToken;
-
-public class TokenModelDtoValidator : AbstractValidator<TokenModelDto>
+namespace Streetcode.BLL.MediatR.Account.GenerateNewAccessToken
 {
-    public TokenModelDtoValidator()
+    public class TokenModelDtoValidator : AbstractValidator<TokenModelDto>
     {
-        RuleFor(x => x.Token)
-            .NotEmpty();
-        RuleFor(x => x.RefreshToken)
-            .NotEmpty();
+        public TokenModelDtoValidator()
+        {
+            RuleFor(x => x.Token)
+                .NotEmpty();
+            RuleFor(x => x.RefreshToken)
+                .NotEmpty();
+        }
     }
 }

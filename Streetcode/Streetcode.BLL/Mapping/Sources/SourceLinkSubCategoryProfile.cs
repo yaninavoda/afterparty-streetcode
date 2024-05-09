@@ -1,13 +1,14 @@
 using AutoMapper;
 using Streetcode.BLL.Dto.Sources;
-using Streetcode.DAL.Entities.Sources;
+using Streetcode.BLL.Entities.Sources;
 
-namespace Streetcode.BLL.Mapping.Sources;
-
-public class SourceLinkSubCategoryProfile : Profile
+namespace Streetcode.BLL.Mapping.Sources
 {
-    public SourceLinkSubCategoryProfile()
+    public class SourceLinkSubCategoryProfile : Profile
     {
-        CreateMap<CategoryContentCreateDto, StreetcodeCategoryContent>().ReverseMap();
+        public SourceLinkSubCategoryProfile()
+        {
+            CreateMap<CategoryContentCreateDto, StreetcodeCategoryContent>().ReverseMap();
+        }
     }
 }

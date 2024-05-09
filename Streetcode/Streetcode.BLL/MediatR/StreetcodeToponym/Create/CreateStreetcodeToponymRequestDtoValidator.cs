@@ -1,16 +1,17 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.DTO.StreetcodeToponym;
 
-namespace Streetcode.BLL.MediatR.StreetcodeToponym.Create;
-
-public class CreateStreetcodeToponymRequestDtoValidator : AbstractValidator<CreateStreetcodeToponymRequestDto>
+namespace Streetcode.BLL.MediatR.StreetcodeToponym.Create
 {
-    public CreateStreetcodeToponymRequestDtoValidator()
+    public class CreateStreetcodeToponymRequestDtoValidator : AbstractValidator<CreateStreetcodeToponymRequestDto>
     {
-        RuleFor(dto => dto.StreetcodeId)
-            .GreaterThan(0);
+        public CreateStreetcodeToponymRequestDtoValidator()
+        {
+            RuleFor(dto => dto.StreetcodeId)
+                .GreaterThan(0);
 
-        RuleFor(dto => dto.ToponymId)
-            .GreaterThan(0);
+            RuleFor(dto => dto.ToponymId)
+                .GreaterThan(0);
+        }
     }
 }

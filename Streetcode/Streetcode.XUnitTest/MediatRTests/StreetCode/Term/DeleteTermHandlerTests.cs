@@ -7,151 +7,152 @@ using Streetcode.BLL.DTO.Streetcode.TextContent.Term;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Streetcode.Term.Delete;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 using Xunit;
-using TermEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Term;
+using TermEntity = Streetcode.BLL.Entities.Streetcode.TextContent.Term;
 
-namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Term;
-
-public class DeleteTermHandlerTests
+namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Term
 {
-    private const int MINID = 1;
-    private const int SUCCESSFULSAVE = 1;
-    private const int FAILEDSAVE = -1;
-
-    private readonly Mock<IRepositoryWrapper> _mockRepositoryWrapper;
-    private readonly Mock<ILoggerService> _mockLogger;
-
-    private readonly CancellationToken _cancellationToken = CancellationToken.None;
-
-    public DeleteTermHandlerTests()
+    public class DeleteTermHandlerTests
     {
-        _mockRepositoryWrapper = new Mock<IRepositoryWrapper>();
-        _mockLogger = new Mock<ILoggerService>();
-    }
+        private const int MINID = 1;
+        private const int SUCCESSFULSAVE = 1;
+        private const int FAILEDSAVE = -1;
 
-    [Fact]
-    public async Task Handle_ShouldReturnOkResult_IfCommandHasValidInput()
-    {
-        // Arrange
-        var request = GetValidTextRecordRequest();
-        SetupMock(SUCCESSFULSAVE);
-        var handler = DeleteHandler();
-        var command = new DeleteTermCommand(request);
+        private readonly Mock<IRepositoryWrapper> _mockRepositoryWrapper;
+        private readonly Mock<ILoggerService> _mockLogger;
 
-        // Act
-        var result = await handler.Handle(command, _cancellationToken);
+        private readonly CancellationToken _cancellationToken = CancellationToken.None;
 
-        // Assert
-        result.IsSuccess.Should().BeTrue();
-    }
+        public DeleteTermHandlerTests()
+        {
+            _mockRepositoryWrapper = new Mock<IRepositoryWrapper>();
+            _mockLogger = new Mock<ILoggerService>();
+        }
 
-    [Fact]
-    public async Task Handle_ShouldReturnResultOfCorrectType_IfInputIsValid()
-    {
-        // Arrange
-        var request = GetValidTextRecordRequest();
-        var expectedType = typeof(Result<DeleteTermResponseDto>);
-        SetupMock(SUCCESSFULSAVE);
-        var handler = DeleteHandler();
-        var command = new DeleteTermCommand(request);
+        [Fact]
+        public async Task Handle_ShouldReturnOkResult_IfCommandHasValidInput()
+        {
+            // Arrange
+            var request = GetValidTextRecordRequest();
+            SetupMock(SUCCESSFULSAVE);
+            var handler = DeleteHandler();
+            var command = new DeleteTermCommand(request);
 
-        // Act
-        var result = await handler.Handle(command, _cancellationToken);
+            // Act
+            var result = await handler.Handle(command, _cancellationToken);
 
-        // Assert
-        result.Should().BeOfType(expectedType);
-    }
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+        }
 
-    [Fact]
-    public async Task Handle_ShouldReturnResultFail_IfSavingOperationFailed()
-    {
-        // Arrange
-        var request = GetValidTextRecordRequest();
-        SetupMock(FAILEDSAVE);
-        var handler = DeleteHandler();
-        var command = new DeleteTermCommand(request);
+        [Fact]
+        public async Task Handle_ShouldReturnResultOfCorrectType_IfInputIsValid()
+        {
+            // Arrange
+            var request = GetValidTextRecordRequest();
+            var expectedType = typeof(Result<DeleteTermResponseDto>);
+            SetupMock(SUCCESSFULSAVE);
+            var handler = DeleteHandler();
+            var command = new DeleteTermCommand(request);
 
-        // Act
-        var result = await handler.Handle(command, _cancellationToken);
+            // Act
+            var result = await handler.Handle(command, _cancellationToken);
 
-        // Assert
-        result.IsFailed.Should().BeTrue();
-    }
+            // Assert
+            result.Should().BeOfType(expectedType);
+        }
 
-    [Fact]
-    public async Task Handle_ShouldReturnErrorDeleteFailed_IfSavingOperationFailed()
-    {
-        // Arrange
-        var request = GetValidTextRecordRequest();
-        SetupMock(FAILEDSAVE);
-        var handler = DeleteHandler();
-        var command = new DeleteTermCommand(request);
+        [Fact]
+        public async Task Handle_ShouldReturnResultFail_IfSavingOperationFailed()
+        {
+            // Arrange
+            var request = GetValidTextRecordRequest();
+            SetupMock(FAILEDSAVE);
+            var handler = DeleteHandler();
+            var command = new DeleteTermCommand(request);
 
-        var expectedErrorMessage = string.Format(
-        ErrorMessages.DeleteFailed,
-        typeof(TermEntity).Name,
-        request.Id);
+            // Act
+            var result = await handler.Handle(command, _cancellationToken);
 
-        // Act
-        var result = await handler.Handle(command, _cancellationToken);
-        var actualErrorMessage = result.Errors[0].Message;
+            // Assert
+            result.IsFailed.Should().BeTrue();
+        }
 
-        // Assert
-        Assert.Equal(expectedErrorMessage, actualErrorMessage);
-    }
+        [Fact]
+        public async Task Handle_ShouldReturnErrorDeleteFailed_IfSavingOperationFailed()
+        {
+            // Arrange
+            var request = GetValidTextRecordRequest();
+            SetupMock(FAILEDSAVE);
+            var handler = DeleteHandler();
+            var command = new DeleteTermCommand(request);
 
-    [Fact]
-    public async Task Handle_ShouldCallSaveChangesAsyncOnce_IfInputIsValid()
-    {
-        // Arrange
-        var request = GetValidTextRecordRequest();
-        SetupMock(SUCCESSFULSAVE);
-        var handler = DeleteHandler();
-        var command = new DeleteTermCommand(request);
+            var expectedErrorMessage = string.Format(
+            ErrorMessages.DeleteFailed,
+            typeof(TermEntity).Name,
+            request.Id);
 
-        // Act
-        await handler.Handle(command, _cancellationToken);
+            // Act
+            var result = await handler.Handle(command, _cancellationToken);
+            var actualErrorMessage = result.Errors[0].Message;
 
-        // Assert
-        _mockRepositoryWrapper.Verify(x => x.SaveChangesAsync(), Times.Exactly(1));
-    }
+            // Assert
+            Assert.Equal(expectedErrorMessage, actualErrorMessage);
+        }
 
-    private DeleteTermHandler DeleteHandler()
-    {
-        return new DeleteTermHandler(
-            _mockRepositoryWrapper.Object,
-            _mockLogger.Object);
-    }
+        [Fact]
+        public async Task Handle_ShouldCallSaveChangesAsyncOnce_IfInputIsValid()
+        {
+            // Arrange
+            var request = GetValidTextRecordRequest();
+            SetupMock(SUCCESSFULSAVE);
+            var handler = DeleteHandler();
+            var command = new DeleteTermCommand(request);
 
-    private void SetupMock(int saveChangesAsyncResult)
-    {
-        var term = new TermEntity { Id = MINID };
+            // Act
+            await handler.Handle(command, _cancellationToken);
 
-        _mockRepositoryWrapper
-            .Setup(repo => repo.TermRepository.GetFirstOrDefaultAsync(
-                AnyEntityPredicate<TermEntity>(),
-                AnyEntityInclude<TermEntity>()))
-            .ReturnsAsync(term);
+            // Assert
+            _mockRepositoryWrapper.Verify(x => x.SaveChangesAsync(), Times.Exactly(1));
+        }
 
-        _mockRepositoryWrapper
-            .Setup(repo => repo.TermRepository.Delete(term));
+        private DeleteTermHandler DeleteHandler()
+        {
+            return new DeleteTermHandler(
+                _mockRepositoryWrapper.Object,
+                _mockLogger.Object);
+        }
 
-        _mockRepositoryWrapper.Setup(repo => repo.SaveChangesAsync()).ReturnsAsync(saveChangesAsyncResult);
-    }
+        private void SetupMock(int saveChangesAsyncResult)
+        {
+            var term = new TermEntity { Id = MINID };
 
-    private static Expression<Func<TEntity, bool>> AnyEntityPredicate<TEntity>()
-    {
-        return It.IsAny<Expression<Func<TEntity, bool>>>();
-    }
+            _mockRepositoryWrapper
+                .Setup(repo => repo.TermRepository.GetFirstOrDefaultAsync(
+                    AnyEntityPredicate<TermEntity>(),
+                    AnyEntityInclude<TermEntity>()))
+                .ReturnsAsync(term);
 
-    private static Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> AnyEntityInclude<TEntity>()
-    {
-        return It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>();
-    }
+            _mockRepositoryWrapper
+                .Setup(repo => repo.TermRepository.Delete(term));
 
-    private static DeleteTermRequestDto GetValidTextRecordRequest()
-    {
-        return new(Id: MINID);
+            _mockRepositoryWrapper.Setup(repo => repo.SaveChangesAsync()).ReturnsAsync(saveChangesAsyncResult);
+        }
+
+        private static Expression<Func<TEntity, bool>> AnyEntityPredicate<TEntity>()
+        {
+            return It.IsAny<Expression<Func<TEntity, bool>>>();
+        }
+
+        private static Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> AnyEntityInclude<TEntity>()
+        {
+            return It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>();
+        }
+
+        private static DeleteTermRequestDto GetValidTextRecordRequest()
+        {
+            return new(Id: MINID);
+        }
     }
 }

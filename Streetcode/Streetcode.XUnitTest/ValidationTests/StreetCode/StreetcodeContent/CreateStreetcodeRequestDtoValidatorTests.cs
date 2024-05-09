@@ -1,10 +1,10 @@
 ﻿using FluentValidation.TestHelper;
 using Streetcode.BLL.DTO.Streetcode;
+using Streetcode.BLL.Enums;
 using Streetcode.BLL.MediatR.Streetcode.Streetcode.Create;
-using Streetcode.DAL.Enums;
 using Xunit;
 
-namespace Streetcode.XUnitTest.ValidationTests.Streetcode.Streetcode
+namespace Streetcode.XUnitTest.ValidationTests.StreetCode.StreetcodeContent
 {
     public class CreateStreetcodeRequestDtoValidatorTests
     {

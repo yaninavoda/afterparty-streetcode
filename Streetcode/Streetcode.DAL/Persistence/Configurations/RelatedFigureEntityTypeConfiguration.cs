@@ -1,26 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Streetcode.DAL.Entities.Streetcode;
+using Streetcode.BLL.Entities.Streetcode;
 
-namespace Streetcode.DAL.Persistence.Configurations;
-
-public class RelatedFigureEntityTypeConfiguration : IEntityTypeConfiguration<RelatedFigure>
+namespace Streetcode.DAL.Persistence.Configurations
 {
-    public void Configure(EntityTypeBuilder<RelatedFigure> builder)
+    public class RelatedFigureEntityTypeConfiguration : IEntityTypeConfiguration<RelatedFigure>
     {
-        builder
-            .HasKey(d => new { d.ObserverId, d.TargetId });
+        public void Configure(EntityTypeBuilder<RelatedFigure> builder)
+        {
+            builder
+                .HasKey(d => new { d.ObserverId, d.TargetId });
 
-        builder
-            .HasOne(d => d.Observer)
-            .WithMany(d => d.Observers)
-            .HasForeignKey(d => d.ObserverId)
-            .OnDelete(DeleteBehavior.Restrict);
+            builder
+                .HasOne(d => d.Observer)
+                .WithMany(d => d.Observers)
+                .HasForeignKey(d => d.ObserverId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-        builder
-            .HasOne(d => d.Target)
-            .WithMany(d => d.Targets)
-            .HasForeignKey(d => d.TargetId)
-            .OnDelete(DeleteBehavior.Cascade);
+            builder
+                .HasOne(d => d.Target)
+                .WithMany(d => d.Targets)
+                .HasForeignKey(d => d.TargetId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

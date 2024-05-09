@@ -1,6 +1,7 @@
-﻿namespace Streetcode.BLL.Dto.AdditionalContent.Coordinates.Types;
-
-public class ToponymCoordinateDto : CoordinateDto
+﻿namespace Streetcode.BLL.Dto.AdditionalContent.Coordinates.Types
 {
-    public int ToponymId { get; set; }
+    public class ToponymCoordinateDto : CoordinateDto
+    {
+        public int ToponymId { get; set; }
+    }
 }

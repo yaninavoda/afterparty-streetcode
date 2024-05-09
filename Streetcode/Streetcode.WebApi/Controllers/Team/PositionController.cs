@@ -1,8 +1,7 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Dto.Team;
-using Streetcode.BLL.MediatR.Team.Create;
+using Streetcode.BLL.MediatR.Team.Position.Create;
 using Streetcode.BLL.MediatR.Team.Position.GetAll;
 
 namespace Streetcode.WebApi.Controllers.Team

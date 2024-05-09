@@ -1,20 +1,21 @@
 ﻿using AutoMapper;
 using Streetcode.BLL.Dto.Streetcode.TextContent;
 using Streetcode.BLL.DTO.Streetcode.TextContent.Term;
-using Streetcode.DAL.Entities.Streetcode.TextContent;
+using Streetcode.BLL.Entities.Streetcode.TextContent;
 
-namespace Streetcode.BLL.Mapping.Streetcode.TextContent;
-
-public class TermProfile : Profile
+namespace Streetcode.BLL.Mapping.Streetcode.TextContent
 {
-    public TermProfile()
+    public class TermProfile : Profile
     {
-        CreateMap<Term, TermDto>().ReverseMap();
-        CreateMap<CreateTermRequestDto, Term>();
-        CreateMap<Term, CreateTermResponseDto>();
-        CreateMap<UpdateTermRequestDto, Term>();
-        CreateMap<Term, UpdateTermResponseDto>();
-        CreateMap<DeleteTermRequestDto, Term>();
-        CreateMap<Term, DeleteTermResponseDto>();
+        public TermProfile()
+        {
+            CreateMap<Term, TermDto>().ReverseMap();
+            CreateMap<CreateTermRequestDto, Term>();
+            CreateMap<Term, CreateTermResponseDto>();
+            CreateMap<UpdateTermRequestDto, Term>();
+            CreateMap<Term, UpdateTermResponseDto>();
+            CreateMap<DeleteTermRequestDto, Term>();
+            CreateMap<Term, DeleteTermResponseDto>();
+        }
     }
 }

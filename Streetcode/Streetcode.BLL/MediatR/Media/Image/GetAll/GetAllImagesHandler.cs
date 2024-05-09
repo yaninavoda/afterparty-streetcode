@@ -5,57 +5,59 @@ using Streetcode.BLL.Dto.Media.Images;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
+using ImageEntity = Streetcode.BLL.Entities.Media.Images.Image;
 
-namespace Streetcode.BLL.MediatR.Media.Image.GetAll;
-
-public class GetAllImagesHandler : IRequestHandler<GetAllImagesQuery, Result<IEnumerable<ImageDto>>>
+namespace Streetcode.BLL.MediatR.Media.Image.GetAll
 {
-    private readonly IMapper _mapper;
-    private readonly IRepositoryWrapper _repositoryWrapper;
-    private readonly IBlobService _blobService;
-    private readonly ILoggerService _logger;
-
-    public GetAllImagesHandler(IRepositoryWrapper repositoryWrapper, IMapper mapper, IBlobService blobService, ILoggerService logger)
+    public class GetAllImagesHandler : IRequestHandler<GetAllImagesQuery, Result<IEnumerable<ImageDto>>>
     {
-        _repositoryWrapper = repositoryWrapper;
-        _mapper = mapper;
-        _blobService = blobService;
-        _logger = logger;
-    }
+        private readonly IMapper _mapper;
+        private readonly IRepositoryWrapper _repositoryWrapper;
+        private readonly IBlobService _blobService;
+        private readonly ILoggerService _logger;
 
-    public async Task<Result<IEnumerable<ImageDto>>> Handle(GetAllImagesQuery request, CancellationToken cancellationToken)
-    {
-        var images = await _repositoryWrapper.ImageRepository.GetAllAsync();
-
-        if (images is null)
+        public GetAllImagesHandler(IRepositoryWrapper repositoryWrapper, IMapper mapper, IBlobService blobService, ILoggerService logger)
         {
-            string errorMsg = string.Format(
-                ErrorMessages.EntitiesNotFound,
-                nameof(DAL.Entities.Media.Images.Image));
-            _logger.LogError(request, errorMsg);
-            return Result.Fail(new Error(errorMsg));
+            _repositoryWrapper = repositoryWrapper;
+            _mapper = mapper;
+            _blobService = blobService;
+            _logger = logger;
         }
 
-        var imageDtos = _mapper.Map<IEnumerable<ImageDto>>(images);
-
-        foreach (var image in imageDtos)
+        public async Task<Result<IEnumerable<ImageDto>>> Handle(GetAllImagesQuery request, CancellationToken cancellationToken)
         {
-            try
+            var images = await _repositoryWrapper.ImageRepository.GetAllAsync();
+
+            if (images is null)
             {
-                image.Base64 = _blobService.FindFileInStorageAsBase64(image.BlobName);
+                string errorMsg = string.Format(
+                    ErrorMessages.EntitiesNotFound,
+                    typeof(ImageEntity).Name);
+                _logger.LogError(request, errorMsg);
+                return Result.Fail(new Error(errorMsg));
             }
-            catch (Azure.RequestFailedException ex)
+
+            var imageDtos = _mapper.Map<IEnumerable<ImageDto>>(images);
+
+            foreach (var image in imageDtos)
             {
-                if (ex.ErrorCode == "BlobNotFound")
+                try
                 {
-                    continue;
+                    image.Base64 = _blobService.FindFileInStorageAsBase64(image.BlobName);
                 }
+                catch (Azure.RequestFailedException ex)
+                {
+                    if (ex.ErrorCode == "BlobNotFound")
+                    {
+                        continue;
+                    }
 
-                throw;
+                    throw;
+                }
             }
-        }
 
-        return Result.Ok(imageDtos.Where(x => !string.IsNullOrEmpty(x.Base64)).AsEnumerable());
+            return Result.Ok(imageDtos.Where(x => !string.IsNullOrEmpty(x.Base64)).AsEnumerable());
+        }
     }
 }

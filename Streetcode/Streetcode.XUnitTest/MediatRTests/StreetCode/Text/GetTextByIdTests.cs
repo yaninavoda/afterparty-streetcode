@@ -1,18 +1,14 @@
-﻿namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Text;
-
+﻿using System.Linq.Expressions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
 using Streetcode.BLL.Dto.Streetcode.TextContent.Text;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Streetcode.Text.GetById;
-using Streetcode.DAL.Entities.Streetcode.TextContent;
-using Streetcode.DAL.Repositories.Interfaces.Base;
-using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 using Xunit;
+using TextEntity = Streetcode.BLL.Entities.Streetcode.TextContent.Text;
+namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Text;
 
 public class GetTextByIdTests
 {
@@ -66,9 +62,9 @@ public class GetTextByIdTests
         _mockRepositoryWrapper.Verify(
             r =>
             r.TextRepository.GetFirstOrDefaultAsync(
-               It.IsAny<Expression<Func<Text, bool>>>(),
-               It.IsAny<Func<IQueryable<Text>,
-               IIncludableQueryable<Text, object>>>()),
+               It.IsAny<Expression<Func<TextEntity, bool>>>(),
+               It.IsAny<Func<IQueryable<TextEntity>,
+               IIncludableQueryable<TextEntity, object>>>()),
             Times.Once);
     }
 
@@ -90,7 +86,7 @@ public class GetTextByIdTests
 
         // Assert
         _mockMapper.Verify(
-            m => m.Map<TextDto>(It.IsAny<Text>()),
+            m => m.Map<TextDto>(It.IsAny<TextEntity>()),
             Times.Once);
     }
 
@@ -178,7 +174,7 @@ public class GetTextByIdTests
     private void MockMapperSetup(int id)
     {
         _mockMapper.Setup(x => x
-            .Map<TextDto>(It.IsAny<Text>()))
+            .Map<TextDto>(It.IsAny<TextEntity>()))
             .Returns(new TextDto
             {
                 Id = id,
@@ -193,19 +189,19 @@ public class GetTextByIdTests
     {
         _mockRepositoryWrapper.Setup(x => x.TextRepository
             .GetFirstOrDefaultAsync(
-               It.IsAny<Expression<Func<Text, bool>>>(),
-               It.IsAny<Func<IQueryable<Text>,
-               IIncludableQueryable<Text, object>>>()))
-            .ReturnsAsync(new Text { Id = id });
+               It.IsAny<Expression<Func<TextEntity, bool>>>(),
+               It.IsAny<Func<IQueryable<TextEntity>,
+               IIncludableQueryable<TextEntity, object>>>()))
+            .ReturnsAsync(new TextEntity { Id = id });
     }
 
     private void MockRepositorySetupReturnsNull()
     {
         _mockRepositoryWrapper.Setup(x => x.TextRepository
             .GetFirstOrDefaultAsync(
-               It.IsAny<Expression<Func<Text, bool>>>(),
-               It.IsAny<Func<IQueryable<Text>,
-               IIncludableQueryable<Text, object>>>()))
-            .ReturnsAsync((Text?)null);
+               It.IsAny<Expression<Func<TextEntity, bool>>>(),
+               It.IsAny<Func<IQueryable<TextEntity>,
+               IIncludableQueryable<TextEntity, object>>>()))
+            .ReturnsAsync((TextEntity?)null);
     }
 }

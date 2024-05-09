@@ -3,96 +3,97 @@ using Xunit;
 using FluentValidation.TestHelper;
 using Streetcode.BLL.MediatR.AdditionalContent.StreetcodeCoordinate.Create;
 
-namespace Streetcode.XUnitTest.ValidationTests.AdditionalContent.Coordinates.Types;
-
-public class CreateStreetcodeCoordinateRequestDtoValidatorTests
+namespace Streetcode.XUnitTest.ValidationTests.AdditionalContent.Coordinates.Types
 {
-    private const int MINSTREETCODEID = 1;
-    private const int MINLATITUDE = -90;
-    private const int MAXLATITUDE = 90;
-    private const int MINLONGTITUDE = -180;
-    private const int MAXLONGTITUDE = 180;
-
-    private readonly CreateStreetcodeCoordinateRequestDtoValidator _validator;
-
-    public CreateStreetcodeCoordinateRequestDtoValidatorTests()
+    public class CreateStreetcodeCoordinateRequestDtoValidatorTests
     {
-        _validator = new CreateStreetcodeCoordinateRequestDtoValidator();
-    }
+        private const int MINSTREETCODEID = 1;
+        private const int MINLATITUDE = -90;
+        private const int MAXLATITUDE = 90;
+        private const int MINLONGTITUDE = -180;
+        private const int MAXLONGTITUDE = 180;
 
-    [Theory]
-    [InlineData(-91)]
-    [InlineData(91)]
-    [InlineData(MINLATITUDE - 10000)]
-    [InlineData(MAXLATITUDE + 10000)]
-    public void ShouldHaveError_WhenLatitudeIsLessOrGraterThanAllowed(int latitude)
-    {
-        // Arrange
-        var dto = new CreateStreetcodeCoordinateRequestDto(
-                    StreetcodeId: MINSTREETCODEID,
-                    Latitude: latitude,
-                    Longtitude: MINLONGTITUDE);
+        private readonly CreateStreetcodeCoordinateRequestDtoValidator _validator;
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+        public CreateStreetcodeCoordinateRequestDtoValidatorTests()
+        {
+            _validator = new CreateStreetcodeCoordinateRequestDtoValidator();
+        }
 
-        // Assert
-        validationResult.ShouldHaveValidationErrorFor(x => x.Latitude);
-    }
+        [Theory]
+        [InlineData(-91)]
+        [InlineData(91)]
+        [InlineData(MINLATITUDE - 10000)]
+        [InlineData(MAXLATITUDE + 10000)]
+        public void ShouldHaveError_WhenLatitudeIsLessOrGraterThanAllowed(int latitude)
+        {
+            // Arrange
+            var dto = new CreateStreetcodeCoordinateRequestDto(
+                        StreetcodeId: MINSTREETCODEID,
+                        Latitude: latitude,
+                        Longtitude: MINLONGTITUDE);
 
-    [Theory]
-    [InlineData(-181)]
-    [InlineData(181)]
-    [InlineData(MINLATITUDE - 10000)]
-    [InlineData(MAXLONGTITUDE + 10000)]
-    public void ShouldHaveError_WhenLongtitudeIsLessOrGraterThanAllowed(int longtitude)
-    {
-        // Arrange
-        var dto = new CreateStreetcodeCoordinateRequestDto(
-                    StreetcodeId: MINSTREETCODEID,
-                    Latitude: MINLATITUDE,
-                    Longtitude: longtitude);
+            // Act
+            var validationResult = _validator.TestValidate(dto);
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+            // Assert
+            validationResult.ShouldHaveValidationErrorFor(x => x.Latitude);
+        }
 
-        // Assert
-        validationResult.ShouldHaveValidationErrorFor(x => x.Longtitude);
-    }
+        [Theory]
+        [InlineData(-181)]
+        [InlineData(181)]
+        [InlineData(MINLATITUDE - 10000)]
+        [InlineData(MAXLONGTITUDE + 10000)]
+        public void ShouldHaveError_WhenLongtitudeIsLessOrGraterThanAllowed(int longtitude)
+        {
+            // Arrange
+            var dto = new CreateStreetcodeCoordinateRequestDto(
+                        StreetcodeId: MINSTREETCODEID,
+                        Latitude: MINLATITUDE,
+                        Longtitude: longtitude);
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(MINSTREETCODEID - 10000)]
-    public void ShouldHaveError_WhenStreetcodeIdIsZeroOrNegative(int id)
-    {
-        // Arrange
-        var dto = new CreateStreetcodeCoordinateRequestDto(
-                    StreetcodeId: id,
-                    Longtitude: MINLONGTITUDE,
-                    Latitude: MINLATITUDE);
+            // Act
+            var validationResult = _validator.TestValidate(dto);
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+            // Assert
+            validationResult.ShouldHaveValidationErrorFor(x => x.Longtitude);
+        }
 
-        // Assert
-        validationResult.ShouldHaveValidationErrorFor(x => x.StreetcodeId);
-    }
+        [Theory]
+        [InlineData(0)]
+        [InlineData(MINSTREETCODEID - 10000)]
+        public void ShouldHaveError_WhenStreetcodeIdIsZeroOrNegative(int id)
+        {
+            // Arrange
+            var dto = new CreateStreetcodeCoordinateRequestDto(
+                        StreetcodeId: id,
+                        Longtitude: MINLONGTITUDE,
+                        Latitude: MINLATITUDE);
 
-    [Fact]
-    public void ShouldNotHaveError_WhenDtoIsValid()
-    {
-        // Arrange
-        var dto = new CreateStreetcodeCoordinateRequestDto(
-            StreetcodeId: MINSTREETCODEID,
-            Longtitude: MINLONGTITUDE,
-            Latitude: MINLATITUDE);
+            // Act
+            var validationResult = _validator.TestValidate(dto);
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+            // Assert
+            validationResult.ShouldHaveValidationErrorFor(x => x.StreetcodeId);
+        }
 
-        // Assert
-        validationResult.ShouldNotHaveValidationErrorFor(x => x.StreetcodeId);
-        validationResult.ShouldNotHaveValidationErrorFor(x => x.Latitude);
-        validationResult.ShouldNotHaveValidationErrorFor(x => x.Longtitude);
+        [Fact]
+        public void ShouldNotHaveError_WhenDtoIsValid()
+        {
+            // Arrange
+            var dto = new CreateStreetcodeCoordinateRequestDto(
+                StreetcodeId: MINSTREETCODEID,
+                Longtitude: MINLONGTITUDE,
+                Latitude: MINLATITUDE);
+
+            // Act
+            var validationResult = _validator.TestValidate(dto);
+
+            // Assert
+            validationResult.ShouldNotHaveValidationErrorFor(x => x.StreetcodeId);
+            validationResult.ShouldNotHaveValidationErrorFor(x => x.Latitude);
+            validationResult.ShouldNotHaveValidationErrorFor(x => x.Longtitude);
+        }
     }
 }

@@ -1,9 +1,8 @@
 using Streetcode.BLL.Dto.AdditionalContent;
-using Streetcode.BLL.Dto.Partners;
 using Streetcode.BLL.Dto.Partners.Create;
 using Streetcode.BLL.Dto.Streetcode;
 
-namespace Streetcode.BLL.Dto.Partners
+namespace Streetcode.BLL.DTO.Partners.Create
 {
     public class CreatePartnerDto
     {

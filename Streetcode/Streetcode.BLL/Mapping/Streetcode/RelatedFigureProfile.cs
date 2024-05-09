@@ -1,28 +1,29 @@
 using AutoMapper;
 using Streetcode.BLL.Dto.Streetcode.RelatedFigure;
-using Streetcode.DAL.Entities.Streetcode;
-using Streetcode.DAL.Entities.Streetcode.Types;
+using Streetcode.BLL.Entities.Streetcode;
+using Streetcode.BLL.Entities.Streetcode.Types;
 
-namespace Streetcode.BLL.Mapping.Streetcode;
-
-public class RelatedFigureProfile : Profile
+namespace Streetcode.BLL.Mapping.Streetcode
 {
-    public RelatedFigureProfile()
+    public class RelatedFigureProfile : Profile
     {
-        CreateMap<EventStreetcode, RelatedFigureDto>()
-            .ForPath(dto => dto.Title, conf => conf
-                .MapFrom(e => e.Title))
-            .ForPath(dto => dto.Url, conf => conf
-                .MapFrom(e => e.TransliterationUrl))
-            .ForPath(dto => dto.ImageId, conf => conf
-                .MapFrom(e => e.Images.Select(i => i.Id).LastOrDefault()));
+        public RelatedFigureProfile()
+        {
+            CreateMap<EventStreetcode, RelatedFigureDto>()
+                .ForPath(dto => dto.Title, conf => conf
+                    .MapFrom(e => e.Title))
+                .ForPath(dto => dto.Url, conf => conf
+                    .MapFrom(e => e.TransliterationUrl))
+                .ForPath(dto => dto.ImageId, conf => conf
+                    .MapFrom(e => e.Images.Select(i => i.Id).LastOrDefault()));
 
-        CreateMap<PersonStreetcode, RelatedFigureDto>()
-            .ForPath(dto => dto.Url, conf => conf
-                .MapFrom(e => e.TransliterationUrl))
-            .ForPath(dto => dto.ImageId, conf => conf
-                .MapFrom(e => e.Images.Select(i => i.Id).LastOrDefault()));
+            CreateMap<PersonStreetcode, RelatedFigureDto>()
+                .ForPath(dto => dto.Url, conf => conf
+                    .MapFrom(e => e.TransliterationUrl))
+                .ForPath(dto => dto.ImageId, conf => conf
+                    .MapFrom(e => e.Images.Select(i => i.Id).LastOrDefault()));
 
-        CreateMap<StreetcodeContent, RelatedFigureShortDto>();
+            CreateMap<StreetcodeContent, RelatedFigureShortDto>();
+        }
     }
 }

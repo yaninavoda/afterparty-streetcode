@@ -1,23 +1,24 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.DTO.Sources;
 
-namespace Streetcode.BLL.MediatR.Sources.SourceLinkCategory.Update;
-
-public class UpdateCategoryContentValidator : AbstractValidator<CategoryContentUpdateDto>
+namespace Streetcode.BLL.MediatR.Sources.SourceLinkCategory.Update
 {
-    private const int MAXTEXTLENGTH = 4000;
-
-    public UpdateCategoryContentValidator()
+    public class UpdateCategoryContentValidator : AbstractValidator<CategoryContentUpdateDto>
     {
-        RuleFor(dto => dto.Text)
-            .NotEmpty()
-            .MaximumLength(MAXTEXTLENGTH);
+        private const int MAXTEXTLENGTH = 4000;
 
-        RuleFor(dto => dto.SourceLinkCategoryId)
-            .NotEmpty()
-            .GreaterThan(0);
+        public UpdateCategoryContentValidator()
+        {
+            RuleFor(dto => dto.Text)
+                .NotEmpty()
+                .MaximumLength(MAXTEXTLENGTH);
 
-        RuleFor(dto => dto.StreetcodeId)
-            .GreaterThan(0);
+            RuleFor(dto => dto.SourceLinkCategoryId)
+                .NotEmpty()
+                .GreaterThan(0);
+
+            RuleFor(dto => dto.StreetcodeId)
+                .GreaterThan(0);
+        }
     }
 }

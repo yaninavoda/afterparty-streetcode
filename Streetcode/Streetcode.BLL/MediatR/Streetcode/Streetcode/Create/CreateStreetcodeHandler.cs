@@ -3,14 +3,15 @@ using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Streetcode.BLL.DTO.Streetcode;
+using Streetcode.BLL.Entities.Media.Images;
 using Streetcode.BLL.Extensions;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Entities.AdditionalContent;
-using Streetcode.DAL.Entities.Media.Images;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.Entities.AdditionalContent;
+using Streetcode.BLL.Entities.Media.Images;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
-using StreetcodeEntity = Streetcode.DAL.Entities.Streetcode.StreetcodeContent;
+using StreetcodeEntity = Streetcode.BLL.Entities.Streetcode.StreetcodeContent;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.Create
 {

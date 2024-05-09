@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Streetcode.BLL.Dto.AdditionalContent.Tag;
 using Streetcode.BLL.Dto.Streetcode;
 using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Streetcode.GetByTransliterationUrl
 {

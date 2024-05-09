@@ -6,8 +6,8 @@ using Streetcode.BLL.Dto.AdditionalContent.Subtitles;
 using Streetcode.BLL.Dto.Streetcode.RelatedFigure;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Streetcode.Streetcode.GetByIndex;
-using Streetcode.DAL.Entities.Streetcode.Types;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.Entities.Streetcode.Types;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Streetcode.RelatedFigure.GetByTagId
 {
@@ -28,7 +28,7 @@ namespace Streetcode.BLL.MediatR.Streetcode.RelatedFigure.GetByTagId
         {
             var streetcodes = await _repositoryWrapper.StreetcodeRepository
                 .GetAllAsync(
-                predicate: sc => sc.Status == DAL.Enums.StreetcodeStatus.Published &&
+                predicate: sc => sc.Status == BLL.Enums.StreetcodeStatus.Published &&
                   sc.Tags.Select(t => t.Id).Any(tag => tag == request.tagId),
                 include: scl => scl
                     .Include(sc => sc.Images)

@@ -3,44 +3,45 @@ using Streetcode.BLL.DTO.Partners.Delete;
 using Streetcode.BLL.MediatR.Partners.Delete;
 using Xunit;
 
-namespace Streetcode.XUnitTest.ValidationTests.Partners;
-
-public class DeletePartnerRequestDtoValidatorTests
+namespace Streetcode.XUnitTest.ValidationTests.Partners
 {
-    private const int MINID = 1;
-
-    private readonly DeletePartnerRequestDtoValidator _validator;
-
-    public DeletePartnerRequestDtoValidatorTests()
+    public class DeletePartnerRequestDtoValidatorTests
     {
-        _validator = new DeletePartnerRequestDtoValidator();
-    }
+        private const int MINID = 1;
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(MINID - 10000)]
-    public void ShouldHaveError_WhenIdIsZeroOrNegative(int id)
-    {
-        // Arrange
-        var dto = new DeletePartnerRequestDto(Id: id);
+        private readonly DeletePartnerRequestDtoValidator _validator;
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+        public DeletePartnerRequestDtoValidatorTests()
+        {
+            _validator = new DeletePartnerRequestDtoValidator();
+        }
 
-        // Assert
-        validationResult.ShouldHaveValidationErrorFor(x => x.Id);
-    }
+        [Theory]
+        [InlineData(0)]
+        [InlineData(MINID - 10000)]
+        public void ShouldHaveError_WhenIdIsZeroOrNegative(int id)
+        {
+            // Arrange
+            var dto = new DeletePartnerRequestDto(Id: id);
 
-    [Fact]
-    public void ShouldNotHaveError_WhenDtoIsValid()
-    {
-        // Arrange
-        var dto = new DeletePartnerRequestDto(Id: MINID);
+            // Act
+            var validationResult = _validator.TestValidate(dto);
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+            // Assert
+            validationResult.ShouldHaveValidationErrorFor(x => x.Id);
+        }
 
-        // Assert
-        validationResult.ShouldNotHaveValidationErrorFor(x => x.Id);
+        [Fact]
+        public void ShouldNotHaveError_WhenDtoIsValid()
+        {
+            // Arrange
+            var dto = new DeletePartnerRequestDto(Id: MINID);
+
+            // Act
+            var validationResult = _validator.TestValidate(dto);
+
+            // Assert
+            validationResult.ShouldNotHaveValidationErrorFor(x => x.Id);
+        }
     }
 }

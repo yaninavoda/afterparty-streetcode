@@ -1,14 +1,15 @@
-﻿using Repositories.Interfaces;
-using Streetcode.DAL.Entities.Media;
+﻿using Streetcode.BLL.Entities.Media;
 using Streetcode.DAL.Persistence;
+using Streetcode.BLL.RepositoryInterfaces.Media;
 using Streetcode.DAL.Repositories.Realizations.Base;
 
-namespace Streetcode.DAL.Repositories.Realizations.Media;
-
-public class VideoRepository : RepositoryBase<Video>, IVideoRepository
+namespace Streetcode.DAL.Repositories.Realizations.Media
 {
-    public VideoRepository(StreetcodeDbContext dbContext)
-        : base(dbContext)
+    public class VideoRepository : RepositoryBase<Video>, IVideoRepository
     {
+        public VideoRepository(StreetcodeDbContext dbContext)
+            : base(dbContext)
+        {
+        }
     }
 }

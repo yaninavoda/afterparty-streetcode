@@ -1,25 +1,26 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.Dto.Media.Art;
 
-namespace Streetcode.BLL.MediatR.Media.Art.Create;
-
-public class CreateArtRequestDtoValidator : AbstractValidator<CreateArtRequestDto>
+namespace Streetcode.BLL.MediatR.Media.Art.Create
 {
-    private const int MAXTITLELENGTH = 150;
-    private const int MAXDESCRPTIONLENGTH = 400;
-
-    public CreateArtRequestDtoValidator()
+    public class CreateArtRequestDtoValidator : AbstractValidator<CreateArtRequestDto>
     {
-        RuleFor(dto => dto.Title)
-            .MaximumLength(MAXTITLELENGTH);
+        private const int MAXTITLELENGTH = 150;
+        private const int MAXDESCRPTIONLENGTH = 400;
 
-        RuleFor(dto => dto.Description)
-            .MaximumLength(MAXDESCRPTIONLENGTH);
+        public CreateArtRequestDtoValidator()
+        {
+            RuleFor(dto => dto.Title)
+                .MaximumLength(MAXTITLELENGTH);
 
-        RuleFor(dto => dto.ImageId)
-            .GreaterThan(0);
+            RuleFor(dto => dto.Description)
+                .MaximumLength(MAXDESCRPTIONLENGTH);
 
-        RuleFor(dto => dto.StreetcodeId)
-            .GreaterThan(0);
+            RuleFor(dto => dto.ImageId)
+                .GreaterThan(0);
+
+            RuleFor(dto => dto.StreetcodeId)
+                .GreaterThan(0);
+        }
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Streetcode.BLL.Services.BlobStorageService;
-using Streetcode.DAL.Entities.Users;
 using Streetcode.WebApi.Extensions;
 using Streetcode.WebApi.Middlewares;
 using Streetcode.WebApi.Utils;
@@ -12,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Streetcode.BLL.Entities.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.ConfigureApplication();

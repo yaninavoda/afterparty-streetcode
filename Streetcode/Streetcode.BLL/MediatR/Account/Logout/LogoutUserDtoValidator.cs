@@ -1,14 +1,15 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.DTO.Account;
 
-namespace Streetcode.BLL.MediatR.Account.Logout;
-
-public class LogoutUserDtoValidator : AbstractValidator<LogoutUserDto>
+namespace Streetcode.BLL.MediatR.Account.Logout
 {
-    public LogoutUserDtoValidator()
+    public class LogoutUserDtoValidator : AbstractValidator<LogoutUserDto>
     {
-        RuleFor(x => x.Email)
-            .NotEmpty()
-            .EmailAddress();
+        public LogoutUserDtoValidator()
+        {
+            RuleFor(x => x.Email)
+                .NotEmpty()
+                .EmailAddress();
+        }
     }
 }

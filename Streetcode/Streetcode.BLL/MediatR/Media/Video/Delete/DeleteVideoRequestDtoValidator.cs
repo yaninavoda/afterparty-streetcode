@@ -1,13 +1,14 @@
 ﻿using FluentValidation;
 using Streetcode.BLL.DTO.Media.Video;
 
-namespace Streetcode.BLL.MediatR.Media.Video.Delete;
-
-public class DeleteVideoRequestDtoValidator : AbstractValidator<DeleteVideoRequestDto>
+namespace Streetcode.BLL.MediatR.Media.Video.Delete
 {
-    public DeleteVideoRequestDtoValidator()
+    public class DeleteVideoRequestDtoValidator : AbstractValidator<DeleteVideoRequestDto>
     {
-        RuleFor(dto => dto.Id)
-            .GreaterThan(0);
+        public DeleteVideoRequestDtoValidator()
+        {
+            RuleFor(dto => dto.Id)
+                .GreaterThan(0);
+        }
     }
 }

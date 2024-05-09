@@ -4,20 +4,21 @@ using Streetcode.BLL.DTO.Analytics.StatisticRecord;
 using Streetcode.BLL.MediatR.Analytics.StatisticRecord.Create;
 using Streetcode.BLL.MediatR.Analytics.StatisticRecord.Delete;
 
-namespace Streetcode.WebApi.Controllers.Analytics;
-
-[Authorize(Roles = "Admin")]
-public class StatisticRecordController : BaseApiController
+namespace Streetcode.WebApi.Controllers.Analytics
 {
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateStatisticRecordRequestDto createRequest)
+    [Authorize(Roles = "Admin")]
+    public class StatisticRecordController : BaseApiController
     {
-        return HandleResult(await Mediator.Send(new CreateStatisticRecordCommand(createRequest)));
-    }
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateStatisticRecordRequestDto createRequest)
+        {
+            return HandleResult(await Mediator.Send(new CreateStatisticRecordCommand(createRequest)));
+        }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete([FromBody] DeleteStatisticRecordRequestDto deleteRequest)
-    {
-        return HandleResult(await Mediator.Send(new DeleteStatisticRecordCommand(deleteRequest)));
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromBody] DeleteStatisticRecordRequestDto deleteRequest)
+        {
+            return HandleResult(await Mediator.Send(new DeleteStatisticRecordCommand(deleteRequest)));
+        }
     }
 }

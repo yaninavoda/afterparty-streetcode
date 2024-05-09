@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Streetcode.BLL.Dto.Media.Images;
-using Streetcode.DAL.Entities.Media.Images;
+using Streetcode.BLL.Entities.Media.Images;
 
 namespace Streetcode.BLL.Mapping.Media.Images
 {

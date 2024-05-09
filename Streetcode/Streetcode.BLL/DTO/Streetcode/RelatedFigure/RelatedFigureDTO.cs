@@ -1,13 +1,14 @@
-using Streetcode.BLL.Dto.AdditionalContent;
+using Streetcode.BLL.DTO.AdditionalContent.Tag;
 
-namespace Streetcode.BLL.Dto.Streetcode.RelatedFigure;
-
-public class RelatedFigureDto
+namespace Streetcode.BLL.Dto.Streetcode.RelatedFigure
 {
-  public int Id { get; set; }
-  public string Title { get; set; }
-  public string Url { get; set; }
-  public string? Alias { get; set; }
-  public int ImageId { get; set; }
-  public IEnumerable<TagDto> Tags { get; set; }
+    public class RelatedFigureDto
+    {
+      public int Id { get; set; }
+      public string Title { get; set; }
+      public string Url { get; set; }
+      public string? Alias { get; set; }
+      public int ImageId { get; set; }
+      public IEnumerable<TagDto> Tags { get; set; }
+    }
 }

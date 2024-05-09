@@ -6,11 +6,10 @@ using Moq;
 using Streetcode.BLL.DTO.Media.Video;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Media.Video.Delete;
-using Streetcode.BLL.MediatR.Video.Delete;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 using Xunit;
-using VideoEntity = Streetcode.DAL.Entities.Media.Video;
+using VideoEntity = Streetcode.BLL.Entities.Media.Video;
 
 namespace Streetcode.XUnitTest.MediatRTests.Media.Video
 {

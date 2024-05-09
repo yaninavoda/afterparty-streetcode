@@ -2,10 +2,10 @@
 using FluentResults;
 using MediatR;
 using Streetcode.BLL.Dto.News;
+using Streetcode.BLL.Entities.News;
 using Streetcode.BLL.Interfaces.BlobStorage;
 using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.DAL.Entities.News;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Newss.Update
 {

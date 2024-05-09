@@ -2,9 +2,9 @@
 using FluentResults;
 using MediatR;
 using Streetcode.BLL.Dto.Team;
+using Streetcode.BLL.Entities.Team;
 using Streetcode.BLL.Interfaces.Logging;
-using Streetcode.BLL.MediatR.Team.Create;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 
 namespace Streetcode.BLL.MediatR.Team.TeamMembersLinks.Create
 {
@@ -23,7 +23,7 @@ namespace Streetcode.BLL.MediatR.Team.TeamMembersLinks.Create
 
         public async Task<Result<TeamMemberLinkDto>> Handle(CreateTeamLinkQuery request, CancellationToken cancellationToken)
         {
-            var teamMemberLink = _mapper.Map<DAL.Entities.Team.TeamMemberLink>(request.teamMember);
+            var teamMemberLink = _mapper.Map<TeamMemberLink>(request.teamMember);
 
             if (teamMemberLink is null)
             {

@@ -3,67 +3,68 @@ using Streetcode.BLL.DTO.Media.Art;
 using Streetcode.BLL.MediatR.Media.StreetcodeArt.Delete;
 using Xunit;
 
-namespace Streetcode.XUnitTest.ValidationTests.Media.StreetcodeArt;
-
-public class DeleteStreetcodeArtRequestDtoValidatorTests
+namespace Streetcode.XUnitTest.ValidationTests.Media.StreetcodeArt
 {
-    private const int MINARTID = 1;
-    private const int MINSTREETCODEID = 1;
-
-    private readonly DeleteStreetcodeArtRequestDtoValidator _validator;
-
-    public DeleteStreetcodeArtRequestDtoValidatorTests()
+    public class DeleteStreetcodeArtRequestDtoValidatorTests
     {
-        _validator = new DeleteStreetcodeArtRequestDtoValidator();
-    }
+        private const int MINARTID = 1;
+        private const int MINSTREETCODEID = 1;
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(MINARTID - 10000)]
-    public void ShouldHaveError_WhenArtIdIsZeroOrNegative(int id)
-    {
-        // Arrange
-        var dto = new DeleteStreetcodeArtRequestDto(
-            ArtId: id,
-            StreetcodeId: MINSTREETCODEID);
+        private readonly DeleteStreetcodeArtRequestDtoValidator _validator;
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+        public DeleteStreetcodeArtRequestDtoValidatorTests()
+        {
+            _validator = new DeleteStreetcodeArtRequestDtoValidator();
+        }
 
-        // Assert
-        validationResult.ShouldHaveValidationErrorFor(x => x.ArtId);
-    }
+        [Theory]
+        [InlineData(0)]
+        [InlineData(MINARTID - 10000)]
+        public void ShouldHaveError_WhenArtIdIsZeroOrNegative(int id)
+        {
+            // Arrange
+            var dto = new DeleteStreetcodeArtRequestDto(
+                ArtId: id,
+                StreetcodeId: MINSTREETCODEID);
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(MINSTREETCODEID - 10000)]
-    public void ShouldHaveError_WhenStreetcodeIdIsZeroOrNegative(int id)
-    {
-        // Arrange
-        var dto = new DeleteStreetcodeArtRequestDto(
-            ArtId: MINARTID,
-            StreetcodeId: id);
+            // Act
+            var validationResult = _validator.TestValidate(dto);
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+            // Assert
+            validationResult.ShouldHaveValidationErrorFor(x => x.ArtId);
+        }
 
-        // Assert
-        validationResult.ShouldHaveValidationErrorFor(x => x.StreetcodeId);
-    }
+        [Theory]
+        [InlineData(0)]
+        [InlineData(MINSTREETCODEID - 10000)]
+        public void ShouldHaveError_WhenStreetcodeIdIsZeroOrNegative(int id)
+        {
+            // Arrange
+            var dto = new DeleteStreetcodeArtRequestDto(
+                ArtId: MINARTID,
+                StreetcodeId: id);
 
-    [Fact]
-    public void ShouldNotHaveError_WhenDtoIsValid()
-    {
-        // Arrange
-        var dto = new DeleteStreetcodeArtRequestDto(
-            ArtId: MINARTID,
-            StreetcodeId: MINSTREETCODEID);
+            // Act
+            var validationResult = _validator.TestValidate(dto);
 
-        // Act
-        var validationResult = _validator.TestValidate(dto);
+            // Assert
+            validationResult.ShouldHaveValidationErrorFor(x => x.StreetcodeId);
+        }
 
-        // Assert
-        validationResult.ShouldNotHaveValidationErrorFor(x => x.ArtId);
-        validationResult.ShouldNotHaveValidationErrorFor(x => x.StreetcodeId);
+        [Fact]
+        public void ShouldNotHaveError_WhenDtoIsValid()
+        {
+            // Arrange
+            var dto = new DeleteStreetcodeArtRequestDto(
+                ArtId: MINARTID,
+                StreetcodeId: MINSTREETCODEID);
+
+            // Act
+            var validationResult = _validator.TestValidate(dto);
+
+            // Assert
+            validationResult.ShouldNotHaveValidationErrorFor(x => x.ArtId);
+            validationResult.ShouldNotHaveValidationErrorFor(x => x.StreetcodeId);
+        }
     }
 }

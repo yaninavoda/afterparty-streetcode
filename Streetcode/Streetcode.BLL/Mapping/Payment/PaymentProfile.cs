@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
 using Streetcode.BLL.Dto.Payment;
 using Streetcode.BLL.Dto.Toponyms;
-using Streetcode.DAL.Entities.Payment;
-using Streetcode.DAL.Entities.Toponyms;
+using Streetcode.BLL.Entities.Payment;
+using Streetcode.BLL.Entities.Toponyms;
 
-namespace Streetcode.BLL.Mapping.Payment;
-
-public class PaymentProfile : Profile
+namespace Streetcode.BLL.Mapping.Payment
 {
-    public PaymentProfile()
+    public class PaymentProfile : Profile
     {
-        CreateMap<InvoiceInfo, PaymentResponseDto>().ReverseMap();
+        public PaymentProfile()
+        {
+            CreateMap<InvoiceInfo, PaymentResponseDto>().ReverseMap();
+        }
     }
 }

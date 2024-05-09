@@ -1,14 +1,15 @@
 using AutoMapper;
 using Streetcode.BLL.Dto.Media.Art;
-using Streetcode.DAL.Entities.Media.Images;
+using Streetcode.BLL.Entities.Media.Images;
 
-namespace Streetcode.BLL.Mapping.Media.Images;
-
-public class ArtProfile : Profile
+namespace Streetcode.BLL.Mapping.Media.Images
 {
-    public ArtProfile()
+    public class ArtProfile : Profile
     {
-        CreateMap<Art, ArtDto>().ReverseMap();
-        CreateMap<CreateArtRequestDto, Art>();
+        public ArtProfile()
+        {
+            CreateMap<Art, ArtDto>().ReverseMap();
+            CreateMap<CreateArtRequestDto, Art>();
+        }
     }
 }

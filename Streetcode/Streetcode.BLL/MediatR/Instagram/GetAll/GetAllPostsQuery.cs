@@ -1,7 +1,8 @@
 ﻿using FluentResults;
 using MediatR;
-using Streetcode.DAL.Entities.Instagram;
+using Streetcode.BLL.Entities.Instagram;
 
-namespace Streetcode.BLL.MediatR.Instagram.GetAll;
-
-public record GetAllPostsQuery : IRequest<Result<IEnumerable<InstagramPost>>>;
+namespace Streetcode.BLL.MediatR.Instagram.GetAll
+{
+    public record GetAllPostsQuery : IRequest<Result<IEnumerable<InstagramPost>>>;
+}

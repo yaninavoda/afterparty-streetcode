@@ -6,151 +6,152 @@ using Moq;
 using Streetcode.BLL.DTO.Streetcode.TextContent.Text;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.MediatR.Streetcode.Text.Delete;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Repositories.Interfaces.Base;
 using Xunit;
-using TextEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Text;
+using TextEntity = Streetcode.BLL.Entities.Streetcode.TextContent.Text;
 
-namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Text;
-
-public class DeleteTextHandlerTests
+namespace Streetcode.XUnitTest.MediatRTests.StreetCode.Text
 {
-    private const int SUCCESSFULSAVE = 1;
-    private const int FAILEDSAVE = -1;
-
-    private readonly Mock<IRepositoryWrapper> _mockRepositoryWrapper;
-    private readonly Mock<ILoggerService> _mockLogger;
-
-    private readonly CancellationToken _cancellationToken = CancellationToken.None;
-
-    public DeleteTextHandlerTests()
+    public class DeleteTextHandlerTests
     {
-        _mockRepositoryWrapper = new Mock<IRepositoryWrapper>();
-        _mockLogger = new Mock<ILoggerService>();
-    }
+        private const int SUCCESSFULSAVE = 1;
+        private const int FAILEDSAVE = -1;
 
-    [Fact]
-    public async Task Handle_ShouldReturnOkResult_IfCommandHasValidInput()
-    {
-        // Arrange
-        var request = GetValidTextRecordRequest();
-        SetupMock(SUCCESSFULSAVE);
-        var handler = DeleteHandler();
-        var command = new DeleteTextCommand(request);
+        private readonly Mock<IRepositoryWrapper> _mockRepositoryWrapper;
+        private readonly Mock<ILoggerService> _mockLogger;
 
-        // Act
-        var result = await handler.Handle(command, _cancellationToken);
+        private readonly CancellationToken _cancellationToken = CancellationToken.None;
 
-        // Assert
-        result.IsSuccess.Should().BeTrue();
-    }
+        public DeleteTextHandlerTests()
+        {
+            _mockRepositoryWrapper = new Mock<IRepositoryWrapper>();
+            _mockLogger = new Mock<ILoggerService>();
+        }
 
-    [Fact]
-    public async Task Handle_ShouldReturnResultOfCorrectType_IfInputIsValid()
-    {
-        // Arrange
-        var request = GetValidTextRecordRequest();
-        var expectedType = typeof(Result<DeleteTextResponseDto>);
-        SetupMock(SUCCESSFULSAVE);
-        var handler = DeleteHandler();
-        var command = new DeleteTextCommand(request);
+        [Fact]
+        public async Task Handle_ShouldReturnOkResult_IfCommandHasValidInput()
+        {
+            // Arrange
+            var request = GetValidTextRecordRequest();
+            SetupMock(SUCCESSFULSAVE);
+            var handler = DeleteHandler();
+            var command = new DeleteTextCommand(request);
 
-        // Act
-        var result = await handler.Handle(command, _cancellationToken);
+            // Act
+            var result = await handler.Handle(command, _cancellationToken);
 
-        // Assert
-        result.Should().BeOfType(expectedType);
-    }
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+        }
 
-    [Fact]
-    public async Task Handle_ShouldReturnResultFail_IfSavingOperationFailed()
-    {
-        // Arrange
-        var request = GetValidTextRecordRequest();
-        SetupMock(FAILEDSAVE);
-        var handler = DeleteHandler();
-        var command = new DeleteTextCommand(request);
+        [Fact]
+        public async Task Handle_ShouldReturnResultOfCorrectType_IfInputIsValid()
+        {
+            // Arrange
+            var request = GetValidTextRecordRequest();
+            var expectedType = typeof(Result<DeleteTextResponseDto>);
+            SetupMock(SUCCESSFULSAVE);
+            var handler = DeleteHandler();
+            var command = new DeleteTextCommand(request);
 
-        // Act
-        var result = await handler.Handle(command, _cancellationToken);
+            // Act
+            var result = await handler.Handle(command, _cancellationToken);
 
-        // Assert
-        result.IsFailed.Should().BeTrue();
-    }
+            // Assert
+            result.Should().BeOfType(expectedType);
+        }
 
-    [Fact]
-    public async Task Handle_ShouldReturnErrorDeleteFailed_IfSavingOperationFailed()
-    {
-        // Arrange
-        var request = GetValidTextRecordRequest();
-        SetupMock(FAILEDSAVE);
-        var handler = DeleteHandler();
-        var command = new DeleteTextCommand(request);
+        [Fact]
+        public async Task Handle_ShouldReturnResultFail_IfSavingOperationFailed()
+        {
+            // Arrange
+            var request = GetValidTextRecordRequest();
+            SetupMock(FAILEDSAVE);
+            var handler = DeleteHandler();
+            var command = new DeleteTextCommand(request);
 
-        var expectedErrorMessage = string.Format(
-        ErrorMessages.DeleteFailed,
-        typeof(TextEntity).Name,
-        request.Id);
+            // Act
+            var result = await handler.Handle(command, _cancellationToken);
 
-        // Act
-        var result = await handler.Handle(command, _cancellationToken);
-        var actualErrorMessage = result.Errors[0].Message;
+            // Assert
+            result.IsFailed.Should().BeTrue();
+        }
 
-        // Assert
-        Assert.Equal(expectedErrorMessage, actualErrorMessage);
-    }
+        [Fact]
+        public async Task Handle_ShouldReturnErrorDeleteFailed_IfSavingOperationFailed()
+        {
+            // Arrange
+            var request = GetValidTextRecordRequest();
+            SetupMock(FAILEDSAVE);
+            var handler = DeleteHandler();
+            var command = new DeleteTextCommand(request);
 
-    [Fact]
-    public async Task Handle_ShouldCallSaveChangesAsyncOnce_IfInputIsValid()
-    {
-        // Arrange
-        var request = GetValidTextRecordRequest();
-        SetupMock(SUCCESSFULSAVE);
-        var handler = DeleteHandler();
-        var command = new DeleteTextCommand(request);
+            var expectedErrorMessage = string.Format(
+            ErrorMessages.DeleteFailed,
+            typeof(TextEntity).Name,
+            request.Id);
 
-        // Act
-        await handler.Handle(command, _cancellationToken);
+            // Act
+            var result = await handler.Handle(command, _cancellationToken);
+            var actualErrorMessage = result.Errors[0].Message;
 
-        // Assert
-        _mockRepositoryWrapper.Verify(x => x.SaveChangesAsync(), Times.Exactly(1));
-    }
+            // Assert
+            Assert.Equal(expectedErrorMessage, actualErrorMessage);
+        }
 
-    private DeleteTextHandler DeleteHandler()
-    {
-        return new DeleteTextHandler(
-            _mockRepositoryWrapper.Object,
-            _mockLogger.Object);
-    }
+        [Fact]
+        public async Task Handle_ShouldCallSaveChangesAsyncOnce_IfInputIsValid()
+        {
+            // Arrange
+            var request = GetValidTextRecordRequest();
+            SetupMock(SUCCESSFULSAVE);
+            var handler = DeleteHandler();
+            var command = new DeleteTextCommand(request);
 
-    private void SetupMock(int saveChangesAsyncResult)
-    {
-        var text = new TextEntity { Id = 1 };
+            // Act
+            await handler.Handle(command, _cancellationToken);
 
-        _mockRepositoryWrapper
-            .Setup(repo => repo.TextRepository.GetFirstOrDefaultAsync(
-                AnyEntityPredicate<TextEntity>(),
-                AnyEntityInclude<TextEntity>()))
-            .ReturnsAsync(text);
+            // Assert
+            _mockRepositoryWrapper.Verify(x => x.SaveChangesAsync(), Times.Exactly(1));
+        }
 
-        _mockRepositoryWrapper
-            .Setup(repo => repo.TextRepository.Delete(text));
+        private DeleteTextHandler DeleteHandler()
+        {
+            return new DeleteTextHandler(
+                _mockRepositoryWrapper.Object,
+                _mockLogger.Object);
+        }
 
-        _mockRepositoryWrapper.Setup(repo => repo.SaveChangesAsync()).ReturnsAsync(saveChangesAsyncResult);
-    }
+        private void SetupMock(int saveChangesAsyncResult)
+        {
+            var text = new TextEntity { Id = 1 };
 
-    private static Expression<Func<TEntity, bool>> AnyEntityPredicate<TEntity>()
-    {
-        return It.IsAny<Expression<Func<TEntity, bool>>>();
-    }
+            _mockRepositoryWrapper
+                .Setup(repo => repo.TextRepository.GetFirstOrDefaultAsync(
+                    AnyEntityPredicate<TextEntity>(),
+                    AnyEntityInclude<TextEntity>()))
+                .ReturnsAsync(text);
 
-    private static Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> AnyEntityInclude<TEntity>()
-    {
-        return It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>();
-    }
+            _mockRepositoryWrapper
+                .Setup(repo => repo.TextRepository.Delete(text));
 
-    private static DeleteTextRequestDto GetValidTextRecordRequest()
-    {
-        return new(Id: 1);
+            _mockRepositoryWrapper.Setup(repo => repo.SaveChangesAsync()).ReturnsAsync(saveChangesAsyncResult);
+        }
+
+        private static Expression<Func<TEntity, bool>> AnyEntityPredicate<TEntity>()
+        {
+            return It.IsAny<Expression<Func<TEntity, bool>>>();
+        }
+
+        private static Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> AnyEntityInclude<TEntity>()
+        {
+            return It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>();
+        }
+
+        private static DeleteTextRequestDto GetValidTextRecordRequest()
+        {
+            return new(Id: 1);
+        }
     }
 }

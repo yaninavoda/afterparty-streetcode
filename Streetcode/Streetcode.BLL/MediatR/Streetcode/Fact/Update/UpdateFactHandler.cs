@@ -3,12 +3,12 @@ using MediatR;
 using Streetcode.BLL.Dto.Streetcode.TextContent.Fact;
 using Streetcode.BLL.Interfaces.Logging;
 using Streetcode.BLL.Resources.Errors;
-using Streetcode.DAL.Repositories.Interfaces.Base;
+using Streetcode.BLL.RepositoryInterfaces.Base;
 using AutoMapper;
-using Streetcode.DAL.Entities.Streetcode;
-using Streetcode.DAL.Entities.Media.Images;
 
-using FactEntity = Streetcode.DAL.Entities.Streetcode.TextContent.Fact;
+using FactEntity = Streetcode.BLL.Entities.Streetcode.TextContent.Fact;
+using Streetcode.BLL.Entities.Media.Images;
+using Streetcode.BLL.Entities.Streetcode;
 
 namespace Streetcode.BLL.MediatR.Streetcode.Fact.Update
 {
